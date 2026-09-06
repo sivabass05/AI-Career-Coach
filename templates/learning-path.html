@@ -1,0 +1,1619 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Learning Path | AI Career Coach</title>
+
+
+    <style>
+
+        /* =====================================================
+           GLOBAL
+        ===================================================== */
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Segoe UI", Arial, sans-serif;
+        }
+
+
+        body {
+            background: #f4f8fc;
+            color: #172b4d;
+            font-size: 16px;
+        }
+
+
+        /* =====================================================
+           FIXED HEADER
+        ===================================================== */
+
+        .header {
+
+            position: fixed;
+
+            top: 0;
+            left: 0;
+            right: 0;
+
+            width: 100%;
+            height: 72px;
+
+            z-index: 99999;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #123c69,
+                    #087f8c
+                );
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: space-between;
+
+            padding: 0 6%;
+
+            color: white;
+
+            box-shadow:
+                0 4px 18px rgba(0,0,0,0.15);
+        }
+
+
+        .logo {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 12px;
+
+            font-size: 24px;
+
+            font-weight: 700;
+        }
+
+
+        .logo-icon {
+
+            width: 42px;
+            height: 42px;
+
+            border-radius: 12px;
+
+            display: flex;
+
+            align-items: center;
+            justify-content: center;
+
+            background:
+                rgba(255,255,255,0.18);
+
+            font-size: 22px;
+        }
+
+
+        .header-right {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 22px;
+        }
+
+
+        .welcome {
+
+            font-size: 16px;
+
+            font-weight: 500;
+        }
+
+
+        .logout {
+
+            text-decoration: none;
+
+            color: white;
+
+            padding: 10px 20px;
+
+            border:
+                1px solid rgba(255,255,255,0.45);
+
+            border-radius: 9px;
+
+            font-size: 15px;
+
+            font-weight: 600;
+
+            transition: 0.3s;
+        }
+
+
+        .logout:hover {
+
+            background: white;
+
+            color: #123c69;
+        }
+
+
+        /* =====================================================
+           PAGE
+        ===================================================== */
+
+        .page {
+
+            padding:
+                105px 6% 70px;
+        }
+
+
+        .content {
+
+            max-width: 1200px;
+
+            margin: auto;
+        }
+
+
+        /* =====================================================
+           HERO
+        ===================================================== */
+
+        .hero {
+
+            position: relative;
+
+            overflow: hidden;
+
+            background:
+
+                radial-gradient(
+                    circle at 90% 20%,
+                    rgba(255,255,255,0.17),
+                    transparent 30%
+                ),
+
+                linear-gradient(
+                    135deg,
+                    #123c69,
+                    #087f8c
+                );
+
+            color: white;
+
+            border-radius: 25px;
+
+            padding:
+                45px 48px;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: space-between;
+
+            box-shadow:
+                0 15px 40px
+                rgba(18,60,105,0.18);
+        }
+
+
+        .hero-content {
+
+            max-width: 760px;
+        }
+
+
+        .hero-label {
+
+            display: inline-block;
+
+            padding:
+                8px 16px;
+
+            background:
+                rgba(255,255,255,0.15);
+
+            border:
+                1px solid rgba(255,255,255,0.25);
+
+            border-radius: 25px;
+
+            font-size: 14px;
+
+            font-weight: 600;
+
+            margin-bottom: 17px;
+        }
+
+
+        .hero h1 {
+
+            font-size: 40px;
+
+            line-height: 1.2;
+
+            margin-bottom: 13px;
+        }
+
+
+        .hero p {
+
+            font-size: 17px;
+
+            line-height: 1.8;
+
+            opacity: 0.93;
+        }
+
+
+        .roadmap-icon {
+
+            width: 125px;
+            height: 125px;
+
+            flex-shrink: 0;
+
+            border-radius: 50%;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            font-size: 55px;
+
+            background:
+                rgba(255,255,255,0.12);
+
+            border:
+                1px solid rgba(255,255,255,0.28);
+
+            box-shadow:
+
+                0 0 0 12px
+                rgba(255,255,255,0.04),
+
+                0 0 0 24px
+                rgba(255,255,255,0.025);
+        }
+
+
+        /* =====================================================
+           CAREER TARGET
+        ===================================================== */
+
+        .target-card {
+
+            margin-top: 28px;
+
+            background: white;
+
+            border-radius: 22px;
+
+            padding: 28px 32px;
+
+            border:
+                1px solid #e1eaf2;
+
+            box-shadow:
+                0 8px 30px
+                rgba(23,43,77,0.07);
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: space-between;
+
+            gap: 20px;
+        }
+
+
+        .target-left {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 16px;
+        }
+
+
+        .target-icon {
+
+            width: 58px;
+            height: 58px;
+
+            border-radius: 15px;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #e7f5f6,
+                    #edf6fb
+                );
+
+            display: flex;
+
+            align-items: center;
+            justify-content: center;
+
+            font-size: 29px;
+        }
+
+
+        .target-label {
+
+            font-size: 12px;
+
+            font-weight: 800;
+
+            color: #8293a6;
+
+            letter-spacing: 0.6px;
+
+            margin-bottom: 5px;
+        }
+
+
+        .target-career {
+
+            font-size: 24px;
+
+            font-weight: 800;
+
+            color: #123c69;
+        }
+
+
+        .target-status {
+
+            padding:
+                10px 16px;
+
+            background: #eef8f5;
+
+            color: #087f8c;
+
+            border-radius: 25px;
+
+            font-size: 13px;
+
+            font-weight: 700;
+        }
+
+
+        /* =====================================================
+           ROADMAP HEADER
+        ===================================================== */
+
+        .roadmap-heading {
+
+            margin-top: 38px;
+
+            margin-bottom: 25px;
+        }
+
+
+        .roadmap-heading h2 {
+
+            font-size: 27px;
+
+            color: #17365d;
+
+            margin-bottom: 7px;
+        }
+
+
+        .roadmap-heading p {
+
+            font-size: 15px;
+
+            color: #8293a6;
+
+            line-height: 1.6;
+        }
+
+
+        /* =====================================================
+           ROADMAP
+        ===================================================== */
+
+        .roadmap {
+
+            position: relative;
+
+            padding-left: 45px;
+        }
+
+
+        .roadmap::before {
+
+            content: "";
+
+            position: absolute;
+
+            left: 19px;
+
+            top: 15px;
+
+            bottom: 25px;
+
+            width: 3px;
+
+            background:
+                linear-gradient(
+                    to bottom,
+                    #087f8c,
+                    #cfe4e8
+                );
+
+            border-radius: 5px;
+        }
+
+
+        /* =====================================================
+           ROADMAP STEP
+        ===================================================== */
+
+        .step {
+
+            position: relative;
+
+            background: white;
+
+            border:
+                1px solid #e1eaf2;
+
+            border-radius: 20px;
+
+            padding: 27px 30px;
+
+            margin-bottom: 22px;
+
+            box-shadow:
+                0 7px 25px
+                rgba(23,43,77,0.05);
+
+            transition: 0.3s;
+        }
+
+
+        .step:hover {
+
+            transform:
+                translateX(4px);
+
+            box-shadow:
+                0 12px 30px
+                rgba(23,43,77,0.10);
+
+            border-color:
+                #bcdfe4;
+        }
+
+
+        /* =====================================================
+           STEP NUMBER
+        ===================================================== */
+
+        .step-number {
+
+            position: absolute;
+
+            left: -61px;
+
+            top: 24px;
+
+            width: 40px;
+            height: 40px;
+
+            border-radius: 50%;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #123c69,
+                    #087f8c
+                );
+
+            color: white;
+
+            display: flex;
+
+            align-items: center;
+            justify-content: center;
+
+            font-size: 14px;
+
+            font-weight: 800;
+
+            border:
+                4px solid #f4f8fc;
+
+            box-shadow:
+                0 4px 12px
+                rgba(8,127,140,0.22);
+        }
+
+
+        /* =====================================================
+           STEP TOP
+        ===================================================== */
+
+        .step-top {
+
+            display: flex;
+
+            justify-content: space-between;
+
+            align-items: flex-start;
+
+            gap: 15px;
+
+            margin-bottom: 13px;
+        }
+
+
+        .step-title {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 12px;
+        }
+
+
+        .step-icon {
+
+            width: 48px;
+            height: 48px;
+
+            border-radius: 13px;
+
+            background: #eef7fb;
+
+            display: flex;
+
+            align-items: center;
+            justify-content: center;
+
+            font-size: 24px;
+
+            flex-shrink: 0;
+        }
+
+
+        .step h3 {
+
+            font-size: 21px;
+
+            color: #17365d;
+        }
+
+
+        .step-tag {
+
+            padding:
+                7px 12px;
+
+            background: #f0f7f9;
+
+            color: #087f8c;
+
+            border-radius: 20px;
+
+            font-size: 12px;
+
+            font-weight: 700;
+
+            white-space: nowrap;
+        }
+
+
+        .step-description {
+
+            font-size: 15px;
+
+            color: #718096;
+
+            line-height: 1.75;
+
+            margin-bottom: 17px;
+        }
+
+
+        /* =====================================================
+           STEP SKILLS
+        ===================================================== */
+
+        .step-skills-title {
+
+            font-size: 12px;
+
+            font-weight: 800;
+
+            color: #8293a6;
+
+            text-transform: uppercase;
+
+            letter-spacing: 0.5px;
+
+            margin-bottom: 9px;
+        }
+
+
+        .step-skills {
+
+            display: flex;
+
+            flex-wrap: wrap;
+
+            gap: 8px;
+        }
+
+
+        .step-skill {
+
+            padding:
+                7px 12px;
+
+            background: #f5f8fb;
+
+            border:
+                1px solid #e5edf3;
+
+            border-radius: 20px;
+
+            font-size: 13px;
+
+            color: #52677d;
+        }
+
+
+        /* =====================================================
+           PROGRESS AREA
+        ===================================================== */
+
+        .progress-area {
+
+            margin-top: 20px;
+
+            padding-top: 17px;
+
+            border-top:
+                1px solid #edf1f5;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: space-between;
+
+            gap: 15px;
+        }
+
+
+        .progress-label {
+
+            font-size: 12px;
+
+            color: #8293a6;
+
+            font-weight: 600;
+        }
+
+
+        .progress-bar {
+
+            flex: 1;
+
+            max-width: 280px;
+
+            height: 7px;
+
+            border-radius: 10px;
+
+            background: #e8eff4;
+
+            overflow: hidden;
+        }
+
+
+        .progress-fill {
+
+            height: 100%;
+
+            width: 0%;
+
+            border-radius: 10px;
+
+            background:
+                linear-gradient(
+                    90deg,
+                    #123c69,
+                    #087f8c
+                );
+        }
+
+
+        /* =====================================================
+           FINAL CARD
+        ===================================================== */
+
+        .finish-card {
+
+            margin-top: 28px;
+
+            background:
+
+                linear-gradient(
+                    135deg,
+                    #123c69,
+                    #087f8c
+                );
+
+            color: white;
+
+            border-radius: 22px;
+
+            padding: 32px;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: space-between;
+
+            gap: 25px;
+
+            box-shadow:
+                0 12px 35px
+                rgba(18,60,105,0.18);
+        }
+
+
+        .finish-content {
+
+            max-width: 700px;
+        }
+
+
+        .finish-card h2 {
+
+            font-size: 26px;
+
+            margin-bottom: 8px;
+        }
+
+
+        .finish-card p {
+
+            font-size: 15px;
+
+            line-height: 1.7;
+
+            opacity: 0.9;
+        }
+
+
+        .assessment-btn {
+
+            text-decoration: none;
+
+            background: white;
+
+            color: #123c69;
+
+            padding:
+                13px 21px;
+
+            border-radius: 10px;
+
+            font-size: 14px;
+
+            font-weight: 700;
+
+            white-space: nowrap;
+
+            transition: 0.3s;
+        }
+
+
+        .assessment-btn:hover {
+
+            transform:
+                translateY(-2px);
+
+            box-shadow:
+                0 8px 20px
+                rgba(0,0,0,0.15);
+        }
+
+
+        /* =====================================================
+           EMPTY STATE
+        ===================================================== */
+
+        .empty {
+
+            margin-top: 28px;
+
+            background: white;
+
+            border-radius: 22px;
+
+            padding: 65px 25px;
+
+            text-align: center;
+
+            border:
+                1px solid #e1eaf2;
+
+            box-shadow:
+                0 8px 30px
+                rgba(23,43,77,0.07);
+        }
+
+
+        .empty-icon {
+
+            font-size: 55px;
+
+            margin-bottom: 18px;
+        }
+
+
+        .empty h2 {
+
+            font-size: 25px;
+
+            color: #17365d;
+
+            margin-bottom: 9px;
+        }
+
+
+        .empty p {
+
+            font-size: 15px;
+
+            color: #8293a6;
+
+            line-height: 1.7;
+
+            margin-bottom: 22px;
+        }
+
+
+        /* =====================================================
+           RESPONSIVE
+        ===================================================== */
+
+        @media (max-width: 950px) {
+
+            .roadmap-icon {
+
+                width: 95px;
+                height: 95px;
+
+                font-size: 42px;
+            }
+
+
+            .finish-card {
+
+                flex-direction: column;
+
+                align-items: flex-start;
+            }
+
+        }
+
+
+        @media (max-width: 650px) {
+
+            .header {
+
+                height: 65px;
+
+                padding:
+                    0 18px;
+            }
+
+
+            .logo {
+
+                font-size: 19px;
+            }
+
+
+            .logo-icon {
+
+                width: 36px;
+                height: 36px;
+
+                font-size: 19px;
+            }
+
+
+            .welcome {
+
+                display: none;
+            }
+
+
+            .logout {
+
+                padding:
+                    8px 14px;
+
+                font-size: 13px;
+            }
+
+
+            .page {
+
+                padding:
+                    88px 15px 45px;
+            }
+
+
+            .hero {
+
+                padding:
+                    30px 23px;
+
+                border-radius: 20px;
+            }
+
+
+            .hero h1 {
+
+                font-size: 29px;
+            }
+
+
+            .hero p {
+
+                font-size: 15px;
+
+                line-height: 1.7;
+            }
+
+
+            .hero-label {
+
+                font-size: 12px;
+            }
+
+
+            .roadmap-icon {
+
+                display: none;
+            }
+
+
+            .target-card {
+
+                padding:
+                    22px;
+
+                align-items: flex-start;
+
+                flex-direction: column;
+            }
+
+
+            .target-career {
+
+                font-size: 21px;
+            }
+
+
+            .target-status {
+
+                font-size: 12px;
+            }
+
+
+            .roadmap-heading h2 {
+
+                font-size: 23px;
+            }
+
+
+            .roadmap-heading p {
+
+                font-size: 14px;
+            }
+
+
+            .roadmap {
+
+                padding-left: 36px;
+            }
+
+
+            .roadmap::before {
+
+                left: 14px;
+            }
+
+
+            .step {
+
+                padding:
+                    22px;
+
+                border-radius: 17px;
+            }
+
+
+            .step-number {
+
+                left: -42px;
+
+                width: 34px;
+                height: 34px;
+
+                font-size: 12px;
+            }
+
+
+            .step h3 {
+
+                font-size: 18px;
+            }
+
+
+            .step-description {
+
+                font-size: 14px;
+            }
+
+
+            .step-tag {
+
+                font-size: 10px;
+
+                padding:
+                    6px 9px;
+            }
+
+
+            .step-skill {
+
+                font-size: 12px;
+
+                padding:
+                    6px 10px;
+            }
+
+
+            .progress-area {
+
+                align-items: flex-start;
+
+                flex-direction: column;
+            }
+
+
+            .progress-bar {
+
+                width: 100%;
+
+                max-width: none;
+            }
+
+
+            .finish-card {
+
+                padding:
+                    25px 22px;
+            }
+
+
+            .finish-card h2 {
+
+                font-size: 22px;
+            }
+
+
+            .finish-card p {
+
+                font-size: 14px;
+            }
+
+
+            .assessment-btn {
+
+                font-size: 13px;
+
+                padding:
+                    11px 17px;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<!-- =====================================================
+     FIXED HEADER
+===================================================== -->
+
+<header class="header">
+
+
+    <div class="logo">
+
+        <div class="logo-icon">
+            🤖
+        </div>
+
+        AI Career Coach
+
+    </div>
+
+
+    <div class="header-right">
+
+
+        <span class="welcome">
+
+            Welcome,
+            {{ request.user.username }}
+
+        </span>
+
+
+        <a
+            href="{% url 'logout' %}"
+            class="logout"
+        >
+
+            Logout
+
+        </a>
+
+
+    </div>
+
+
+</header>
+
+
+
+<!-- =====================================================
+     MAIN PAGE
+===================================================== -->
+
+<main class="page">
+
+
+    <div class="content">
+
+
+        <!-- =================================================
+             HERO
+        ================================================== -->
+
+        <section class="hero">
+
+
+            <div class="hero-content">
+
+
+                <span class="hero-label">
+
+                    🗺️ Personalized Career Roadmap
+
+                </span>
+
+
+                <h1>
+
+                    Your Learning Path
+
+                </h1>
+
+
+                <p>
+
+                    Follow a structured learning journey designed
+                    to help you build the skills required for your
+                    target career and move confidently toward your
+                    professional goals.
+
+                </p>
+
+
+            </div>
+
+
+            <div class="roadmap-icon">
+
+                🗺️
+
+            </div>
+
+
+        </section>
+
+
+
+        <!-- =================================================
+             CAREER TARGET
+        ================================================== -->
+
+        {% if career %}
+
+
+        <section class="target-card">
+
+
+            <div class="target-left">
+
+
+                <div class="target-icon">
+
+                    🎯
+
+                </div>
+
+
+                <div>
+
+
+                    <div class="target-label">
+
+                        YOUR TARGET CAREER
+
+                    </div>
+
+
+                    <div class="target-career">
+
+                        {{ career }}
+
+                    </div>
+
+
+                </div>
+
+
+            </div>
+
+
+            <div class="target-status">
+
+                ✨ Personalized Path
+
+            </div>
+
+
+        </section>
+
+
+        {% endif %}
+
+
+
+        <!-- =================================================
+             ROADMAP TITLE
+        ================================================== -->
+
+        <div class="roadmap-heading">
+
+
+            <h2>
+
+                Step-by-Step Learning Roadmap
+
+            </h2>
+
+
+            <p>
+
+                Complete each stage in order and gradually
+                build your career-ready skill set.
+
+            </p>
+
+
+        </div>
+
+
+
+        <!-- =================================================
+             ROADMAP
+        ================================================== -->
+
+        {% if steps %}
+
+
+        <div class="roadmap">
+
+
+            {% for step in steps %}
+
+
+            <div class="step">
+
+
+                <!-- STEP NUMBER -->
+
+                <div class="step-number">
+
+                    {{ forloop.counter }}
+
+                </div>
+
+
+
+                <!-- STEP TOP -->
+
+                <div class="step-top">
+
+
+                    <div class="step-title">
+
+
+                        <div class="step-icon">
+
+
+                            {% if forloop.counter == 1 %}
+
+                                🧱
+
+                            {% elif forloop.counter == 2 %}
+
+                                💻
+
+                            {% elif forloop.counter == 3 %}
+
+                                🧠
+
+                            {% elif forloop.counter == 4 %}
+
+                                🛠️
+
+                            {% elif forloop.counter == 5 %}
+
+                                🚀
+
+                            {% else %}
+
+                                ⭐
+
+                            {% endif %}
+
+
+                        </div>
+
+
+                        <h3>
+
+                            {{ step.title }}
+
+                        </h3>
+
+
+                    </div>
+
+
+                    <span class="step-tag">
+
+                        Stage {{ forloop.counter }}
+
+                    </span>
+
+
+                </div>
+
+
+
+                <!-- DESCRIPTION -->
+
+                <p class="step-description">
+
+                    {{ step.description }}
+
+                </p>
+
+
+
+                <!-- SKILLS -->
+
+                {% if step.skills %}
+
+
+                <div class="step-skills-title">
+
+                    Skills to Build
+
+                </div>
+
+
+                <div class="step-skills">
+
+
+                    {% for skill in step.skills %}
+
+                    <span class="step-skill">
+
+                        {{ skill }}
+
+                    </span>
+
+                    {% endfor %}
+
+
+                </div>
+
+
+                {% endif %}
+
+
+
+                <!-- PROGRESS -->
+
+                <div class="progress-area">
+
+
+                    <span class="progress-label">
+
+                        Learning Stage {{ forloop.counter }}
+
+                    </span>
+
+
+                    <div class="progress-bar">
+
+
+                        <div
+                            class="progress-fill"
+                            style="width: 0%;"
+                        >
+                        </div>
+
+
+                    </div>
+
+
+                </div>
+
+
+            </div>
+
+
+            {% endfor %}
+
+
+        </div>
+
+
+        {% else %}
+
+
+        <!-- =================================================
+             EMPTY STATE
+        ================================================== -->
+
+        <section class="empty">
+
+
+            <div class="empty-icon">
+
+                🗺️
+
+            </div>
+
+
+            <h2>
+
+                Your Learning Path Is Not Ready Yet
+
+            </h2>
+
+
+            <p>
+
+                Complete the skill assessment and select
+                a career interest to generate your personalized
+                learning roadmap.
+
+            </p>
+
+
+            <a
+                href="{% url 'skill_assessment' %}"
+                class="assessment-btn"
+            >
+
+                🧠 Take Skill Assessment
+
+            </a>
+
+
+        </section>
+
+
+        {% endif %}
+
+
+
+        <!-- =================================================
+             FINAL CTA
+        ================================================== -->
+
+        <section class="finish-card">
+
+
+            <div class="finish-content">
+
+
+                <h2>
+
+                    Ready to Build Your Career?
+
+                </h2>
+
+
+                <p>
+
+                    Keep learning, practice consistently and
+                    track your progress. Your career journey
+                    starts with the next skill you learn.
+
+                </p>
+
+
+            </div>
+
+
+            <a
+                href="{% url 'skill_assessment' %}"
+                class="assessment-btn"
+            >
+
+                🔄 Reassess My Skills
+
+            </a>
+
+
+        </section>
+
+
+    </div>
+
+
+</main>
+
+
+</body>
+
+</html>

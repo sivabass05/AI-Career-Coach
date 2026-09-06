@@ -1,0 +1,763 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>AI Mock Interview | AI Career Coach</title>
+
+    <style>
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            background: linear-gradient(
+                135deg,
+                #06192d,
+                #0b2944,
+                #071827
+            );
+            color: white;
+            min-height: 100vh;
+        }
+
+        /* ================= HEADER ================= */
+
+        .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+
+            height: 70px;
+
+            z-index: 99999;
+
+            background: linear-gradient(
+                135deg,
+                #1e3c72,
+                #2a5298
+            );
+
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            padding: 0 45px;
+
+            box-shadow:
+                0 4px 20px rgba(0,0,0,0.25);
+        }
+
+        .logo {
+            color: white;
+            text-decoration: none;
+
+            font-size: 22px;
+            font-weight: bold;
+        }
+
+        .nav {
+            display: flex;
+            gap: 22px;
+        }
+
+        .nav a {
+            color: white;
+            text-decoration: none;
+
+            font-size: 15px;
+            font-weight: 600;
+        }
+
+        .nav a:hover {
+            opacity: 0.75;
+        }
+
+        /* ================= MAIN ================= */
+
+        .main {
+            width: 92%;
+            max-width: 1050px;
+
+            margin: auto;
+
+            padding-top: 100px;
+            padding-bottom: 60px;
+        }
+
+        /* ================= HERO ================= */
+
+        .hero {
+            text-align: center;
+
+            margin-bottom: 30px;
+        }
+
+        .hero h1 {
+            font-size: 40px;
+            margin-bottom: 10px;
+        }
+
+        .hero p {
+            color: #b8d4ef;
+            font-size: 17px;
+        }
+
+        /* ================= MESSAGE ================= */
+
+        .message {
+            background: #8d2020;
+            color: white;
+
+            padding: 12px 18px;
+
+            border-radius: 8px;
+
+            text-align: center;
+
+            margin-bottom: 8px;
+        }
+
+        /* ================= CARD ================= */
+
+        .card {
+            max-width: 700px;
+
+            margin: 25px auto 0;
+
+            background: rgba(255,255,255,0.07);
+
+            border: 1px solid rgba(255,255,255,0.15);
+
+            border-radius: 20px;
+
+            padding: 38px;
+
+            box-shadow:
+                0 15px 40px rgba(0,0,0,0.25);
+
+            backdrop-filter: blur(10px);
+        }
+
+        .card h2 {
+            text-align: center;
+
+            font-size: 28px;
+
+            margin-bottom: 28px;
+        }
+
+        /* ================= SELECT ================= */
+
+        .form-group {
+            margin-bottom: 22px;
+        }
+
+        .form-group label {
+            display: block;
+
+            margin-bottom: 10px;
+
+            color: #d7e9fb;
+
+            font-weight: bold;
+        }
+
+        select {
+            width: 100%;
+
+            padding: 16px;
+
+            background: #102b48;
+
+            color: white;
+
+            border: 1px solid #3d6e9b;
+
+            border-radius: 10px;
+
+            font-size: 16px;
+
+            cursor: pointer;
+
+            outline: none;
+        }
+
+        select:focus {
+            border-color: #12c4cf;
+        }
+
+        select option {
+            background: #102b48;
+            color: white;
+        }
+
+        /* ================= BUTTON ================= */
+
+        .btn {
+            width: 100%;
+
+            border: none;
+
+            border-radius: 10px;
+
+            padding: 16px;
+
+            background: linear-gradient(
+                135deg,
+                #18b8b2,
+                #08b4d1
+            );
+
+            color: white;
+
+            font-size: 17px;
+
+            font-weight: bold;
+
+            cursor: pointer;
+
+            transition: 0.2s;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+
+            box-shadow:
+                0 8px 22px rgba(8,180,209,0.25);
+        }
+
+        /* ================= INFO ================= */
+
+        .info {
+            margin-top: 25px;
+
+            padding: 16px;
+
+            border-radius: 10px;
+
+            background: rgba(0,190,210,0.08);
+
+            color: #b9ddec;
+
+            text-align: center;
+
+            line-height: 1.7;
+
+            font-size: 14px;
+        }
+
+        /* ================= INTERVIEW ================= */
+
+        .interview-card {
+            max-width: 850px;
+
+            margin: 30px auto;
+
+            background: rgba(255,255,255,0.07);
+
+            border: 1px solid rgba(255,255,255,0.15);
+
+            border-radius: 22px;
+
+            padding: 35px;
+
+            box-shadow:
+                0 15px 40px rgba(0,0,0,0.28);
+        }
+
+        .interview-top {
+            display: flex;
+
+            justify-content: space-between;
+
+            align-items: center;
+
+            margin-bottom: 20px;
+        }
+
+        .career-badge {
+            display: inline-block;
+
+            padding: 8px 14px;
+
+            border-radius: 20px;
+
+            background: rgba(20,190,200,0.15);
+
+            color: #6de6ec;
+
+            font-size: 14px;
+
+            font-weight: bold;
+        }
+
+        .question-number {
+            color: #b9ddec;
+
+            font-weight: bold;
+
+            font-size: 15px;
+        }
+
+        /* ================= PROGRESS ================= */
+
+        .progress-container {
+            margin-bottom: 30px;
+        }
+
+        .progress-bg {
+            width: 100%;
+
+            height: 10px;
+
+            background: #18334e;
+
+            border-radius: 20px;
+
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+
+            background: linear-gradient(
+                90deg,
+                #18b8b2,
+                #08b4d1
+            );
+
+            border-radius: 20px;
+        }
+
+        /* ================= QUESTION ================= */
+
+        .question-box {
+            background: #102b48;
+
+            border: 1px solid #274b69;
+
+            border-radius: 15px;
+
+            padding: 28px;
+
+            margin-bottom: 25px;
+        }
+
+        .question-box h2 {
+            font-size: 23px;
+
+            line-height: 1.5;
+
+            color: white;
+
+            text-align: left;
+
+            margin: 0;
+        }
+
+        /* ================= ANSWER ================= */
+
+        .answer-label {
+            display: block;
+
+            margin-bottom: 10px;
+
+            font-weight: bold;
+
+            color: #d7e9fb;
+        }
+
+        textarea {
+            width: 100%;
+
+            min-height: 190px;
+
+            resize: vertical;
+
+            padding: 16px;
+
+            border-radius: 12px;
+
+            border: 1px solid #3d6e9b;
+
+            background: #091f35;
+
+            color: white;
+
+            font-family: Arial, sans-serif;
+
+            font-size: 16px;
+
+            line-height: 1.6;
+
+            outline: none;
+        }
+
+        textarea:focus {
+            border-color: #14c4d0;
+
+            box-shadow:
+                0 0 0 3px rgba(20,196,208,0.1);
+        }
+
+        textarea::placeholder {
+            color: #7892aa;
+        }
+
+        .submit-answer {
+            margin-top: 18px;
+        }
+
+        /* ================= TIPS ================= */
+
+        .tips {
+            margin-top: 25px;
+
+            background: rgba(255,255,255,0.04);
+
+            border-radius: 12px;
+
+            padding: 18px;
+
+            color: #b9cde0;
+
+            line-height: 1.7;
+
+            font-size: 14px;
+        }
+
+        .tips strong {
+            color: #6de6ec;
+        }
+
+        /* ================= MOBILE ================= */
+
+        @media (max-width: 700px) {
+
+            .header {
+                padding: 0 20px;
+            }
+
+            .logo {
+                font-size: 17px;
+            }
+
+            .nav {
+                gap: 10px;
+            }
+
+            .nav a {
+                font-size: 12px;
+            }
+
+            .hero h1 {
+                font-size: 30px;
+            }
+
+            .card,
+            .interview-card {
+                padding: 22px;
+            }
+
+            .question-box h2 {
+                font-size: 20px;
+            }
+
+            .interview-top {
+                flex-direction: column;
+
+                align-items: flex-start;
+
+                gap: 10px;
+            }
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+<!-- ================= HEADER ================= -->
+
+<header class="header">
+
+    <a href="{% url 'dashboard' %}" class="logo">
+        🤖 AI Career Coach
+    </a>
+
+    <nav class="nav">
+
+        <a href="{% url 'dashboard' %}">
+            Dashboard
+        </a>
+
+        <a href="{% url 'profile' %}">
+            Profile
+        </a>
+
+        <a href="{% url 'learning_path' %}">
+            Learning Path
+        </a>
+
+        <a href="{% url 'logout' %}">
+            Logout
+        </a>
+
+    </nav>
+
+</header>
+
+
+<!-- ================= MAIN ================= -->
+
+<main class="main">
+
+    <!-- HERO -->
+
+    <section class="hero">
+
+        <h1>
+            🎤 AI Mock Interview
+        </h1>
+
+        <p>
+            Practice real interview questions and improve your confidence.
+        </p>
+
+    </section>
+
+
+    <!-- ================= MESSAGES ================= -->
+
+    {% if messages %}
+
+        {% for message in messages %}
+
+            <div class="message">
+                {{ message }}
+            </div>
+
+        {% endfor %}
+
+    {% endif %}
+
+
+    <!-- ================================================= -->
+    <!-- CAREER SELECTION -->
+    <!-- ================================================= -->
+
+    {% if not question %}
+
+        <section class="card">
+
+            <h2>
+                Select Your Career
+            </h2>
+
+            <form
+                method="GET"
+                action="{% url 'mock_interview' %}"
+            >
+
+                <div class="form-group">
+
+                    <label for="career">
+                        Choose your target career
+                    </label>
+
+                    <select
+                        id="career"
+                        name="career"
+                        required
+                    >
+
+                        <option
+                            value=""
+                            selected
+                            disabled
+                        >
+                            -- Select Career --
+                        </option>
+
+                        <option value="Java Developer">
+                            ☕ Java Developer
+                        </option>
+
+                        <option value="Python Developer">
+                            🐍 Python Developer
+                        </option>
+
+                        <option value="Data Analyst">
+                            📊 Data Analyst
+                        </option>
+
+                        <option value="Business Analyst">
+                            💼 Business Analyst
+                        </option>
+
+                        <option value="AI/ML Engineer">
+                            🤖 AI/ML Engineer
+                        </option>
+
+                        <option value="Full Stack Developer">
+                            🌐 Full Stack Developer
+                        </option>
+
+                        <option value="Cyber Security Analyst">
+                            🔐 Cyber Security Analyst
+                        </option>
+
+                        <option value="General">
+                            👤 General Interview
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <button
+                    type="submit"
+                    class="btn"
+                >
+                    🚀 Start Interview
+                </button>
+
+            </form>
+
+
+            <div class="info">
+
+                <strong>
+                    Interview Format
+                </strong>
+
+                <br>
+
+                You will answer 5 questions based on
+                your selected career.
+
+                <br>
+
+                Your answers will be evaluated for
+                technical knowledge, relevance and communication.
+
+            </div>
+
+        </section>
+
+
+    {% else %}
+
+    <!-- ================================================= -->
+    <!-- INTERVIEW QUESTION -->
+    <!-- ================================================= -->
+
+        <section class="interview-card">
+
+            <div class="interview-top">
+
+                <span class="career-badge">
+                    🎯 {{ career }}
+                </span>
+
+                <span class="question-number">
+                    Question {{ question_number }}
+                    of {{ total_questions }}
+                </span>
+
+            </div>
+
+
+            <!-- PROGRESS -->
+
+            <div class="progress-container">
+
+                <div class="progress-bg">
+
+                    <div
+                        class="progress-bar"
+                        style="width: {{ progress }}%;"
+                    ></div>
+
+                </div>
+
+            </div>
+
+
+            <!-- QUESTION -->
+
+            <div class="question-box">
+
+                <h2>
+                    {{ question }}
+                </h2>
+
+            </div>
+
+
+            <!-- ANSWER FORM -->
+
+            <form
+                method="POST"
+                action="{% url 'mock_interview' %}"
+            >
+
+                {% csrf_token %}
+
+                <label class="answer-label">
+                    Your Answer
+                </label>
+
+                <textarea
+                    name="answer"
+                    placeholder="Type your answer here..."
+                    required
+                ></textarea>
+
+
+                <button
+                    type="submit"
+                    class="btn submit-answer"
+                >
+
+                    {% if question_number == total_questions %}
+
+                        🏆 Submit Final Answer
+
+                    {% else %}
+
+                        ➡️ Submit & Next Question
+
+                    {% endif %}
+
+                </button>
+
+            </form>
+
+
+            <div class="tips">
+
+                <strong>💡 Interview Tip:</strong>
+
+                Explain your answer clearly and,
+                whenever possible, give a practical example.
+
+            </div>
+
+        </section>
+
+    {% endif %}
+
+</main>
+
+</body>
+</html>

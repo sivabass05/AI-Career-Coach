@@ -1,0 +1,1518 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Skill Assessment | AI Career Coach</title>
+
+    <style>
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        body {
+            background: #f1f5f9;
+            color: #0f172a;
+        }
+
+        /* ==================================================
+           HEADER
+        ================================================== */
+
+        .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+
+            height: 70px;
+
+            z-index: 99999;
+
+            background: linear-gradient(
+                135deg,
+                #1e3c72,
+                #2a5298
+            );
+
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            padding: 0 35px;
+
+            color: white;
+
+            box-shadow:
+                0 4px 15px rgba(0, 0, 0, 0.12);
+        }
+
+        .logo {
+            font-size: 22px;
+            font-weight: 700;
+        }
+
+        .logo span {
+            color: #2dd4bf;
+        }
+
+        .nav {
+            display: flex;
+            align-items: center;
+            gap: 25px;
+        }
+
+        .nav a {
+            color: white;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 600;
+            transition: 0.2s;
+        }
+
+        .nav a:hover {
+            color: #5eead4;
+        }
+
+        /* ==================================================
+           MAIN PAGE
+        ================================================== */
+
+        .page {
+            max-width: 1100px;
+            margin: auto;
+
+            padding: 105px 30px 60px;
+        }
+
+        /* ==================================================
+           HERO
+        ================================================== */
+
+        .hero {
+            background: linear-gradient(
+                135deg,
+                #172554,
+                #1e40af
+            );
+
+            color: white;
+
+            border-radius: 22px;
+
+            padding: 38px;
+
+            margin-bottom: 25px;
+
+            box-shadow:
+                0 15px 35px rgba(
+                    15,
+                    23,
+                    42,
+                    0.15
+                );
+        }
+
+        .hero-icon {
+            font-size: 42px;
+            margin-bottom: 10px;
+        }
+
+        .hero h1 {
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+
+        .hero p {
+            color: #dbeafe;
+
+            font-size: 16px;
+
+            line-height: 1.7;
+
+            max-width: 800px;
+        }
+
+        /* ==================================================
+           MESSAGES
+        ================================================== */
+
+        .messages {
+            margin-bottom: 20px;
+        }
+
+        .message {
+            padding: 14px 17px;
+
+            border-radius: 10px;
+
+            margin-bottom: 8px;
+
+            font-size: 14px;
+        }
+
+        .message.success {
+            background: #dcfce7;
+
+            color: #166534;
+
+            border: 1px solid #bbf7d0;
+        }
+
+        .message.error {
+            background: #fee2e2;
+
+            color: #991b1b;
+
+            border: 1px solid #fecaca;
+        }
+
+        .message.info {
+            background: #dbeafe;
+
+            color: #1e40af;
+
+            border: 1px solid #bfdbfe;
+        }
+
+        /* ==================================================
+           CARD
+        ================================================== */
+
+        .card {
+            background: white;
+
+            border-radius: 18px;
+
+            padding: 30px;
+
+            margin-bottom: 25px;
+
+            box-shadow:
+                0 8px 25px rgba(
+                    15,
+                    23,
+                    42,
+                    0.07
+                );
+        }
+
+        .section-header {
+            display: flex;
+
+            align-items: center;
+
+            gap: 12px;
+
+            margin-bottom: 8px;
+        }
+
+        .section-icon {
+            width: 42px;
+            height: 42px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            border-radius: 12px;
+
+            background: #dbeafe;
+
+            font-size: 21px;
+        }
+
+        .section-title {
+            color: #172554;
+
+            font-size: 21px;
+        }
+
+        .section-description {
+            color: #64748b;
+
+            font-size: 14px;
+
+            line-height: 1.6;
+
+            margin-bottom: 24px;
+        }
+
+        /* ==================================================
+           SKILLS
+        ================================================== */
+
+        .skills-grid {
+            display: grid;
+
+            grid-template-columns:
+                repeat(
+                    auto-fit,
+                    minmax(180px, 1fr)
+                );
+
+            gap: 14px;
+        }
+
+        .skill-option {
+            position: relative;
+        }
+
+        .skill-option input {
+            position: absolute;
+
+            opacity: 0;
+
+            pointer-events: none;
+        }
+
+        .skill-label {
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            min-height: 58px;
+
+            padding: 12px;
+
+            background: #f8fafc;
+
+            border: 2px solid #e2e8f0;
+
+            border-radius: 12px;
+
+            cursor: pointer;
+
+            text-align: center;
+
+            font-size: 14px;
+
+            font-weight: 600;
+
+            color: #334155;
+
+            transition: all 0.2s ease;
+        }
+
+        .skill-label:hover {
+            border-color: #2563eb;
+
+            background: #eff6ff;
+
+            transform: translateY(-1px);
+        }
+
+        .skill-option input:checked
+        + .skill-label {
+
+            background: #dbeafe;
+
+            border-color: #2563eb;
+
+            color: #1d4ed8;
+
+            box-shadow:
+                0 5px 15px rgba(
+                    37,
+                    99,
+                    235,
+                    0.12
+                );
+        }
+
+        /* ==================================================
+           FORM
+        ================================================== */
+
+        .form-group {
+            margin-bottom: 22px;
+        }
+
+        label {
+            display: block;
+
+            color: #173b78;
+
+            font-size: 15px;
+
+            font-weight: 700;
+
+            margin-bottom: 8px;
+        }
+
+        select,
+        textarea {
+
+            width: 100%;
+
+            border: 1px solid #cbd5e1;
+
+            border-radius: 10px;
+
+            background: #f8fafc;
+
+            padding: 13px 14px;
+
+            font-size: 15px;
+
+            color: #0f172a;
+
+            outline: none;
+
+            transition: 0.2s;
+        }
+
+        select {
+            height: 50px;
+
+            cursor: pointer;
+        }
+
+        textarea {
+            min-height: 120px;
+
+            resize: vertical;
+
+            line-height: 1.6;
+        }
+
+        select:focus,
+        textarea:focus {
+
+            background: white;
+
+            border-color: #2563eb;
+
+            box-shadow:
+                0 0 0 3px rgba(
+                    37,
+                    99,
+                    235,
+                    0.10
+                );
+        }
+
+        /* ==================================================
+           PREVIOUS ASSESSMENT
+        ================================================== */
+
+        .previous-assessment {
+
+            background: linear-gradient(
+                135deg,
+                #ecfeff,
+                #eff6ff
+            );
+
+            border: 1px solid #bae6fd;
+
+            border-radius: 14px;
+
+            padding: 20px;
+
+            margin-bottom: 25px;
+        }
+
+        .previous-title {
+
+            color: #075985;
+
+            font-size: 16px;
+
+            font-weight: 700;
+
+            margin-bottom: 8px;
+        }
+
+        .previous-text {
+
+            color: #475569;
+
+            font-size: 14px;
+
+            line-height: 1.6;
+        }
+
+        .previous-career {
+
+            display: inline-block;
+
+            margin-top: 10px;
+
+            padding: 8px 13px;
+
+            border-radius: 20px;
+
+            background: #dbeafe;
+
+            color: #1d4ed8;
+
+            font-size: 13px;
+
+            font-weight: 700;
+        }
+
+        /* ==================================================
+           SELECTED COUNT
+        ================================================== */
+
+        .skill-counter {
+
+            margin-top: 18px;
+
+            color: #64748b;
+
+            font-size: 13px;
+
+            text-align: right;
+        }
+
+        .skill-counter span {
+
+            color: #2563eb;
+
+            font-weight: 700;
+        }
+
+        /* ==================================================
+           SUBMIT
+        ================================================== */
+
+        .submit-area {
+
+            text-align: center;
+
+            margin-top: 10px;
+        }
+
+        .submit-btn {
+
+            min-width: 280px;
+
+            border: none;
+
+            background: linear-gradient(
+                135deg,
+                #1e3a8a,
+                #0f766e
+            );
+
+            color: white;
+
+            padding: 16px 35px;
+
+            border-radius: 30px;
+
+            font-size: 16px;
+
+            font-weight: 700;
+
+            cursor: pointer;
+
+            transition: all 0.25s ease;
+
+            box-shadow:
+                0 8px 20px rgba(
+                    30,
+                    58,
+                    138,
+                    0.18
+                );
+        }
+
+        .submit-btn:hover {
+
+            transform: translateY(-2px);
+
+            box-shadow:
+                0 12px 28px rgba(
+                    30,
+                    58,
+                    138,
+                    0.25
+                );
+        }
+
+        .submit-btn:active {
+
+            transform: translateY(0);
+        }
+
+        /* ==================================================
+           FOOTER NOTE
+        ================================================== */
+
+        .bottom-note {
+
+            text-align: center;
+
+            margin-top: 18px;
+
+            color: #64748b;
+
+            font-size: 13px;
+        }
+
+        /* ==================================================
+           MOBILE
+        ================================================== */
+
+        @media (max-width: 750px) {
+
+            .header {
+                padding: 0 18px;
+            }
+
+            .logo {
+                font-size: 18px;
+            }
+
+            .nav {
+                gap: 12px;
+            }
+
+            .nav a {
+                font-size: 12px;
+            }
+
+            .page {
+                padding: 95px 15px 40px;
+            }
+
+            .hero {
+                padding: 28px 22px;
+            }
+
+            .hero h1 {
+                font-size: 27px;
+            }
+
+            .hero p {
+                font-size: 14px;
+            }
+
+            .card {
+                padding: 22px;
+            }
+
+            .skills-grid {
+                grid-template-columns:
+                    repeat(2, 1fr);
+            }
+
+            .submit-btn {
+                width: 100%;
+            }
+        }
+
+        @media (max-width: 450px) {
+
+            .nav a:nth-child(2),
+            .nav a:nth-child(3) {
+                display: none;
+            }
+
+            .skills-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .hero h1 {
+                font-size: 24px;
+            }
+
+            .section-title {
+                font-size: 18px;
+            }
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<!-- ======================================================
+     HEADER
+====================================================== -->
+
+<header class="header">
+
+    <div class="logo">
+        🤖 AI Career <span>Coach</span>
+    </div>
+
+    <nav class="nav">
+
+        <a href="{% url 'dashboard' %}">
+            Dashboard
+        </a>
+
+        <a href="{% url 'profile' %}">
+            Profile
+        </a>
+
+        <a href="{% url 'logout' %}">
+            Logout
+        </a>
+
+    </nav>
+
+</header>
+
+
+<!-- ======================================================
+     MAIN
+====================================================== -->
+
+<main class="page">
+
+
+    <!-- ==================================================
+         HERO
+    ================================================== -->
+
+    <section class="hero">
+
+        <div class="hero-icon">
+            🧠
+        </div>
+
+        <h1>
+            Skill Assessment
+        </h1>
+
+        <p>
+            Discover your current skill level and career
+            direction. Select the skills you already know,
+            choose your career interest and tell us what
+            type of work you enjoy.
+        </p>
+
+    </section>
+
+
+    <!-- ==================================================
+         MESSAGES
+    ================================================== -->
+
+    {% if messages %}
+
+        <div class="messages">
+
+            {% for message in messages %}
+
+                <div class="message {{ message.tags }}">
+                    {{ message }}
+                </div>
+
+            {% endfor %}
+
+        </div>
+
+    {% endif %}
+
+
+    <!-- ==================================================
+         PREVIOUS ASSESSMENT
+    ================================================== -->
+
+    {% if assessment %}
+
+        <div class="previous-assessment">
+
+            <div class="previous-title">
+                📌 Previous Assessment Found
+            </div>
+
+            <div class="previous-text">
+
+                Your previous assessment is already saved.
+                You can submit the assessment again to update
+                your skills and career recommendation.
+
+            </div>
+
+            {% if assessment.recommended_career %}
+
+                <div class="previous-career">
+
+                    🎯 Current Recommendation:
+                    {{ assessment.recommended_career }}
+
+                </div>
+
+            {% endif %}
+
+        </div>
+
+    {% endif %}
+
+
+    <!-- ==================================================
+         FORM
+    ================================================== -->
+
+    <form
+        method="POST"
+        action="{% url 'skill_assessment' %}"
+    >
+
+        {% csrf_token %}
+
+
+        <!-- ==================================================
+             SKILLS CARD
+        ================================================== -->
+
+        <div class="card">
+
+            <div class="section-header">
+
+                <div class="section-icon">
+                    💻
+                </div>
+
+                <h2 class="section-title">
+                    Select Your Skills
+                </h2>
+
+            </div>
+
+            <p class="section-description">
+
+                Select all the technical and professional
+                skills you currently have. You can choose
+                multiple skills.
+
+            </p>
+
+
+            <div class="skills-grid">
+
+
+                <!-- Python -->
+
+                <div class="skill-option">
+
+                    <input
+                        type="checkbox"
+                        id="python"
+                        name="selected_skills"
+                        value="Python"
+                    >
+
+                    <label
+                        for="python"
+                        class="skill-label"
+                    >
+                        🐍 Python
+                    </label>
+
+                </div>
+
+
+                <!-- Java -->
+
+                <div class="skill-option">
+
+                    <input
+                        type="checkbox"
+                        id="java"
+                        name="selected_skills"
+                        value="Java"
+                    >
+
+                    <label
+                        for="java"
+                        class="skill-label"
+                    >
+                        ☕ Java
+                    </label>
+
+                </div>
+
+
+                <!-- SQL -->
+
+                <div class="skill-option">
+
+                    <input
+                        type="checkbox"
+                        id="sql"
+                        name="selected_skills"
+                        value="SQL"
+                    >
+
+                    <label
+                        for="sql"
+                        class="skill-label"
+                    >
+                        🗄️ SQL
+                    </label>
+
+                </div>
+
+
+                <!-- Excel -->
+
+                <div class="skill-option">
+
+                    <input
+                        type="checkbox"
+                        id="excel"
+                        name="selected_skills"
+                        value="Excel"
+                    >
+
+                    <label
+                        for="excel"
+                        class="skill-label"
+                    >
+                        📊 Excel
+                    </label>
+
+                </div>
+
+
+                <!-- Power BI -->
+
+                <div class="skill-option">
+
+                    <input
+                        type="checkbox"
+                        id="powerbi"
+                        name="selected_skills"
+                        value="Power BI"
+                    >
+
+                    <label
+                        for="powerbi"
+                        class="skill-label"
+                    >
+                        📈 Power BI
+                    </label>
+
+                </div>
+
+
+                <!-- HTML -->
+
+                <div class="skill-option">
+
+                    <input
+                        type="checkbox"
+                        id="html"
+                        name="selected_skills"
+                        value="HTML"
+                    >
+
+                    <label
+                        for="html"
+                        class="skill-label"
+                    >
+                        🌐 HTML
+                    </label>
+
+                </div>
+
+
+                <!-- CSS -->
+
+                <div class="skill-option">
+
+                    <input
+                        type="checkbox"
+                        id="css"
+                        name="selected_skills"
+                        value="CSS"
+                    >
+
+                    <label
+                        for="css"
+                        class="skill-label"
+                    >
+                        🎨 CSS
+                    </label>
+
+                </div>
+
+
+                <!-- JavaScript -->
+
+                <div class="skill-option">
+
+                    <input
+                        type="checkbox"
+                        id="javascript"
+                        name="selected_skills"
+                        value="JavaScript"
+                    >
+
+                    <label
+                        for="javascript"
+                        class="skill-label"
+                    >
+                        ⚡ JavaScript
+                    </label>
+
+                </div>
+
+
+                <!-- React -->
+
+                <div class="skill-option">
+
+                    <input
+                        type="checkbox"
+                        id="react"
+                        name="selected_skills"
+                        value="React"
+                    >
+
+                    <label
+                        for="react"
+                        class="skill-label"
+                    >
+                        ⚛️ React
+                    </label>
+
+                </div>
+
+
+                <!-- Django -->
+
+                <div class="skill-option">
+
+                    <input
+                        type="checkbox"
+                        id="django"
+                        name="selected_skills"
+                        value="Django"
+                    >
+
+                    <label
+                        for="django"
+                        class="skill-label"
+                    >
+                        🐍 Django
+                    </label>
+
+                </div>
+
+
+                <!-- Machine Learning -->
+
+                <div class="skill-option">
+
+                    <input
+                        type="checkbox"
+                        id="machine_learning"
+                        name="selected_skills"
+                        value="Machine Learning"
+                    >
+
+                    <label
+                        for="machine_learning"
+                        class="skill-label"
+                    >
+                        🤖 Machine Learning
+                    </label>
+
+                </div>
+
+
+                <!-- Statistics -->
+
+                <div class="skill-option">
+
+                    <input
+                        type="checkbox"
+                        id="statistics"
+                        name="selected_skills"
+                        value="Statistics"
+                    >
+
+                    <label
+                        for="statistics"
+                        class="skill-label"
+                    >
+                        📐 Statistics
+                    </label>
+
+                </div>
+
+
+                <!-- Business Analysis -->
+
+                <div class="skill-option">
+
+                    <input
+                        type="checkbox"
+                        id="business_analysis"
+                        name="selected_skills"
+                        value="Business Analysis"
+                    >
+
+                    <label
+                        for="business_analysis"
+                        class="skill-label"
+                    >
+                        💼 Business Analysis
+                    </label>
+
+                </div>
+
+
+                <!-- Communication -->
+
+                <div class="skill-option">
+
+                    <input
+                        type="checkbox"
+                        id="communication"
+                        name="selected_skills"
+                        value="Communication"
+                    >
+
+                    <label
+                        for="communication"
+                        class="skill-label"
+                    >
+                        🗣️ Communication
+                    </label>
+
+                </div>
+
+
+                <!-- Git -->
+
+                <div class="skill-option">
+
+                    <input
+                        type="checkbox"
+                        id="git"
+                        name="selected_skills"
+                        value="Git"
+                    >
+
+                    <label
+                        for="git"
+                        class="skill-label"
+                    >
+                        🔧 Git
+                    </label>
+
+                </div>
+
+
+                <!-- Networking -->
+
+                <div class="skill-option">
+
+                    <input
+                        type="checkbox"
+                        id="networking"
+                        name="selected_skills"
+                        value="Networking"
+                    >
+
+                    <label
+                        for="networking"
+                        class="skill-label"
+                    >
+                        🌐 Networking
+                    </label>
+
+                </div>
+
+
+                <!-- Cyber Security -->
+
+                <div class="skill-option">
+
+                    <input
+                        type="checkbox"
+                        id="cyber_security"
+                        name="selected_skills"
+                        value="Cyber Security"
+                    >
+
+                    <label
+                        for="cyber_security"
+                        class="skill-label"
+                    >
+                        🔐 Cyber Security
+                    </label>
+
+                </div>
+
+
+                <!-- REST API -->
+
+                <div class="skill-option">
+
+                    <input
+                        type="checkbox"
+                        id="rest_api"
+                        name="selected_skills"
+                        value="REST API"
+                    >
+
+                    <label
+                        for="rest_api"
+                        class="skill-label"
+                    >
+                        🔗 REST API
+                    </label>
+
+                </div>
+
+
+                <!-- Communication -->
+
+                <div class="skill-option">
+
+                    <input
+                        type="checkbox"
+                        id="data_analysis"
+                        name="selected_skills"
+                        value="Data Analysis"
+                    >
+
+                    <label
+                        for="data_analysis"
+                        class="skill-label"
+                    >
+                        📊 Data Analysis
+                    </label>
+
+                </div>
+
+
+                <!-- Problem Solving -->
+
+                <div class="skill-option">
+
+                    <input
+                        type="checkbox"
+                        id="problem_solving"
+                        name="selected_skills"
+                        value="Problem Solving"
+                    >
+
+                    <label
+                        for="problem_solving"
+                        class="skill-label"
+                    >
+                        🧩 Problem Solving
+                    </label>
+
+                </div>
+
+
+            </div>
+
+
+            <div class="skill-counter">
+
+                Selected Skills:
+                <span id="selectedCount">0</span>
+
+            </div>
+
+        </div>
+
+
+        <!-- ==================================================
+             CAREER INTEREST
+        ================================================== -->
+
+        <div class="card">
+
+            <div class="section-header">
+
+                <div class="section-icon">
+                    🎯
+                </div>
+
+                <h2 class="section-title">
+                    Career Interest
+                </h2>
+
+            </div>
+
+            <p class="section-description">
+
+                Choose the career you are most interested
+                in pursuing.
+
+            </p>
+
+
+            <div class="form-group">
+
+                <label for="career_interest">
+                    💼 Select Your Career Interest
+                </label>
+
+                <select
+                    id="career_interest"
+                    name="career_interest"
+                    required
+                >
+
+                    <option value="">
+                        Select your career interest
+                    </option>
+
+                    <option value="Java Developer">
+                        ☕ Java Developer
+                    </option>
+
+                    <option value="Python Developer">
+                        🐍 Python Developer
+                    </option>
+
+                    <option value="Data Analyst">
+                        📊 Data Analyst
+                    </option>
+
+                    <option value="Business Analyst">
+                        💼 Business Analyst
+                    </option>
+
+                    <option value="AI/ML Engineer">
+                        🤖 AI/ML Engineer
+                    </option>
+
+                    <option value="Full Stack Developer">
+                        🌐 Full Stack Developer
+                    </option>
+
+                    <option value="Cyber Security Analyst">
+                        🔐 Cyber Security Analyst
+                    </option>
+
+                </select>
+
+            </div>
+
+        </div>
+
+
+        <!-- ==================================================
+             ENJOYED FIELD
+        ================================================== -->
+
+        <div class="card">
+
+            <div class="section-header">
+
+                <div class="section-icon">
+                    ❤️
+                </div>
+
+                <h2 class="section-title">
+                    What Field Do You Enjoy?
+                </h2>
+
+            </div>
+
+            <p class="section-description">
+
+                Tell us what type of work or field you enjoy.
+                This helps us understand your career interests.
+
+            </p>
+
+
+            <div class="form-group">
+
+                <label for="enjoyed_field">
+                    ✨ Describe Your Interest
+                </label>
+
+                <textarea
+                    id="enjoyed_field"
+                    name="enjoyed_field"
+                    placeholder="Example: I enjoy working with data, solving problems, creating dashboards and analyzing business information."
+                    required
+                ></textarea>
+
+            </div>
+
+        </div>
+
+
+        <!-- ==================================================
+             SUBMIT
+        ================================================== -->
+
+        <div class="submit-area">
+
+            <button
+                type="submit"
+                class="submit-btn"
+            >
+                🚀 Complete Skill Assessment
+            </button>
+
+        </div>
+
+
+        <div class="bottom-note">
+
+            Your information will be used to generate
+            personalized career recommendations.
+
+        </div>
+
+
+    </form>
+
+
+</main>
+
+
+<!-- ======================================================
+     JAVASCRIPT
+====================================================== -->
+
+<script>
+
+    const skillCheckboxes =
+        document.querySelectorAll(
+            'input[name="selected_skills"]'
+        );
+
+    const selectedCount =
+        document.getElementById(
+            "selectedCount"
+        );
+
+
+    function updateSkillCount() {
+
+        let count = 0;
+
+        skillCheckboxes.forEach(
+            function(checkbox) {
+
+                if (checkbox.checked) {
+                    count++;
+                }
+
+            }
+        );
+
+        selectedCount.textContent = count;
+    }
+
+
+    skillCheckboxes.forEach(
+        function(checkbox) {
+
+            checkbox.addEventListener(
+                "change",
+                updateSkillCount
+            );
+
+        }
+    );
+
+
+    updateSkillCount();
+
+
+    /* ============================================
+       FORM VALIDATION
+    ============================================ */
+
+    const form =
+        document.querySelector("form");
+
+
+    form.addEventListener(
+        "submit",
+        function(event) {
+
+            let selectedSkills = 0;
+
+            skillCheckboxes.forEach(
+                function(checkbox) {
+
+                    if (checkbox.checked) {
+                        selectedSkills++;
+                    }
+
+                }
+            );
+
+
+            if (selectedSkills === 0) {
+
+                event.preventDefault();
+
+                alert(
+                    "Please select at least one skill."
+                );
+
+                return;
+            }
+
+
+            const career =
+                document.getElementById(
+                    "career_interest"
+                ).value;
+
+
+            if (!career) {
+
+                event.preventDefault();
+
+                alert(
+                    "Please select your career interest."
+                );
+
+                return;
+            }
+
+
+            const enjoyed =
+                document.getElementById(
+                    "enjoyed_field"
+                ).value.trim();
+
+
+            if (!enjoyed) {
+
+                event.preventDefault();
+
+                alert(
+                    "Please describe the field you enjoy."
+                );
+
+                return;
+            }
+
+        }
+    );
+
+</script>
+
+
+</body>
+
+</html>

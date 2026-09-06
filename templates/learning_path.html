@@ -1,0 +1,1069 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Learning Path | AI Career Coach</title>
+
+    <style>
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        body {
+            background: #f1f5f9;
+            color: #0f172a;
+        }
+
+        /* ================= HEADER ================= */
+
+        .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+
+            height: 70px;
+
+            z-index: 99999;
+
+            background: linear-gradient(
+                135deg,
+                #1e3c72,
+                #2a5298
+            );
+
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            padding: 0 35px;
+
+            color: white;
+
+            box-shadow:
+                0 4px 15px rgba(0,0,0,0.12);
+        }
+
+        .logo {
+            font-size: 22px;
+            font-weight: 700;
+        }
+
+        .logo span {
+            color: #2dd4bf;
+        }
+
+        .nav {
+            display: flex;
+            gap: 25px;
+        }
+
+        .nav a {
+            color: white;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .nav a:hover {
+            color: #5eead4;
+        }
+
+        /* ================= PAGE ================= */
+
+        .page {
+            max-width: 1100px;
+
+            margin: auto;
+
+            padding: 105px 30px 60px;
+        }
+
+        /* ================= HERO ================= */
+
+        .hero {
+            background: linear-gradient(
+                135deg,
+                #172554,
+                #1e40af
+            );
+
+            color: white;
+
+            border-radius: 22px;
+
+            padding: 40px;
+
+            margin-bottom: 30px;
+
+            box-shadow:
+                0 15px 35px rgba(
+                    15,
+                    23,
+                    42,
+                    0.15
+                );
+        }
+
+        .hero-icon {
+            font-size: 45px;
+
+            margin-bottom: 10px;
+        }
+
+        .hero h1 {
+            font-size: 34px;
+
+            margin-bottom: 10px;
+        }
+
+        .hero p {
+            color: #dbeafe;
+
+            font-size: 16px;
+
+            line-height: 1.7;
+        }
+
+        /* ================= CAREER ================= */
+
+        .career-banner {
+
+            background: white;
+
+            border-radius: 18px;
+
+            padding: 25px 30px;
+
+            margin-bottom: 30px;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: space-between;
+
+            gap: 20px;
+
+            box-shadow:
+                0 8px 25px rgba(
+                    15,
+                    23,
+                    42,
+                    0.07
+                );
+        }
+
+        .career-label {
+
+            color: #64748b;
+
+            font-size: 13px;
+
+            margin-bottom: 5px;
+
+            text-transform: uppercase;
+
+            font-weight: 700;
+        }
+
+        .career-name {
+
+            color: #172554;
+
+            font-size: 25px;
+
+            font-weight: 800;
+        }
+
+        .career-badge {
+
+            background: #dbeafe;
+
+            color: #1d4ed8;
+
+            padding: 10px 18px;
+
+            border-radius: 25px;
+
+            font-size: 13px;
+
+            font-weight: 700;
+        }
+
+        /* ================= ROADMAP ================= */
+
+        .roadmap {
+
+            position: relative;
+
+            margin-top: 20px;
+        }
+
+        .roadmap::before {
+
+            content: "";
+
+            position: absolute;
+
+            left: 30px;
+
+            top: 25px;
+
+            bottom: 25px;
+
+            width: 3px;
+
+            background: #bfdbfe;
+
+        }
+
+        .stage {
+
+            position: relative;
+
+            display: flex;
+
+            gap: 22px;
+
+            margin-bottom: 25px;
+        }
+
+        .stage-number {
+
+            flex-shrink: 0;
+
+            width: 62px;
+
+            height: 62px;
+
+            border-radius: 50%;
+
+            background: linear-gradient(
+                135deg,
+                #2563eb,
+                #0f766e
+            );
+
+            color: white;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            font-size: 18px;
+
+            font-weight: 800;
+
+            z-index: 2;
+
+            border: 5px solid #f1f5f9;
+        }
+
+        .stage-card {
+
+            flex: 1;
+
+            background: white;
+
+            border-radius: 16px;
+
+            padding: 25px;
+
+            box-shadow:
+                0 7px 22px rgba(
+                    15,
+                    23,
+                    42,
+                    0.07
+                );
+
+            border: 1px solid #e2e8f0;
+        }
+
+        .stage-title {
+
+            color: #172554;
+
+            font-size: 20px;
+
+            margin-bottom: 8px;
+        }
+
+        .stage-description {
+
+            color: #64748b;
+
+            font-size: 14px;
+
+            line-height: 1.6;
+
+            margin-bottom: 18px;
+        }
+
+        /* ================= SKILLS ================= */
+
+        .skills {
+
+            display: flex;
+
+            flex-wrap: wrap;
+
+            gap: 9px;
+
+            margin-bottom: 18px;
+        }
+
+        .skill {
+
+            background: #eff6ff;
+
+            color: #1d4ed8;
+
+            border: 1px solid #bfdbfe;
+
+            padding: 8px 12px;
+
+            border-radius: 20px;
+
+            font-size: 12px;
+
+            font-weight: 700;
+        }
+
+        /* ================= TASKS ================= */
+
+        .tasks {
+
+            display: grid;
+
+            grid-template-columns:
+                repeat(
+                    auto-fit,
+                    minmax(200px, 1fr)
+                );
+
+            gap: 10px;
+        }
+
+        .task {
+
+            background: #f8fafc;
+
+            border-radius: 9px;
+
+            padding: 11px 13px;
+
+            color: #475569;
+
+            font-size: 13px;
+
+            border-left: 3px solid #2563eb;
+        }
+
+        /* ================= PROJECT ================= */
+
+        .project {
+
+            background: linear-gradient(
+                135deg,
+                #ecfeff,
+                #eff6ff
+            );
+
+            border: 1px solid #bae6fd;
+
+            border-radius: 18px;
+
+            padding: 30px;
+
+            margin-top: 30px;
+        }
+
+        .project h2 {
+
+            color: #075985;
+
+            font-size: 22px;
+
+            margin-bottom: 10px;
+        }
+
+        .project p {
+
+            color: #475569;
+
+            font-size: 14px;
+
+            line-height: 1.7;
+
+            margin-bottom: 18px;
+        }
+
+        .project-box {
+
+            background: white;
+
+            border-radius: 12px;
+
+            padding: 18px;
+
+            color: #334155;
+
+            font-size: 14px;
+
+            line-height: 1.7;
+        }
+
+        /* ================= ACTIONS ================= */
+
+        .actions {
+
+            display: flex;
+
+            justify-content: center;
+
+            gap: 15px;
+
+            flex-wrap: wrap;
+
+            margin-top: 35px;
+        }
+
+        .btn {
+
+            display: inline-block;
+
+            padding: 14px 25px;
+
+            border-radius: 28px;
+
+            text-decoration: none;
+
+            font-size: 14px;
+
+            font-weight: 700;
+
+            transition: 0.2s;
+        }
+
+        .btn-primary {
+
+            background: linear-gradient(
+                135deg,
+                #1e3a8a,
+                #0f766e
+            );
+
+            color: white;
+        }
+
+        .btn-secondary {
+
+            background: #e2e8f0;
+
+            color: #1e3a8a;
+        }
+
+        .btn:hover {
+
+            transform: translateY(-2px);
+        }
+
+        /* ================= MOBILE ================= */
+
+        @media (max-width: 700px) {
+
+            .header {
+                padding: 0 18px;
+            }
+
+            .logo {
+                font-size: 18px;
+            }
+
+            .nav {
+                gap: 12px;
+            }
+
+            .nav a {
+                font-size: 12px;
+            }
+
+            .page {
+                padding: 95px 15px 40px;
+            }
+
+            .hero {
+                padding: 28px 22px;
+            }
+
+            .hero h1 {
+                font-size: 27px;
+            }
+
+            .career-banner {
+                flex-direction: column;
+
+                align-items: flex-start;
+            }
+
+            .stage {
+                gap: 12px;
+            }
+
+            .stage-number {
+                width: 50px;
+                height: 50px;
+            }
+
+            .roadmap::before {
+                left: 24px;
+            }
+
+            .stage-card {
+                padding: 20px;
+            }
+
+        }
+
+        @media (max-width: 450px) {
+
+            .nav a:nth-child(2),
+            .nav a:nth-child(3) {
+                display: none;
+            }
+
+            .career-name {
+                font-size: 21px;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<!-- ================= HEADER ================= -->
+
+<header class="header">
+
+    <div class="logo">
+        🤖 AI Career <span>Coach</span>
+    </div>
+
+    <nav class="nav">
+
+        <a href="{% url 'dashboard' %}">
+            Dashboard
+        </a>
+
+        <a href="{% url 'profile' %}">
+            Profile
+        </a>
+
+        <a href="{% url 'logout' %}">
+            Logout
+        </a>
+
+    </nav>
+
+</header>
+
+
+<!-- ================= MAIN ================= -->
+
+<main class="page">
+
+
+    <!-- HERO -->
+
+    <section class="hero">
+
+        <div class="hero-icon">
+            📚
+        </div>
+
+        <h1>
+            Your Personalized Learning Path
+        </h1>
+
+        <p>
+            Follow this step-by-step roadmap to build
+            the skills required for your recommended career.
+        </p>
+
+    </section>
+
+
+    <!-- CAREER -->
+
+    <section class="career-banner">
+
+        <div>
+
+            <div class="career-label">
+                Target Career
+            </div>
+
+            <div class="career-name">
+                {{ career|default:"Career Development" }}
+            </div>
+
+        </div>
+
+        <div class="career-badge">
+            🚀 Personalized Roadmap
+        </div>
+
+    </section>
+
+
+    <!-- ROADMAP -->
+
+    <section class="roadmap">
+
+
+        <!-- STAGE 1 -->
+
+        <div class="stage">
+
+            <div class="stage-number">
+                01
+            </div>
+
+            <div class="stage-card">
+
+                <h2 class="stage-title">
+                    🌱 Foundation
+                </h2>
+
+                <p class="stage-description">
+
+                    Build strong fundamentals and understand
+                    the core concepts required for your career.
+
+                </p>
+
+                <div class="skills">
+
+                    <span class="skill">
+                        Computer Fundamentals
+                    </span>
+
+                    <span class="skill">
+                        Problem Solving
+                    </span>
+
+                    <span class="skill">
+                        Logical Thinking
+                    </span>
+
+                </div>
+
+                <div class="tasks">
+
+                    <div class="task">
+                        ✓ Learn fundamental concepts
+                    </div>
+
+                    <div class="task">
+                        ✓ Practice basic problems
+                    </div>
+
+                    <div class="task">
+                        ✓ Complete beginner exercises
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- STAGE 2 -->
+
+        <div class="stage">
+
+            <div class="stage-number">
+                02
+            </div>
+
+            <div class="stage-card">
+
+                <h2 class="stage-title">
+                    💻 Core Technical Skills
+                </h2>
+
+                <p class="stage-description">
+
+                    Develop the technical skills that are
+                    important for your selected career path.
+
+                </p>
+
+                <div class="skills">
+
+                    {% if career == "Python Developer" %}
+
+                        <span class="skill">Python</span>
+                        <span class="skill">Django</span>
+                        <span class="skill">SQL</span>
+                        <span class="skill">REST API</span>
+
+                    {% elif career == "Java Developer" %}
+
+                        <span class="skill">Java</span>
+                        <span class="skill">OOP</span>
+                        <span class="skill">SQL</span>
+                        <span class="skill">Spring Boot</span>
+
+                    {% elif career == "Data Analyst" %}
+
+                        <span class="skill">Excel</span>
+                        <span class="skill">SQL</span>
+                        <span class="skill">Python</span>
+                        <span class="skill">Power BI</span>
+
+                    {% elif career == "Business Analyst" %}
+
+                        <span class="skill">Business Analysis</span>
+                        <span class="skill">Excel</span>
+                        <span class="skill">SQL</span>
+                        <span class="skill">Power BI</span>
+
+                    {% elif career == "AI/ML Engineer" %}
+
+                        <span class="skill">Python</span>
+                        <span class="skill">Statistics</span>
+                        <span class="skill">Machine Learning</span>
+                        <span class="skill">Deep Learning</span>
+
+                    {% elif career == "Full Stack Developer" %}
+
+                        <span class="skill">HTML</span>
+                        <span class="skill">CSS</span>
+                        <span class="skill">JavaScript</span>
+                        <span class="skill">React</span>
+                        <span class="skill">Django</span>
+
+                    {% elif career == "Cyber Security Analyst" %}
+
+                        <span class="skill">Networking</span>
+                        <span class="skill">Linux</span>
+                        <span class="skill">Cyber Security</span>
+                        <span class="skill">Security Tools</span>
+
+                    {% else %}
+
+                        <span class="skill">
+                            Technical Skills
+                        </span>
+
+                        <span class="skill">
+                            Communication
+                        </span>
+
+                    {% endif %}
+
+                </div>
+
+                <div class="tasks">
+
+                    <div class="task">
+                        ✓ Study core concepts
+                    </div>
+
+                    <div class="task">
+                        ✓ Practice hands-on exercises
+                    </div>
+
+                    <div class="task">
+                        ✓ Build small applications
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- STAGE 3 -->
+
+        <div class="stage">
+
+            <div class="stage-number">
+                03
+            </div>
+
+            <div class="stage-card">
+
+                <h2 class="stage-title">
+                    🛠️ Practical Projects
+                </h2>
+
+                <p class="stage-description">
+
+                    Apply your knowledge by building
+                    real-world projects that can be added
+                    to your portfolio.
+
+                </p>
+
+                <div class="skills">
+
+                    <span class="skill">
+                        Project Planning
+                    </span>
+
+                    <span class="skill">
+                        Git & GitHub
+                    </span>
+
+                    <span class="skill">
+                        Documentation
+                    </span>
+
+                    <span class="skill">
+                        Testing
+                    </span>
+
+                </div>
+
+                <div class="tasks">
+
+                    <div class="task">
+                        ✓ Build one beginner project
+                    </div>
+
+                    <div class="task">
+                        ✓ Build one intermediate project
+                    </div>
+
+                    <div class="task">
+                        ✓ Upload projects to GitHub
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- STAGE 4 -->
+
+        <div class="stage">
+
+            <div class="stage-number">
+                04
+            </div>
+
+            <div class="stage-card">
+
+                <h2 class="stage-title">
+                    🎯 Interview Preparation
+                </h2>
+
+                <p class="stage-description">
+
+                    Prepare yourself for technical and
+                    HR interviews with structured practice.
+
+                </p>
+
+                <div class="skills">
+
+                    <span class="skill">
+                        Technical Questions
+                    </span>
+
+                    <span class="skill">
+                        HR Questions
+                    </span>
+
+                    <span class="skill">
+                        Communication
+                    </span>
+
+                    <span class="skill">
+                        Problem Solving
+                    </span>
+
+                </div>
+
+                <div class="tasks">
+
+                    <div class="task">
+                        ✓ Practice interview questions
+                    </div>
+
+                    <div class="task">
+                        ✓ Take mock interviews
+                    </div>
+
+                    <div class="task">
+                        ✓ Review interview feedback
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- STAGE 5 -->
+
+        <div class="stage">
+
+            <div class="stage-number">
+                05
+            </div>
+
+            <div class="stage-card">
+
+                <h2 class="stage-title">
+                    🚀 Job Readiness
+                </h2>
+
+                <p class="stage-description">
+
+                    Complete your resume, improve your
+                    professional profile and prepare for
+                    real job applications.
+
+                </p>
+
+                <div class="skills">
+
+                    <span class="skill">
+                        Resume
+                    </span>
+
+                    <span class="skill">
+                        ATS Optimization
+                    </span>
+
+                    <span class="skill">
+                        Job Search
+                    </span>
+
+                    <span class="skill">
+                        Interview Skills
+                    </span>
+
+                </div>
+
+                <div class="tasks">
+
+                    <div class="task">
+                        ✓ Analyze your resume
+                    </div>
+
+                    <div class="task">
+                        ✓ Improve ATS score
+                    </div>
+
+                    <div class="task">
+                        ✓ Explore job recommendations
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+    </section>
+
+
+    <!-- PROJECT -->
+
+    <section class="project">
+
+        <h2>
+            💡 Recommended Project
+        </h2>
+
+        <p>
+            Build a practical project related to your
+            target career and use it to demonstrate your
+            skills during interviews.
+        </p>
+
+        <div class="project-box">
+
+            <strong>
+                Project Idea:
+            </strong>
+
+            Build a portfolio project that combines
+            your core technical skills, database knowledge,
+            problem solving and a simple user interface.
+
+            <br><br>
+
+            <strong>
+                Goal:
+            </strong>
+
+            Complete the project, document it properly,
+            upload it to GitHub and include it in your resume.
+
+        </div>
+
+    </section>
+
+
+    <!-- ACTIONS -->
+
+    <div class="actions">
+
+        <a
+            href="{% url 'resume' %}"
+            class="btn btn-primary"
+        >
+            📄 Analyze Resume
+        </a>
+
+        <a
+            href="{% url 'mock_interview' %}"
+            class="btn btn-primary"
+        >
+            🎤 Practice Interview
+        </a>
+
+        <a
+            href="{% url 'dashboard' %}"
+            class="btn btn-secondary"
+        >
+            🏠 Dashboard
+        </a>
+
+    </div>
+
+
+</main>
+
+
+</body>
+
+</html>

@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Profile | AI Career Coach</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        body {
+            background: #f4f7fb;
+            color: #173b72;
+        }
+
+        /* FIXED HEADER */
+        .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            width: 100%;
+            height: 70px;
+
+            background: linear-gradient(135deg, #1e3c72, #2a5298);
+
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            padding: 0 42px;
+            z-index: 99999;
+
+            box-shadow: 0 3px 12px rgba(0,0,0,.15);
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .header-right {
+            display: flex;
+            gap: 12px;
+        }
+
+        .btn {
+            text-decoration: none;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 25px;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        .dashboard {
+            background: rgba(255,255,255,.15);
+        }
+
+        .logout {
+            background: #00c9a7;
+        }
+
+        /* CONTENT */
+        .container {
+            width: 92%;
+            max-width: 1050px;
+            margin: auto;
+            padding-top: 105px;
+            padding-bottom: 40px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 18px;
+            padding: 35px;
+            box-shadow: 0 6px 22px rgba(30,60,114,.10);
+            border: 1px solid #e2eaf5;
+        }
+
+        .title {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding-bottom: 22px;
+            margin-bottom: 25px;
+            border-bottom: 1px solid #e5ebf3;
+        }
+
+        .title-icon {
+            font-size: 38px;
+        }
+
+        h1 {
+            color: #173b72;
+            font-size: 28px;
+        }
+
+        .subtitle {
+            color: #718096;
+            margin-top: 5px;
+            font-size: 14px;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(2,1fr);
+            gap: 18px;
+        }
+
+        .info {
+            background: #f8faff;
+            border: 1px solid #e1e9f5;
+            border-radius: 12px;
+            padding: 19px;
+        }
+
+        .label {
+            color: #718096;
+            font-size: 13px;
+            margin-bottom: 8px;
+        }
+
+        .value {
+            color: #173b72;
+            font-weight: bold;
+            font-size: 16px;
+            word-break: break-word;
+        }
+
+        .career {
+            margin-top: 20px;
+            padding: 20px;
+            border-radius: 13px;
+            background: #edf8f6;
+            border: 1px solid #ccece5;
+        }
+
+        .career .value {
+            color: #009b83;
+            font-size: 19px;
+        }
+
+        footer {
+            text-align: center;
+            color: #7b8794;
+            font-size: 13px;
+            padding: 25px;
+        }
+
+        @media(max-width:700px) {
+            .header {
+                padding: 0 18px;
+            }
+
+            .logo {
+                font-size: 19px;
+            }
+
+            .grid {
+                grid-template-columns: 1fr;
+            }
+
+            .card {
+                padding: 22px;
+            }
+
+            .dashboard {
+                display: none;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<header class="header">
+
+    <div class="logo">
+        🤖 AI Career Coach
+    </div>
+
+    <div class="header-right">
+
+        <a href="{% url 'dashboard' %}" class="btn dashboard">
+            Dashboard
+        </a>
+
+        <a href="{% url 'logout' %}" class="btn logout">
+            Logout
+        </a>
+
+    </div>
+
+</header>
+
+
+<div class="container">
+
+    <div class="card">
+
+        <div class="title">
+
+            <div class="title-icon">
+                👤
+            </div>
+
+            <div>
+                <h1>My Profile</h1>
+                <div class="subtitle">
+                    Your personal and career information
+                </div>
+            </div>
+
+        </div>
+
+
+        <div class="grid">
+
+            <div class="info">
+                <div class="label">Full Name</div>
+                <div class="value">
+                    {% if profile.full_name %}
+                        {{ profile.full_name }}
+                    {% else %}
+                        Not provided
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="info">
+                <div class="label">Username</div>
+                <div class="value">
+                    {{ user.username }}
+                </div>
+            </div>
+
+            <div class="info">
+                <div class="label">Email</div>
+                <div class="value">
+                    {% if user.email %}
+                        {{ user.email }}
+                    {% else %}
+                        Not provided
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="info">
+                <div class="label">Phone</div>
+                <div class="value">
+                    {% if profile.phone %}
+                        {{ profile.phone }}
+                    {% else %}
+                        Not provided
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="info">
+                <div class="label">Education</div>
+                <div class="value">
+                    {% if profile.education %}
+                        {{ profile.education }}
+                    {% else %}
+                        Not provided
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="info">
+                <div class="label">College</div>
+                <div class="value">
+                    {% if profile.college %}
+                        {{ profile.college }}
+                    {% else %}
+                        Not provided
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="info">
+                <div class="label">Graduation Year</div>
+                <div class="value">
+                    {% if profile.graduation_year %}
+                        {{ profile.graduation_year }}
+                    {% else %}
+                        Not provided
+                    {% endif %}
+                </div>
+            </div>
+
+        </div>
+
+
+        <div class="career">
+
+            <div class="label">
+                🎯 Career Goal
+            </div>
+
+            <div class="value">
+
+                {% if profile.career_goal %}
+                    {{ profile.career_goal }}
+                {% else %}
+                    Not provided
+                {% endif %}
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<footer>
+    © 2026 AI Career Coach · AI-Powered Career Guidance System
+</footer>
+
+</body>
+</html>

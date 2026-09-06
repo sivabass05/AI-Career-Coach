@@ -1,0 +1,1580 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Career Recommendation | AI Career Coach</title>
+
+    <style>
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Segoe UI", Arial, sans-serif;
+        }
+
+        body {
+            background: #f4f8fc;
+            color: #172b4d;
+            font-size: 16px;
+        }
+
+        /* =====================================================
+           HEADER
+        ===================================================== */
+
+        .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+
+            width: 100%;
+            height: 72px;
+
+            z-index: 99999;
+
+            background: linear-gradient(
+                135deg,
+                #123c69,
+                #087f8c
+            );
+
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            padding: 0 6%;
+
+            color: white;
+
+            box-shadow: 0 4px 18px rgba(0, 0, 0, 0.15);
+        }
+
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+
+            font-size: 24px;
+            font-weight: 700;
+        }
+
+
+        .logo-icon {
+            width: 42px;
+            height: 42px;
+
+            border-radius: 12px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            background: rgba(255,255,255,0.18);
+
+            font-size: 22px;
+        }
+
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 22px;
+        }
+
+
+        .welcome {
+            font-size: 16px;
+            font-weight: 500;
+        }
+
+
+        .logout {
+            text-decoration: none;
+
+            color: white;
+
+            padding: 10px 20px;
+
+            border: 1px solid rgba(255,255,255,0.45);
+
+            border-radius: 9px;
+
+            font-size: 15px;
+            font-weight: 600;
+
+            transition: 0.3s;
+        }
+
+
+        .logout:hover {
+            background: white;
+            color: #123c69;
+        }
+
+
+        /* =====================================================
+           PAGE
+        ===================================================== */
+
+        .page {
+            padding: 105px 6% 60px;
+        }
+
+
+        .content {
+            max-width: 1200px;
+            margin: auto;
+        }
+
+
+        /* =====================================================
+           HERO
+        ===================================================== */
+
+        .hero {
+            position: relative;
+
+            overflow: hidden;
+
+            background:
+                radial-gradient(
+                    circle at 90% 20%,
+                    rgba(255,255,255,0.17),
+                    transparent 30%
+                ),
+                linear-gradient(
+                    135deg,
+                    #123c69,
+                    #087f8c
+                );
+
+            color: white;
+
+            border-radius: 25px;
+
+            padding: 45px 48px;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: space-between;
+
+            box-shadow:
+                0 15px 40px rgba(18,60,105,0.18);
+        }
+
+
+        .hero-content {
+            max-width: 760px;
+        }
+
+
+        .hero-label {
+            display: inline-block;
+
+            padding: 8px 16px;
+
+            background: rgba(255,255,255,0.15);
+
+            border: 1px solid rgba(255,255,255,0.25);
+
+            border-radius: 25px;
+
+            font-size: 14px;
+            font-weight: 600;
+
+            margin-bottom: 17px;
+        }
+
+
+        .hero h1 {
+            font-size: 40px;
+
+            line-height: 1.2;
+
+            margin-bottom: 13px;
+        }
+
+
+        .hero p {
+            font-size: 17px;
+
+            line-height: 1.8;
+
+            opacity: 0.93;
+        }
+
+
+        .ai-icon {
+            width: 125px;
+            height: 125px;
+
+            flex-shrink: 0;
+
+            border-radius: 50%;
+
+            display: flex;
+
+            align-items: center;
+            justify-content: center;
+
+            font-size: 55px;
+
+            background: rgba(255,255,255,0.12);
+
+            border: 1px solid rgba(255,255,255,0.28);
+
+            box-shadow:
+                0 0 0 12px rgba(255,255,255,0.04),
+                0 0 0 24px rgba(255,255,255,0.025);
+        }
+
+
+        /* =====================================================
+           RECOMMENDATION MAIN BOX
+        ===================================================== */
+
+        .recommendation-box {
+            margin-top: 28px;
+
+            background: white;
+
+            border-radius: 23px;
+
+            padding: 32px;
+
+            border: 1px solid #e1ebf3;
+
+            box-shadow:
+                0 8px 30px rgba(23,43,77,0.07);
+        }
+
+
+        .recommendation-top {
+            display: flex;
+
+            justify-content: space-between;
+
+            align-items: center;
+
+            margin-bottom: 28px;
+        }
+
+
+        .ai-title {
+            display: flex;
+
+            align-items: center;
+
+            gap: 14px;
+        }
+
+
+        .ai-title-icon {
+            width: 50px;
+            height: 50px;
+
+            border-radius: 13px;
+
+            background: #e8f7f8;
+
+            display: flex;
+
+            align-items: center;
+            justify-content: center;
+
+            font-size: 25px;
+        }
+
+
+        .ai-title h2 {
+            font-size: 22px;
+
+            color: #17365d;
+
+            margin-bottom: 4px;
+        }
+
+
+        .ai-title p {
+            font-size: 14px;
+
+            color: #8293a6;
+        }
+
+
+        .ai-badge {
+            padding: 9px 16px;
+
+            border-radius: 25px;
+
+            background: #eef8f5;
+
+            color: #087f8c;
+
+            font-size: 13px;
+
+            font-weight: 700;
+        }
+
+
+        /* =====================================================
+           FEATURED CAREER
+        ===================================================== */
+
+        .featured {
+
+            display: grid;
+
+            grid-template-columns: 1fr 280px;
+
+            gap: 30px;
+
+            padding: 32px;
+
+            border-radius: 19px;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #f1f8fb,
+                    #eef9f7
+                );
+
+            border: 1px solid #dceef0;
+        }
+
+
+        .featured-label {
+            font-size: 13px;
+
+            color: #087f8c;
+
+            font-weight: 800;
+
+            letter-spacing: 1px;
+
+            margin-bottom: 11px;
+        }
+
+
+        .featured h3 {
+            font-size: 34px;
+
+            color: #123c69;
+
+            margin-bottom: 12px;
+        }
+
+
+        .featured-description {
+            color: #64748b;
+
+            font-size: 16px;
+
+            line-height: 1.8;
+
+            max-width: 700px;
+        }
+
+
+        /* =====================================================
+           MATCH SCORE
+        ===================================================== */
+
+        .match-area {
+            display: flex;
+
+            flex-direction: column;
+
+            align-items: center;
+
+            justify-content: center;
+
+            border-left: 1px solid #d8e8ec;
+
+            padding-left: 20px;
+        }
+
+
+        .match-circle {
+
+            width: 135px;
+            height: 135px;
+
+            border-radius: 50%;
+
+            background:
+                conic-gradient(
+                    #087f8c 0deg,
+                    #087f8c calc(var(--score) * 3.6deg),
+                    #dcecef calc(var(--score) * 3.6deg),
+                    #dcecef 360deg
+                );
+
+            display: flex;
+
+            align-items: center;
+            justify-content: center;
+
+            position: relative;
+        }
+
+
+        .match-circle::before {
+
+            content: "";
+
+            position: absolute;
+
+            width: 103px;
+            height: 103px;
+
+            border-radius: 50%;
+
+            background: white;
+        }
+
+
+        .match-value {
+
+            position: relative;
+
+            z-index: 2;
+
+            font-size: 30px;
+
+            font-weight: 800;
+
+            color: #123c69;
+        }
+
+
+        .match-text {
+
+            margin-top: 12px;
+
+            font-size: 14px;
+
+            color: #718096;
+
+            font-weight: 600;
+        }
+
+
+        /* =====================================================
+           BUTTON
+        ===================================================== */
+
+        .button-area {
+            margin-top: 22px;
+        }
+
+
+        .learn-btn {
+
+            display: inline-block;
+
+            text-decoration: none;
+
+            padding: 13px 21px;
+
+            border-radius: 10px;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #123c69,
+                    #087f8c
+                );
+
+            color: white;
+
+            font-size: 14px;
+
+            font-weight: 700;
+
+            transition: 0.3s;
+
+            box-shadow:
+                0 6px 16px rgba(18,60,105,0.15);
+        }
+
+
+        .learn-btn:hover {
+
+            transform: translateY(-2px);
+
+            box-shadow:
+                0 9px 20px rgba(18,60,105,0.23);
+        }
+
+
+        /* =====================================================
+           SECTION HEADING
+        ===================================================== */
+
+        .section-heading {
+
+            margin-top: 35px;
+
+            margin-bottom: 18px;
+        }
+
+
+        .section-heading h2 {
+
+            font-size: 25px;
+
+            color: #17365d;
+
+            margin-bottom: 6px;
+        }
+
+
+        .section-heading p {
+
+            font-size: 15px;
+
+            color: #8293a6;
+        }
+
+
+        /* =====================================================
+           CAREER GRID
+        ===================================================== */
+
+        .career-grid {
+
+            display: grid;
+
+            grid-template-columns:
+                repeat(2, 1fr);
+
+            gap: 20px;
+        }
+
+
+        /* =====================================================
+           CAREER CARD
+        ===================================================== */
+
+        .career-card {
+
+            background: white;
+
+            border-radius: 19px;
+
+            padding: 27px;
+
+            border: 1px solid #e1eaf2;
+
+            box-shadow:
+                0 7px 25px rgba(23,43,77,0.05);
+
+            transition: 0.3s;
+
+            position: relative;
+        }
+
+
+        .career-card:hover {
+
+            transform: translateY(-5px);
+
+            box-shadow:
+                0 14px 30px rgba(23,43,77,0.11);
+
+            border-color: #bcdfe4;
+        }
+
+
+        .career-card-header {
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: space-between;
+
+            margin-bottom: 18px;
+        }
+
+
+        .career-icon {
+
+            width: 55px;
+            height: 55px;
+
+            border-radius: 14px;
+
+            background: #eef7fb;
+
+            display: flex;
+
+            align-items: center;
+            justify-content: center;
+
+            font-size: 27px;
+        }
+
+
+        .score-badge {
+
+            padding: 8px 12px;
+
+            border-radius: 22px;
+
+            background: #eef8f5;
+
+            color: #087f8c;
+
+            font-size: 13px;
+
+            font-weight: 700;
+        }
+
+
+        .career-card h3 {
+
+            font-size: 21px;
+
+            color: #17365d;
+
+            margin-bottom: 10px;
+        }
+
+
+        .career-card p {
+
+            font-size: 15px;
+
+            color: #718096;
+
+            line-height: 1.75;
+
+            margin-bottom: 20px;
+        }
+
+
+        /* =====================================================
+           SKILLS
+        ===================================================== */
+
+        .skills-title {
+
+            font-size: 13px;
+
+            font-weight: 800;
+
+            color: #8293a6;
+
+            margin-bottom: 10px;
+
+            text-transform: uppercase;
+
+            letter-spacing: 0.5px;
+        }
+
+
+        .skills {
+
+            display: flex;
+
+            flex-wrap: wrap;
+
+            gap: 8px;
+        }
+
+
+        .skill {
+
+            padding: 7px 12px;
+
+            border-radius: 20px;
+
+            background: #f4f7fa;
+
+            color: #52677d;
+
+            font-size: 13px;
+
+            font-weight: 500;
+        }
+
+
+        /* =====================================================
+           HOW IT WORKS
+        ===================================================== */
+
+        .info-grid {
+
+            display: grid;
+
+            grid-template-columns:
+                repeat(3, 1fr);
+
+            gap: 18px;
+
+            margin-top: 5px;
+        }
+
+
+        .info-box {
+
+            background: white;
+
+            padding: 23px;
+
+            border-radius: 17px;
+
+            border: 1px solid #e1eaf2;
+
+            transition: 0.3s;
+        }
+
+
+        .info-box:hover {
+
+            transform: translateY(-3px);
+
+            box-shadow:
+                0 10px 25px rgba(23,43,77,0.08);
+        }
+
+
+        .info-icon {
+
+            font-size: 27px;
+
+            margin-bottom: 12px;
+        }
+
+
+        .info-box h4 {
+
+            color: #17365d;
+
+            font-size: 17px;
+
+            margin-bottom: 7px;
+        }
+
+
+        .info-box p {
+
+            font-size: 14px;
+
+            color: #8293a6;
+
+            line-height: 1.7;
+        }
+
+
+        /* =====================================================
+           EMPTY STATE
+        ===================================================== */
+
+        .empty {
+
+            text-align: center;
+
+            padding: 60px 20px;
+
+            color: #718096;
+        }
+
+
+        .empty-icon {
+
+            font-size: 52px;
+
+            margin-bottom: 18px;
+        }
+
+
+        .empty h3 {
+
+            color: #17365d;
+
+            font-size: 23px;
+
+            margin-bottom: 10px;
+        }
+
+
+        .empty p {
+
+            font-size: 15px;
+
+            line-height: 1.7;
+        }
+
+
+        /* =====================================================
+           TABLET
+        ===================================================== */
+
+        @media (max-width: 950px) {
+
+            .featured {
+
+                grid-template-columns: 1fr;
+            }
+
+
+            .match-area {
+
+                border-left: none;
+
+                border-top: 1px solid #d8e8ec;
+
+                padding-left: 0;
+
+                padding-top: 28px;
+            }
+
+
+            .career-grid {
+
+                grid-template-columns: 1fr;
+            }
+
+
+            .info-grid {
+
+                grid-template-columns: 1fr;
+            }
+
+
+            .ai-icon {
+
+                width: 95px;
+                height: 95px;
+
+                font-size: 42px;
+            }
+        }
+
+
+        /* =====================================================
+           MOBILE
+        ===================================================== */
+
+        @media (max-width: 650px) {
+
+            .header {
+
+                height: 65px;
+
+                padding: 0 18px;
+            }
+
+
+            .logo {
+
+                font-size: 19px;
+            }
+
+
+            .logo-icon {
+
+                width: 36px;
+                height: 36px;
+
+                font-size: 19px;
+            }
+
+
+            .welcome {
+
+                display: none;
+            }
+
+
+            .logout {
+
+                padding: 8px 14px;
+
+                font-size: 13px;
+            }
+
+
+            .page {
+
+                padding:
+                    88px 15px 40px;
+            }
+
+
+            .hero {
+
+                padding: 30px 23px;
+
+                border-radius: 20px;
+            }
+
+
+            .hero h1 {
+
+                font-size: 29px;
+            }
+
+
+            .hero p {
+
+                font-size: 15px;
+
+                line-height: 1.7;
+            }
+
+
+            .hero-label {
+
+                font-size: 12px;
+            }
+
+
+            .ai-icon {
+
+                display: none;
+            }
+
+
+            .recommendation-box {
+
+                padding: 21px;
+
+                border-radius: 18px;
+            }
+
+
+            .recommendation-top {
+
+                align-items: flex-start;
+
+                gap: 12px;
+            }
+
+
+            .ai-title h2 {
+
+                font-size: 18px;
+            }
+
+
+            .ai-title p {
+
+                font-size: 12px;
+            }
+
+
+            .ai-badge {
+
+                font-size: 10px;
+
+                padding: 7px 10px;
+            }
+
+
+            .featured {
+
+                padding: 23px;
+
+                border-radius: 16px;
+            }
+
+
+            .featured h3 {
+
+                font-size: 26px;
+            }
+
+
+            .featured-description {
+
+                font-size: 14px;
+
+                line-height: 1.7;
+            }
+
+
+            .section-heading h2 {
+
+                font-size: 21px;
+            }
+
+
+            .section-heading p {
+
+                font-size: 13px;
+            }
+
+
+            .career-card {
+
+                padding: 22px;
+            }
+
+
+            .career-card h3 {
+
+                font-size: 19px;
+            }
+
+
+            .career-card p {
+
+                font-size: 14px;
+            }
+
+
+            .info-box p {
+
+                font-size: 13px;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<!-- =====================================================
+     HEADER
+===================================================== -->
+
+<header class="header">
+
+
+    <div class="logo">
+
+        <div class="logo-icon">
+            🤖
+        </div>
+
+        AI Career Coach
+
+    </div>
+
+
+    <div class="header-right">
+
+        <span class="welcome">
+            Welcome, {{ request.user.username }}
+        </span>
+
+
+        <a
+            href="{% url 'logout' %}"
+            class="logout"
+        >
+            Logout
+        </a>
+
+    </div>
+
+
+</header>
+
+
+
+<!-- =====================================================
+     MAIN PAGE
+===================================================== -->
+
+<main class="page">
+
+
+    <div class="content">
+
+
+        <!-- =================================================
+             HERO
+        ================================================== -->
+
+        <section class="hero">
+
+
+            <div class="hero-content">
+
+
+                <span class="hero-label">
+                    🤖 AI Career Intelligence
+                </span>
+
+
+                <h1>
+                    Your Career Recommendations
+                </h1>
+
+
+                <p>
+                    Based on your skills, interests and assessment
+                    results, our career engine has identified the
+                    career paths that best match your profile.
+                </p>
+
+
+            </div>
+
+
+            <div class="ai-icon">
+                🎯
+            </div>
+
+
+        </section>
+
+
+
+        <!-- =================================================
+             RECOMMENDATIONS
+        ================================================== -->
+
+        {% if recommendations %}
+
+
+        <section class="recommendation-box">
+
+
+            <div class="recommendation-top">
+
+
+                <div class="ai-title">
+
+
+                    <div class="ai-title-icon">
+                        ✨
+                    </div>
+
+
+                    <div>
+
+                        <h2>
+                            AI Top Recommendation
+                        </h2>
+
+                        <p>
+                            Your strongest career match
+                        </p>
+
+                    </div>
+
+
+                </div>
+
+
+                <div class="ai-badge">
+                    AI MATCHED
+                </div>
+
+
+            </div>
+
+
+
+            <!-- =============================================
+                 TOP CAREER
+            ============================================== -->
+
+            {% with top=recommendations.0 %}
+
+
+            <div class="featured">
+
+
+                <div>
+
+
+                    <div class="featured-label">
+                        #1 RECOMMENDED CAREER
+                    </div>
+
+
+                    <h3>
+                        {{ top.name }}
+                    </h3>
+
+
+                    <p class="featured-description">
+                        {{ top.description }}
+                    </p>
+
+
+                    <div class="button-area">
+
+
+                        <a
+                            href="{% url 'learning_path' %}?career={{ top.name|urlencode }}"
+                            class="learn-btn"
+                        >
+                            🚀 Explore Learning Path
+                        </a>
+
+
+                    </div>
+
+
+                </div>
+
+
+
+                <!-- MATCH -->
+
+                <div class="match-area">
+
+
+                    <div
+                        class="match-circle"
+                        style="--score: {{ top.match }}"
+                    >
+
+                        <span class="match-value">
+                            {{ top.match }}%
+                        </span>
+
+                    </div>
+
+
+                    <div class="match-text">
+                        Career Match
+                    </div>
+
+
+                </div>
+
+
+            </div>
+
+
+            {% endwith %}
+
+
+        </section>
+
+
+
+        <!-- =================================================
+             OTHER CAREERS
+        ================================================== -->
+
+        <div class="section-heading">
+
+
+            <h2>
+                Other Suitable Career Paths
+            </h2>
+
+
+            <p>
+                Explore careers that also align with your
+                skills and interests.
+            </p>
+
+
+        </div>
+
+
+
+        <div class="career-grid">
+
+
+            {% for career in recommendations %}
+
+
+            <div class="career-card">
+
+
+                <!-- CARD HEADER -->
+
+                <div class="career-card-header">
+
+
+                    <div class="career-icon">
+
+
+                        {% if "Java" in career.name %}
+
+                            ☕
+
+                        {% elif "Full Stack" in career.name %}
+
+                            🌐
+
+                        {% elif "Data" in career.name %}
+
+                            📊
+
+                        {% elif "Cyber" in career.name %}
+
+                            🔐
+
+                        {% elif "AI" in career.name %}
+
+                            🤖
+
+                        {% elif "Business" in career.name %}
+
+                            📈
+
+                        {% else %}
+
+                            💼
+
+                        {% endif %}
+
+
+                    </div>
+
+
+                    <div class="score-badge">
+
+                        {{ career.match }}% Match
+
+                    </div>
+
+
+                </div>
+
+
+
+                <!-- CAREER NAME -->
+
+                <h3>
+                    {{ career.name }}
+                </h3>
+
+
+
+                <!-- DESCRIPTION -->
+
+                <p>
+                    {{ career.description }}
+                </p>
+
+
+
+                <!-- REQUIRED SKILLS -->
+
+                <div class="skills-title">
+                    Required Skills
+                </div>
+
+
+                <div class="skills">
+
+
+                    {% for skill in career.required_skills.split %}
+
+                    <span class="skill">
+                        {{ skill }}
+                    </span>
+
+                    {% endfor %}
+
+
+                </div>
+
+
+
+                <!-- BUTTON -->
+
+                <div class="button-area">
+
+
+                    <a
+                        href="{% url 'learning_path' %}?career={{ career.name|urlencode }}"
+                        class="learn-btn"
+                    >
+                        View Learning Path →
+                    </a>
+
+
+                </div>
+
+
+            </div>
+
+
+            {% endfor %}
+
+
+        </div>
+
+
+
+        {% else %}
+
+
+        <!-- =================================================
+             EMPTY STATE
+        ================================================== -->
+
+        <section class="recommendation-box">
+
+
+            <div class="empty">
+
+
+                <div class="empty-icon">
+                    🎯
+                </div>
+
+
+                <h3>
+                    No Career Recommendation Yet
+                </h3>
+
+
+                <p>
+                    Complete your skill assessment first
+                    to receive personalized career recommendations.
+                </p>
+
+
+                <div class="button-area">
+
+
+                    <a
+                        href="{% url 'skill_assessment' %}"
+                        class="learn-btn"
+                    >
+                        🧠 Take Skill Assessment
+                    </a>
+
+
+                </div>
+
+
+            </div>
+
+
+        </section>
+
+
+        {% endif %}
+
+
+
+        <!-- =================================================
+             HOW IT WORKS
+        ================================================== -->
+
+        <div class="section-heading">
+
+
+            <h2>
+                How AI Career Matching Works
+            </h2>
+
+
+            <p>
+                Your recommendation is based on multiple
+                aspects of your profile.
+            </p>
+
+
+        </div>
+
+
+
+        <div class="info-grid">
+
+
+            <!-- SKILLS -->
+
+            <div class="info-box">
+
+
+                <div class="info-icon">
+                    🧩
+                </div>
+
+
+                <h4>
+                    Skills
+                </h4>
+
+
+                <p>
+                    Your selected technical and professional
+                    skills are compared with career requirements.
+                </p>
+
+
+            </div>
+
+
+
+            <!-- INTEREST -->
+
+            <div class="info-box">
+
+
+                <div class="info-icon">
+                    ❤️
+                </div>
+
+
+                <h4>
+                    Interests
+                </h4>
+
+
+                <p>
+                    Your preferred career area helps identify
+                    roles that are relevant to your interests.
+                </p>
+
+
+            </div>
+
+
+
+            <!-- CAREER FIT -->
+
+            <div class="info-box">
+
+
+                <div class="info-icon">
+                    🎯
+                </div>
+
+
+                <h4>
+                    Career Fit
+                </h4>
+
+
+                <p>
+                    The system calculates a match score and
+                    ranks suitable career paths for you.
+                </p>
+
+
+            </div>
+
+
+        </div>
+
+
+    </div>
+
+
+</main>
+
+
+</body>
+
+</html>

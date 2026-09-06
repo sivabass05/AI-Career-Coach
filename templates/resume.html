@@ -1,0 +1,703 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Resume Analyzer | AI Career Coach</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            background: #f4f8fc;
+            color: #172033;
+            padding-top: 75px;
+        }
+
+        /* ================= HEADER ================= */
+
+        .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 70px;
+            z-index: 99999;
+
+            background: linear-gradient(
+                135deg,
+                #1e3c72,
+                #2a5298
+            );
+
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            padding: 0 45px;
+
+            box-shadow: 0 4px 18px rgba(0,0,0,0.15);
+        }
+
+        .logo {
+            color: white;
+            font-size: 23px;
+            font-weight: bold;
+            text-decoration: none;
+        }
+
+        .nav {
+            display: flex;
+            align-items: center;
+            gap: 22px;
+        }
+
+        .nav a {
+            color: white;
+            text-decoration: none;
+            font-size: 15px;
+            font-weight: 600;
+            opacity: 0.95;
+        }
+
+        .nav a:hover {
+            opacity: 0.75;
+        }
+
+        .logout {
+            background: rgba(255,255,255,0.15);
+            padding: 9px 15px;
+            border-radius: 8px;
+        }
+
+        /* ================= MAIN ================= */
+
+        .container {
+            width: 92%;
+            max-width: 1200px;
+            margin: 35px auto 60px;
+        }
+
+        .hero {
+            background: linear-gradient(
+                135deg,
+                #102a56,
+                #087f8c
+            );
+
+            border-radius: 22px;
+            padding: 42px;
+            color: white;
+
+            box-shadow: 0 12px 30px rgba(20,60,100,0.18);
+
+            margin-bottom: 28px;
+        }
+
+        .hero h1 {
+            font-size: 34px;
+            margin-bottom: 12px;
+        }
+
+        .hero p {
+            font-size: 17px;
+            line-height: 1.7;
+            max-width: 780px;
+            opacity: 0.95;
+        }
+
+        /* ================= UPLOAD ================= */
+
+        .upload-card {
+            background: white;
+            border-radius: 20px;
+            padding: 32px;
+
+            box-shadow: 0 8px 25px rgba(30,60,90,0.08);
+
+            margin-bottom: 28px;
+        }
+
+        .upload-card h2 {
+            color: #173b72;
+            margin-bottom: 8px;
+        }
+
+        .upload-card p {
+            color: #667085;
+            margin-bottom: 22px;
+        }
+
+        .upload-area {
+            border: 2px dashed #2a5298;
+            background: #f7fbff;
+
+            border-radius: 15px;
+            padding: 28px;
+
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .upload-icon {
+            font-size: 42px;
+            margin-bottom: 12px;
+        }
+
+        input[type="file"] {
+            width: 100%;
+            max-width: 500px;
+            padding: 12px;
+            border: 1px solid #d5dce5;
+            border-radius: 8px;
+            background: white;
+            cursor: pointer;
+        }
+
+        .analyze-btn {
+            display: inline-block;
+
+            border: none;
+            border-radius: 10px;
+
+            padding: 13px 28px;
+
+            background: linear-gradient(
+                135deg,
+                #1e3c72,
+                #087f8c
+            );
+
+            color: white;
+
+            font-size: 16px;
+            font-weight: bold;
+
+            cursor: pointer;
+
+            margin-top: 8px;
+        }
+
+        .analyze-btn:hover {
+            opacity: 0.9;
+        }
+
+        /* ================= ERROR ================= */
+
+        .error {
+            background: #fff0f0;
+            border: 1px solid #ffb5b5;
+            color: #b42318;
+
+            padding: 15px 18px;
+            border-radius: 10px;
+
+            margin-bottom: 22px;
+
+            font-weight: 600;
+        }
+
+        /* ================= RESULTS ================= */
+
+        .results-title {
+            margin: 30px 0 18px;
+            color: #173b72;
+            font-size: 27px;
+        }
+
+        .result-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 18px;
+            margin-bottom: 22px;
+        }
+
+        .result-card {
+            background: white;
+            border-radius: 17px;
+            padding: 25px;
+
+            box-shadow: 0 7px 22px rgba(30,60,90,0.08);
+        }
+
+        .result-card h3 {
+            color: #667085;
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+
+        .result-number {
+            font-size: 34px;
+            font-weight: bold;
+            color: #1e3c72;
+        }
+
+        /* ================= SCORE ================= */
+
+        .score-card {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+
+            box-shadow: 0 7px 22px rgba(30,60,90,0.08);
+
+            margin-bottom: 22px;
+        }
+
+        .score-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+
+            margin-bottom: 18px;
+        }
+
+        .score-header h2 {
+            color: #173b72;
+        }
+
+        .score-value {
+            font-size: 38px;
+            font-weight: bold;
+            color: #087f8c;
+        }
+
+        .progress {
+            height: 15px;
+            background: #e5edf5;
+            border-radius: 20px;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+
+            background: linear-gradient(
+                90deg,
+                #1e3c72,
+                #087f8c
+            );
+
+            border-radius: 20px;
+        }
+
+        /* ================= TWO COLUMNS ================= */
+
+        .two-column {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 22px;
+        }
+
+        .section-card {
+            background: white;
+            border-radius: 20px;
+            padding: 28px;
+
+            box-shadow: 0 7px 22px rgba(30,60,90,0.08);
+        }
+
+        .section-card h2 {
+            color: #173b72;
+            margin-bottom: 18px;
+        }
+
+        /* ================= SKILLS ================= */
+
+        .skills {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .skill {
+            background: #e8f7f8;
+            color: #08656c;
+
+            padding: 9px 14px;
+            border-radius: 20px;
+
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .no-data {
+            color: #667085;
+            line-height: 1.6;
+        }
+
+        /* ================= SUGGESTIONS ================= */
+
+        .suggestions {
+            list-style: none;
+        }
+
+        .suggestions li {
+            padding: 13px 0;
+            border-bottom: 1px solid #edf0f4;
+            line-height: 1.6;
+        }
+
+        .suggestions li:last-child {
+            border-bottom: none;
+        }
+
+        .suggestions li::before {
+            content: "✓";
+            color: #087f8c;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+
+        /* ================= FOOTER ================= */
+
+        .footer {
+            text-align: center;
+            color: #7a8495;
+            padding: 30px 0;
+            font-size: 14px;
+        }
+
+        /* ================= RESPONSIVE ================= */
+
+        @media (max-width: 850px) {
+
+            .header {
+                padding: 0 20px;
+            }
+
+            .nav {
+                gap: 10px;
+            }
+
+            .nav a {
+                font-size: 12px;
+            }
+
+            .result-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .two-column {
+                grid-template-columns: 1fr;
+            }
+
+            .hero {
+                padding: 28px;
+            }
+
+            .hero h1 {
+                font-size: 28px;
+            }
+        }
+
+        @media (max-width: 600px) {
+
+            body {
+                padding-top: 80px;
+            }
+
+            .header {
+                height: 75px;
+            }
+
+            .logo {
+                font-size: 17px;
+            }
+
+            .nav a:not(.logout) {
+                display: none;
+            }
+
+            .container {
+                width: 94%;
+            }
+
+            .upload-card,
+            .score-card,
+            .section-card {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<!-- ================= HEADER ================= -->
+
+<header class="header">
+
+    <a href="{% url 'dashboard' %}" class="logo">
+        🤖 AI Career Coach
+    </a>
+
+    <nav class="nav">
+        <a href="{% url 'dashboard' %}">Dashboard</a>
+        <a href="{% url 'profile' %}">Profile</a>
+        <a href="{% url 'learning_path' %}">Learning Path</a>
+
+        <a href="{% url 'logout' %}" class="logout">
+            Logout
+        </a>
+    </nav>
+
+</header>
+
+
+<!-- ================= MAIN ================= -->
+
+<main class="container">
+
+    <section class="hero">
+
+        <h1>📄 AI Resume Analyzer</h1>
+
+        <p>
+            Upload your resume and analyze its ATS compatibility,
+            detected skills, resume structure and improvement areas.
+        </p>
+
+    </section>
+
+
+    <!-- ================= ERROR ================= -->
+
+    {% if error %}
+        <div class="error">
+            ⚠️ {{ error }}
+        </div>
+    {% endif %}
+
+
+    <!-- ================= UPLOAD ================= -->
+
+    <section class="upload-card">
+
+        <h2>Upload Your Resume</h2>
+
+        <p>
+            Supported formats: PDF and DOCX
+        </p>
+
+        <form method="POST"
+              enctype="multipart/form-data">
+
+            {% csrf_token %}
+
+            <div class="upload-area">
+
+                <div class="upload-icon">
+                    📤
+                </div>
+
+                <input
+                    type="file"
+                    name="resume"
+                    accept=".pdf,.docx"
+                    required
+                >
+
+            </div>
+
+            <button
+                type="submit"
+                class="analyze-btn">
+
+                🔍 Analyze Resume
+
+            </button>
+
+        </form>
+
+    </section>
+
+
+    <!-- ================= RESULTS ================= -->
+
+    {% if analysis %}
+
+        <h2 class="results-title">
+            📊 Resume Analysis Results
+        </h2>
+
+
+        <!-- SCORE -->
+
+        <section class="score-card">
+
+            <div class="score-header">
+
+                <h2>
+                    ATS Compatibility Score
+                </h2>
+
+                <div class="score-value">
+                    {{ analysis.ats_score }}%
+                </div>
+
+            </div>
+
+            <div class="progress">
+
+                <div
+                    class="progress-bar"
+                    style="width: {{ analysis.ats_score }}%;">
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- SUMMARY -->
+
+        <div class="result-grid">
+
+            <div class="result-card">
+
+                <h3>
+                    DETECTED SKILLS
+                </h3>
+
+                <div class="result-number">
+                    {{ analysis.detected_skills|length }}
+                </div>
+
+            </div>
+
+
+            <div class="result-card">
+
+                <h3>
+                    RESUME SECTIONS
+                </h3>
+
+                <div class="result-number">
+
+                    {% if analysis.sections_found != None %}
+                        {{ analysis.sections_found }}
+                    {% else %}
+                        —
+                    {% endif %}
+
+                </div>
+
+            </div>
+
+
+            <div class="result-card">
+
+                <h3>
+                    ACTION WORDS
+                </h3>
+
+                <div class="result-number">
+
+                    {% if analysis.action_words != None %}
+                        {{ analysis.action_words }}
+                    {% else %}
+                        —
+                    {% endif %}
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- TWO COLUMN -->
+
+        <div class="two-column">
+
+
+            <!-- SKILLS -->
+
+            <section class="section-card">
+
+                <h2>
+                    💡 Detected Skills
+                </h2>
+
+                {% if analysis.detected_skills %}
+
+                    <div class="skills">
+
+                        {% for skill in analysis.detected_skills %}
+
+                            <span class="skill">
+                                {{ skill }}
+                            </span>
+
+                        {% endfor %}
+
+                    </div>
+
+                {% else %}
+
+                    <p class="no-data">
+                        No predefined skills were detected.
+                        Try adding relevant technical skills
+                        to your resume.
+                    </p>
+
+                {% endif %}
+
+            </section>
+
+
+            <!-- SUGGESTIONS -->
+
+            <section class="section-card">
+
+                <h2>
+                    🚀 Improvement Suggestions
+                </h2>
+
+                {% if analysis.suggestions %}
+
+                    <ul class="suggestions">
+
+                        {% for suggestion in analysis.suggestions %}
+
+                            <li>
+                                {{ suggestion }}
+                            </li>
+
+                        {% endfor %}
+
+                    </ul>
+
+                {% else %}
+
+                    <p class="no-data">
+                        No suggestions available.
+                    </p>
+
+                {% endif %}
+
+            </section>
+
+        </div>
+
+    {% endif %}
+
+
+    <div class="footer">
+
+        AI Career Coach • Resume Analysis
+
+    </div>
+
+</main>
+
+</body>
+</html>
