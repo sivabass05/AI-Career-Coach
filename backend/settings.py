@@ -1,6 +1,7 @@
 from pathlib import Path
 import os
 
+import dj_database_url
 from dotenv import load_dotenv
 
 
@@ -9,7 +10,6 @@ from dotenv import load_dotenv
 # ---------------------------------------------------------
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# Load environment variables from .env
 load_dotenv(BASE_DIR / ".env")
 
 
@@ -23,10 +23,20 @@ SECRET_KEY = os.getenv(
 
 DEBUG = os.getenv("DEBUG", "True").lower() == "true"
 
+
+# ---------------------------------------------------------
+# ALLOWED HOSTS
+# ---------------------------------------------------------
 ALLOWED_HOSTS = [
     "localhost",
     "127.0.0.1",
 ]
+
+# Render provides this automatically
+RENDER_EXTERNAL_HOSTNAME = os.getenv("RENDER_EXTERNAL_HOSTNAME")
+
+if RENDER_EXTERNAL_HOSTNAME:
+    ALLOWED_HOSTS.append(RENDER_EXTERNAL_HOSTNAME)
 
 
 # ---------------------------------------------------------
@@ -40,10 +50,8 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
 
-    # Third-party
     "rest_framework",
 
-    # Local app
     "career_recommendation",
 ]
 
@@ -53,6 +61,10 @@ INSTALLED_APPS = [
 # ---------------------------------------------------------
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
+
+    # WhiteNoise for serving static files on Render
+    "whitenoise.middleware.WhiteNoiseMiddleware",
+
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
@@ -99,42 +111,62 @@ WSGI_APPLICATION = "backend.wsgi.application"
 
 
 # ---------------------------------------------------------
-# DATABASE - MYSQL
+# DATABASE
 # ---------------------------------------------------------
-DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.mysql",
+# Local computer:
+#     MySQL
+#
+# Render:
+#     PostgreSQL using DATABASE_URL
+# ---------------------------------------------------------
 
-        "NAME": os.getenv(
-            "MYSQL_NAME",
-            "my_django_db"
-        ),
+DATABASE_URL = os.getenv("DATABASE_URL")
 
-        "USER": os.getenv(
-            "MYSQL_USER",
-            "root"
-        ),
-
-        "PASSWORD": os.getenv(
-            "MYSQL_PASSWORD",
-            ""
-        ),
-
-        "HOST": os.getenv(
-            "MYSQL_HOST",
-            "localhost"
-        ),
-
-        "PORT": os.getenv(
-            "MYSQL_PORT",
-            "3306"
-        ),
-
-        "OPTIONS": {
-            "charset": "utf8mb4",
-        },
+if DATABASE_URL:
+    # Render PostgreSQL
+    DATABASES = {
+        "default": dj_database_url.parse(
+            DATABASE_URL,
+            conn_max_age=600,
+            conn_health_checks=True,
+        )
     }
-}
+else:
+    # Local MySQL
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.mysql",
+
+            "NAME": os.getenv(
+                "MYSQL_NAME",
+                "my_django_db"
+            ),
+
+            "USER": os.getenv(
+                "MYSQL_USER",
+                "root"
+            ),
+
+            "PASSWORD": os.getenv(
+                "MYSQL_PASSWORD",
+                ""
+            ),
+
+            "HOST": os.getenv(
+                "MYSQL_HOST",
+                "localhost"
+            ),
+
+            "PORT": os.getenv(
+                "MYSQL_PORT",
+                "3306"
+            ),
+
+            "OPTIONS": {
+                "charset": "utf8mb4",
+            },
+        }
+    }
 
 
 # ---------------------------------------------------------
@@ -188,6 +220,19 @@ STATIC_URL = "/static/"
 STATIC_ROOT = BASE_DIR / "staticfiles"
 
 
+STORAGES = {
+    "default": {
+        "BACKEND": "django.core.files.storage.FileSystemStorage",
+    },
+
+    "staticfiles": {
+        "BACKEND": (
+            "whitenoise.storage.CompressedManifestStaticFilesStorage"
+        ),
+    },
+}
+
+
 # ---------------------------------------------------------
 # MEDIA FILES
 # ---------------------------------------------------------
@@ -233,11 +278,33 @@ REST_FRAMEWORK = {
 # ---------------------------------------------------------
 # SECURITY SETTINGS
 # ---------------------------------------------------------
-# These are suitable for local development.
-# For production deployment, we will configure them separately.
-
-SECURE_BROWSER_XSS_FILTER = True
-
 SECURE_CONTENT_TYPE_NOSNIFF = True
 
 X_FRAME_OPTIONS = "DENY"
+
+
+# ---------------------------------------------------------
+# PRODUCTION SECURITY
+# ---------------------------------------------------------
+if not DEBUG:
+    SECURE_SSL_REDIRECT = True
+
+    SESSION_COOKIE_SECURE = True
+
+    CSRF_COOKIE_SECURE = True
+
+    SECURE_PROXY_SSL_HEADER = (
+        "HTTP_X_FORWARDED_PROTO",
+        "https",
+    )
+
+
+# ---------------------------------------------------------
+# CSRF TRUSTED ORIGINS
+# ---------------------------------------------------------
+CSRF_TRUSTED_ORIGINS = []
+
+if RENDER_EXTERNAL_HOSTNAME:
+    CSRF_TRUSTED_ORIGINS.append(
+        f"https://{RENDER_EXTERNAL_HOSTNAME}"
+    )
