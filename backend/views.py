@@ -438,24 +438,300 @@ def skill_assessment(request):
 # CAREER RECOMMENDATION PAGE
 # =========================================================
 
-@login_required
+@login_required(login_url='login')
 def career_recommendation(request):
 
     try:
         assessment = UserSkillAssessment.objects.get(
             user=request.user
         )
+
     except UserSkillAssessment.DoesNotExist:
 
-        return redirect(
-            "skill_assessment"
+        return render(
+            request,
+            'career-recommendation.html',
+            {
+                'assessment': None,
+                'recommendations': [],
+                'career': '',
+                'career_info': {}
+            }
         )
+
+    # Get student skills
+    selected_skills = assessment.selected_skills or ""
+
+    skills_list = [
+        skill.strip().lower()
+        for skill in selected_skills.split(',')
+        if skill.strip()
+    ]
+
+    # Student preferences
+    career_interest = (
+        assessment.career_interest or ""
+    ).strip().lower()
+
+    enjoyed_field = (
+        assessment.enjoyed_field or ""
+    ).strip().lower()
+
+    # Career information
+    career_data = [
+
+        {
+            'title': 'Full Stack Developer',
+
+            'skills': [
+                'HTML/CSS',
+                'JavaScript',
+                'React',
+                'Python',
+                'Django',
+                'SQL'
+            ],
+
+            'description':
+                'Build complete web applications using frontend and backend technologies.',
+
+            'required_skills':
+                'HTML/CSS, JavaScript, React, Python, Django, SQL'
+        },
+
+        {
+            'title': 'Java Developer',
+
+            'skills': [
+                'Java',
+                'Spring Boot',
+                'SQL',
+                'HTML/CSS',
+                'JavaScript'
+            ],
+
+            'description':
+                'Develop enterprise applications and backend systems using Java technologies.',
+
+            'required_skills':
+                'Java, Spring Boot, SQL, HTML/CSS, JavaScript'
+        },
+
+        {
+            'title': 'Data Analyst',
+
+            'skills': [
+                'Python',
+                'SQL',
+                'Excel',
+                'Pandas',
+                'Statistics'
+            ],
+
+            'description':
+                'Analyze data and generate useful business insights using analytics tools.',
+
+            'required_skills':
+                'Python, SQL, Excel, Pandas, Statistics'
+        },
+
+        {
+            'title': 'AI Engineer',
+
+            'skills': [
+                'Python',
+                'SQL',
+                'Pandas',
+                'Machine Learning'
+            ],
+
+            'description':
+                'Build intelligent systems using machine learning and artificial intelligence.',
+
+            'required_skills':
+                'Python, SQL, Pandas, Machine Learning'
+        },
+
+        {
+            'title': 'Cyber Security',
+
+            'skills': [
+                'Python',
+                'Linux',
+                'SQL',
+                'Networking'
+            ],
+
+            'description':
+                'Protect systems, networks and applications from cyber security threats.',
+
+            'required_skills':
+                'Python, Linux, SQL, Networking'
+        }
+    ]
+
+    recommendations = []
+
+    # Calculate personalized recommendation
+    for career in career_data:
+
+        required_skills_lower = [
+            skill.lower()
+            for skill in career['skills']
+        ]
+
+        # Matched skills
+        matched_skills = [
+            career['skills'][i]
+            for i, skill in enumerate(required_skills_lower)
+            if skill in skills_list
+        ]
+
+        # Missing skills
+        missing_skills = [
+            career['skills'][i]
+            for i, skill in enumerate(required_skills_lower)
+            if skill not in skills_list
+        ]
+
+        # Skill match percentage
+        if required_skills_lower:
+
+            skill_match = (
+                len(matched_skills)
+                / len(required_skills_lower)
+            ) * 100
+
+        else:
+
+            skill_match = 0
+
+        # Preference bonus
+        preference_bonus = 0
+
+        career_name = career['title'].lower()
+
+        # Career interest match
+        if career_interest:
+
+            if (
+                career_name in career_interest
+                or career_interest in career_name
+            ):
+                preference_bonus += 20
+
+        # Enjoyed field bonus
+        if enjoyed_field:
+
+            if (
+                career['title'] == 'Full Stack Developer'
+                and 'building applications' in enjoyed_field
+            ):
+                preference_bonus += 10
+
+            elif (
+                career['title'] == 'Data Analyst'
+                and 'analyzing data' in enjoyed_field
+            ):
+                preference_bonus += 10
+
+            elif (
+                career['title'] == 'AI Engineer'
+                and 'artificial intelligence' in enjoyed_field
+            ):
+                preference_bonus += 10
+
+            elif (
+                career['title'] == 'Cyber Security'
+                and 'cyber security' in enjoyed_field
+            ):
+                preference_bonus += 10
+
+        # Final match score
+        final_match = round(
+            min(
+                skill_match + preference_bonus,
+                100
+            )
+        )
+
+        recommendations.append({
+
+            'title': career['title'],
+
+            # For templates using career.name
+            'name': career['title'],
+
+            'match': final_match,
+
+            'description': career['description'],
+
+            'required_skills': career['required_skills'],
+
+            'matched_skills': matched_skills,
+
+            'missing_skills': missing_skills,
+
+            # IMPORTANT:
+            # Used by career-recommendation.html
+            'skills': career['skills']
+        })
+
+    # Highest match first
+    recommendations.sort(
+        key=lambda x: x['match'],
+        reverse=True
+    )
+
+    # =====================================================
+    # TOP RECOMMENDED CAREER
+    # =====================================================
+
+    if recommendations:
+
+        top_recommendation = recommendations[0]
+
+        career = top_recommendation['title']
+
+        career_info = top_recommendation
+
+        # IMPORTANT FIX:
+        # Save recommended career for Learning Path
+        assessment.recommended_career = career
+
+        assessment.save(
+            update_fields=['recommended_career']
+        )
+
+    else:
+
+        career = ''
+
+        career_info = {}
+
+    # =====================================================
+    # SEND DATA TO TEMPLATE
+    # =====================================================
 
     return render(
         request,
-        "career_recommendation.html",
+        'career-recommendation.html',
         {
-            "assessment": assessment
+            'assessment': assessment,
+
+            'recommendations': recommendations,
+
+            'selected_skills': selected_skills,
+
+            'career_interest':
+                assessment.career_interest,
+
+            'enjoyed_field':
+                assessment.enjoyed_field,
+
+            'career': career,
+
+            'career_info': career_info
         }
     )
 
@@ -593,164 +869,607 @@ def recommend_career(request):
 # LEARNING PATH
 # =========================================================
 
-@login_required
+@login_required(login_url='login')
 def learning_path(request):
 
     try:
         assessment = UserSkillAssessment.objects.get(
             user=request.user
         )
+
     except UserSkillAssessment.DoesNotExist:
-        assessment = None
 
-    career = ""
+        return redirect('skill_assessment')
 
-    if assessment:
-        career = (
-            assessment.recommended_career
-            or assessment.career_interest
-            or "Business Analyst"
-        )
+    # -----------------------------------------------------
+    # Get career from URL first
+    # -----------------------------------------------------
 
-    career_lower = career.lower()
+    selected_career = request.GET.get(
+        'career',
+        ''
+    ).strip()
 
-    if "java" in career_lower:
+    # -----------------------------------------------------
+    # If URL has career, use it
+    # -----------------------------------------------------
 
-        skills = [
-            "Java",
-            "OOP",
-            "SQL",
-            "Spring Boot",
-            "REST API",
-            "Git",
-        ]
+    if selected_career:
 
-        project = (
-            "Build a Java Spring Boot Employee "
-            "Management System."
-        )
+        target_career = selected_career
 
-    elif "python" in career_lower:
+        # Save it for future use
+        assessment.recommended_career = target_career
 
-        skills = [
-            "Python",
-            "OOP",
-            "SQL",
-            "Django",
-            "REST API",
-            "Git",
-        ]
-
-        project = (
-            "Build a Django-based Career "
-            "Recommendation System."
-        )
-
-    elif "data" in career_lower:
-
-        skills = [
-            "Python",
-            "SQL",
-            "Excel",
-            "Power BI",
-            "Statistics",
-            "Data Analysis",
-        ]
-
-        project = (
-            "Build a Sales Data Analytics "
-            "Dashboard using Python and Power BI."
-        )
-
-    elif "business" in career_lower:
-
-        skills = [
-            "Business Analysis",
-            "Excel",
-            "SQL",
-            "Power BI",
-            "Communication",
-            "Data Analysis",
-        ]
-
-        project = (
-            "Build a Business Performance "
-            "Analytics Dashboard."
-        )
-
-    elif "ai" in career_lower or "machine" in career_lower:
-
-        skills = [
-            "Python",
-            "Statistics",
-            "Machine Learning",
-            "Deep Learning",
-            "SQL",
-            "Data Processing",
-        ]
-
-        project = (
-            "Build an AI-based Career "
-            "Recommendation Model."
-        )
-
-    elif "full stack" in career_lower:
-
-        skills = [
-            "HTML",
-            "CSS",
-            "JavaScript",
-            "React",
-            "Django",
-            "SQL",
-            "Git",
-        ]
-
-        project = (
-            "Build a complete full-stack "
-            "student career portal."
-        )
-
-    elif "cyber" in career_lower:
-
-        skills = [
-            "Networking",
-            "Linux",
-            "Cyber Security",
-            "Python",
-            "Security",
-            "Ethical Hacking",
-        ]
-
-        project = (
-            "Build a basic network security "
-            "monitoring project."
+        assessment.save(
+            update_fields=['recommended_career']
         )
 
     else:
 
-        skills = [
-            "Communication",
-            "Excel",
-            "SQL",
-            "Data Analysis",
-            "Problem Solving",
-            "Business Analysis",
-        ]
+        # Otherwise use saved recommended career
+        target_career = (
+            assessment.recommended_career or ''
+        ).strip()
 
-        project = (
-            "Build a business analytics "
-            "dashboard project."
-        )
+    # -----------------------------------------------------
+    # If still empty, use career interest
+    # -----------------------------------------------------
+
+    if not target_career:
+
+        target_career = (
+            assessment.career_interest or ''
+        ).strip()
+
+    # -----------------------------------------------------
+    # Learning paths
+    # -----------------------------------------------------
+
+    learning_paths = {
+
+        'Full Stack Developer': {
+
+            'duration': '4–6 Months',
+
+            'steps': [
+
+                {
+                    'title':
+                        'HTML, CSS & JavaScript',
+
+                    'description':
+                        'Strengthen frontend development fundamentals.',
+
+                    'skills': [
+                        'HTML',
+                        'CSS',
+                        'JavaScript',
+                        'Responsive Design'
+                    ]
+                },
+
+                {
+                    'title':
+                        'React',
+
+                    'description':
+                        'Learn modern frontend development using React.',
+
+                    'skills': [
+                        'Components',
+                        'Hooks',
+                        'State Management',
+                        'Routing'
+                    ]
+                },
+
+                {
+                    'title':
+                        'Python & Django',
+
+                    'description':
+                        'Build backend applications using Django.',
+
+                    'skills': [
+                        'Python',
+                        'Django',
+                        'REST API',
+                        'Authentication'
+                    ]
+                },
+
+                {
+                    'title':
+                        'SQL & Database',
+
+                    'description':
+                        'Learn database concepts required for full stack development.',
+
+                    'skills': [
+                        'MySQL',
+                        'SQL Queries',
+                        'Joins',
+                        'Database Design'
+                    ]
+                },
+
+                {
+                    'title':
+                        'Full Stack Project',
+
+                    'description':
+                        'Build a complete real-world web application.',
+
+                    'skills': [
+                        'Frontend',
+                        'Backend',
+                        'Database',
+                        'Deployment'
+                    ]
+                },
+
+                {
+                    'title':
+                        'Interview Preparation',
+
+                    'description':
+                        'Prepare for technical and HR interviews.',
+
+                    'skills': [
+                        'Coding',
+                        'SQL Questions',
+                        'Projects',
+                        'HR Interview'
+                    ]
+                }
+            ]
+        },
+
+        'Java Developer': {
+
+            'duration': '4–6 Months',
+
+            'steps': [
+
+                {
+                    'title':
+                        'Java Fundamentals',
+
+                    'description':
+                        'Strengthen your core Java programming concepts.',
+
+                    'skills': [
+                        'Java',
+                        'OOP',
+                        'Collections',
+                        'Exception Handling'
+                    ]
+                },
+
+                {
+                    'title':
+                        'SQL & Database',
+
+                    'description':
+                        'Learn database concepts required for backend development.',
+
+                    'skills': [
+                        'MySQL',
+                        'SQL Queries',
+                        'Joins',
+                        'Database Design'
+                    ]
+                },
+
+                {
+                    'title':
+                        'Spring Boot',
+
+                    'description':
+                        'Build modern Java backend applications.',
+
+                    'skills': [
+                        'Spring Boot',
+                        'REST API',
+                        'JPA',
+                        'Hibernate'
+                    ]
+                },
+
+                {
+                    'title':
+                        'Java Backend Project',
+
+                    'description':
+                        'Build a real-world Java backend application.',
+
+                    'skills': [
+                        'Java',
+                        'Spring Boot',
+                        'MySQL',
+                        'REST API'
+                    ]
+                },
+
+                {
+                    'title':
+                        'Interview Preparation',
+
+                    'description':
+                        'Prepare for Java technical interviews.',
+
+                    'skills': [
+                        'Java Questions',
+                        'SQL',
+                        'Coding',
+                        'HR Interview'
+                    ]
+                }
+            ]
+        },
+
+        'Data Analyst': {
+
+            'duration': '3–5 Months',
+
+            'steps': [
+
+                {
+                    'title':
+                        'Excel Fundamentals',
+
+                    'description':
+                        'Learn spreadsheet-based data analysis.',
+
+                    'skills': [
+                        'Excel',
+                        'Formulas',
+                        'Pivot Tables',
+                        'Charts'
+                    ]
+                },
+
+                {
+                    'title':
+                        'SQL & Database',
+
+                    'description':
+                        'Learn how to query and analyze databases.',
+
+                    'skills': [
+                        'SQL',
+                        'Joins',
+                        'Subqueries',
+                        'Database'
+                    ]
+                },
+
+                {
+                    'title':
+                        'Python for Data Analysis',
+
+                    'description':
+                        'Use Python to clean and analyze datasets.',
+
+                    'skills': [
+                        'Python',
+                        'Pandas',
+                        'NumPy',
+                        'Data Cleaning'
+                    ]
+                },
+
+                {
+                    'title':
+                        'Data Visualization',
+
+                    'description':
+                        'Create dashboards and communicate insights.',
+
+                    'skills': [
+                        'Power BI',
+                        'Tableau',
+                        'Charts',
+                        'Dashboards'
+                    ]
+                },
+
+                {
+                    'title':
+                        'Data Analytics Project',
+
+                    'description':
+                        'Build a real-world data analysis project.',
+
+                    'skills': [
+                        'Data Cleaning',
+                        'Analysis',
+                        'Visualization',
+                        'Insights'
+                    ]
+                },
+
+                {
+                    'title':
+                        'Interview Preparation',
+
+                    'description':
+                        'Prepare for data analyst interviews.',
+
+                    'skills': [
+                        'SQL Questions',
+                        'Statistics',
+                        'Case Studies',
+                        'HR Interview'
+                    ]
+                }
+            ]
+        },
+
+        'AI Engineer': {
+
+            'duration': '5–7 Months',
+
+            'steps': [
+
+                {
+                    'title':
+                        'Python Programming',
+
+                    'description':
+                        'Build strong Python programming fundamentals.',
+
+                    'skills': [
+                        'Python',
+                        'OOP',
+                        'Functions',
+                        'Data Structures'
+                    ]
+                },
+
+                {
+                    'title':
+                        'Mathematics & Statistics',
+
+                    'description':
+                        'Learn mathematical concepts used in machine learning.',
+
+                    'skills': [
+                        'Statistics',
+                        'Probability',
+                        'Linear Algebra'
+                    ]
+                },
+
+                {
+                    'title':
+                        'Machine Learning',
+
+                    'description':
+                        'Learn machine learning algorithms and workflows.',
+
+                    'skills': [
+                        'Scikit-learn',
+                        'Regression',
+                        'Classification',
+                        'Clustering'
+                    ]
+                },
+
+                {
+                    'title':
+                        'Deep Learning',
+
+                    'description':
+                        'Build neural network based AI applications.',
+
+                    'skills': [
+                        'Neural Networks',
+                        'TensorFlow',
+                        'PyTorch',
+                        'Deep Learning'
+                    ]
+                },
+
+                {
+                    'title':
+                        'AI Project',
+
+                    'description':
+                        'Build and deploy an AI-powered application.',
+
+                    'skills': [
+                        'Model Training',
+                        'API',
+                        'Deployment',
+                        'MLOps'
+                    ]
+                },
+
+                {
+                    'title':
+                        'AI Interview Preparation',
+
+                    'description':
+                        'Prepare for AI and machine learning interviews.',
+
+                    'skills': [
+                        'ML Questions',
+                        'Python',
+                        'Coding',
+                        'HR Interview'
+                    ]
+                }
+            ]
+        },
+
+        'Cyber Security': {
+
+            'duration': '4–6 Months',
+
+            'steps': [
+
+                {
+                    'title':
+                        'Networking Fundamentals',
+
+                    'description':
+                        'Learn networking concepts required for cyber security.',
+
+                    'skills': [
+                        'TCP/IP',
+                        'DNS',
+                        'HTTP',
+                        'Networking'
+                    ]
+                },
+
+                {
+                    'title':
+                        'Linux Fundamentals',
+
+                    'description':
+                        'Learn Linux administration and command line tools.',
+
+                    'skills': [
+                        'Linux',
+                        'Terminal',
+                        'File System',
+                        'Permissions'
+                    ]
+                },
+
+                {
+                    'title':
+                        'Cyber Security Fundamentals',
+
+                    'description':
+                        'Understand common security threats and protection methods.',
+
+                    'skills': [
+                        'Threats',
+                        'Vulnerabilities',
+                        'Encryption',
+                        'Security'
+                    ]
+                },
+
+                {
+                    'title':
+                        'Ethical Hacking',
+
+                    'description':
+                        'Learn ethical hacking and security testing concepts.',
+
+                    'skills': [
+                        'Penetration Testing',
+                        'OWASP',
+                        'Security Tools',
+                        'Web Security'
+                    ]
+                },
+
+                {
+                    'title':
+                        'Cyber Security Project',
+
+                    'description':
+                        'Build a practical security project.',
+
+                    'skills': [
+                        'Security Testing',
+                        'Network Security',
+                        'Monitoring',
+                        'Reporting'
+                    ]
+                },
+
+                {
+                    'title':
+                        'Security Interview Preparation',
+
+                    'description':
+                        'Prepare for cyber security interviews.',
+
+                    'skills': [
+                        'Security Questions',
+                        'Networking',
+                        'Linux',
+                        'HR Interview'
+                    ]
+                }
+            ]
+        }
+    }
+
+    # -----------------------------------------------------
+    # Match career
+    # -----------------------------------------------------
+
+    career_path = learning_paths.get(
+        target_career
+    )
+
+    # -----------------------------------------------------
+    # If career is not in learning paths
+    # -----------------------------------------------------
+
+    if career_path is None:
+
+        # Try case-insensitive matching
+        matched_career = None
+
+        for career_name in learning_paths:
+
+            if career_name.lower() == target_career.lower():
+
+                matched_career = career_name
+
+                break
+
+        if matched_career:
+
+            target_career = matched_career
+
+            career_path = learning_paths[
+                matched_career
+            ]
+
+        else:
+
+            # Final fallback
+            target_career = 'Full Stack Developer'
+
+            career_path = learning_paths[
+                'Full Stack Developer'
+            ]
+
+    # -----------------------------------------------------
+    # Roadmap
+    # -----------------------------------------------------
+
+    roadmap = career_path['steps']
+
+    # -----------------------------------------------------
+    # Render
+    # -----------------------------------------------------
 
     return render(
         request,
-        "learning_path.html",
+        'learning-path.html',
         {
-            "career": career,
-            "skills": skills,
-            "project": project,
-            "assessment": assessment,
+            'assessment':
+                assessment,
+
+            'target_career':
+                target_career,
+
+            'duration':
+                career_path['duration'],
+
+            'roadmap':
+                roadmap
         }
     )
 
@@ -1701,53 +2420,150 @@ def evaluate_interview_answer(
 @login_required
 def mock_interview(request):
 
-    career = request.GET.get(
-        "career",
-        ""
-    )
+    # --------------------------------
+    # Get career from URL
+    # --------------------------------
+
+    career = request.GET.get("career", "").strip()
 
     # --------------------------------
-    # Start interview
+    # If career is not provided,
+    # get it from user's assessment
+    # --------------------------------
+
+    if not career:
+
+        try:
+            assessment = UserSkillAssessment.objects.get(
+                user=request.user
+            )
+
+            career = (
+                assessment.recommended_career
+                or assessment.career_interest
+                or ""
+            ).strip()
+
+        except UserSkillAssessment.DoesNotExist:
+
+            career = ""
+
+    # --------------------------------
+    # If still empty, use session
+    # --------------------------------
+
+    if not career:
+
+        career = request.session.get(
+            "interview_career",
+            ""
+        ).strip()
+
+    # --------------------------------
+    # Final fallback
+    # --------------------------------
+
+    if not career:
+        career = "General"
+
+    # --------------------------------
+    # Start / Reset interview
     # --------------------------------
 
     if request.method == "GET":
 
-        if career:
+        request.session["interview_career"] = career
 
-            request.session[
-                "interview_career"
-            ] = career
+        request.session["interview_question_index"] = 0
 
-            request.session[
-                "interview_question_index"
-            ] = 0
+        request.session["interview_scores"] = []
 
-            request.session[
-                "interview_scores"
-            ] = []
+        request.session["interview_completed"] = False
 
-            request.session[
-                "interview_completed"
-            ] = False
-
-        else:
-
-            career = request.session.get(
-                "interview_career",
-                "General"
-            )
+        request.session.modified = True
 
     else:
 
+        # Keep the career during POST
         career = request.session.get(
             "interview_career",
-            "General"
+            career
         )
 
+    # --------------------------------
+    # Get questions for selected career
+    # --------------------------------
+
     questions = INTERVIEW_QUESTIONS.get(
-        career,
-        INTERVIEW_QUESTIONS["General"]
+        career
     )
+
+    # --------------------------------
+    # If exact career is not found,
+    # try common career name variations
+    # --------------------------------
+
+    if not questions:
+
+        career_aliases = {
+
+            "Cyber Security Analyst":
+                "Cyber Security",
+
+            "Cybersecurity Analyst":
+                "Cyber Security",
+
+            "AI/ML Engineer":
+                "AI Engineer",
+
+            "AI & ML Engineer":
+                "AI Engineer",
+
+            "Machine Learning Engineer":
+                "AI Engineer",
+
+            "Business Analyst":
+                "Data Analyst",
+
+            "Data Analytics":
+                "Data Analyst",
+
+        }
+
+        mapped_career = career_aliases.get(
+            career,
+            career
+        )
+
+        questions = INTERVIEW_QUESTIONS.get(
+            mapped_career
+        )
+
+        if questions:
+            career = mapped_career
+            request.session["interview_career"] = career
+            request.session.modified = True
+
+    # --------------------------------
+    # Final fallback only if no
+    # career-specific questions exist
+    # --------------------------------
+
+    if not questions:
+
+        career = "General"
+
+        questions = INTERVIEW_QUESTIONS.get(
+            "General",
+            []
+        )
+
+        request.session["interview_career"] = career
+        request.session.modified = True
+
+    # --------------------------------
+    # Current question index
+    # --------------------------------
 
     question_index = request.session.get(
         "interview_question_index",
@@ -1755,7 +2571,7 @@ def mock_interview(request):
     )
 
     # --------------------------------
-    # POST answer
+    # POST - Submit answer
     # --------------------------------
 
     if request.method == "POST":
@@ -1764,6 +2580,44 @@ def mock_interview(request):
             "answer",
             ""
         ).strip()
+
+        # Prevent empty answer
+        if not answer:
+
+            current_question = questions[
+                min(
+                    question_index,
+                    len(questions) - 1
+                )
+            ]
+
+            progress = round(
+                (
+                    question_index
+                    / len(questions)
+                ) * 100
+            )
+
+            return render(
+                request,
+                "mock_interview.html",
+                {
+                    "career": career,
+                    "question": current_question,
+                    "question_number":
+                        question_index + 1,
+                    "total_questions":
+                        len(questions),
+                    "progress":
+                        progress,
+                    "error":
+                        "Please enter your answer before continuing."
+                }
+            )
+
+        # --------------------------------
+        # Evaluate current answer
+        # --------------------------------
 
         if question_index < len(questions):
 
@@ -1776,6 +2630,10 @@ def mock_interview(request):
                 answer,
                 career
             )
+
+            # --------------------------------
+            # Save interview result
+            # --------------------------------
 
             MockInterview.objects.create(
 
@@ -1796,6 +2654,10 @@ def mock_interview(request):
                 ],
             )
 
+            # --------------------------------
+            # Save score in session
+            # --------------------------------
+
             scores = request.session.get(
                 "interview_scores",
                 []
@@ -1809,9 +2671,10 @@ def mock_interview(request):
                 "interview_scores"
             ] = scores
 
-            request.session.modified = True
+            # --------------------------------
+            # Move to next question
+            # --------------------------------
 
-            # Next question
             question_index += 1
 
             request.session[
@@ -1820,7 +2683,10 @@ def mock_interview(request):
 
             request.session.modified = True
 
-            # Completed
+            # --------------------------------
+            # Interview completed
+            # --------------------------------
+
             if question_index >= len(questions):
 
                 request.session[
@@ -1832,6 +2698,24 @@ def mock_interview(request):
                 return redirect(
                     "interview_result"
                 )
+
+    # --------------------------------
+    # Safety check
+    # --------------------------------
+
+    if not questions:
+
+        return render(
+            request,
+            "mock_interview.html",
+            {
+                "career": career,
+                "question": "Tell me about yourself.",
+                "question_number": 1,
+                "total_questions": 1,
+                "progress": 0,
+            }
+        )
 
     # --------------------------------
     # Current question
@@ -1847,6 +2731,10 @@ def mock_interview(request):
         question_index
     ]
 
+    # --------------------------------
+    # Progress
+    # --------------------------------
+
     progress = round(
         (
             question_index
@@ -1854,16 +2742,24 @@ def mock_interview(request):
         ) * 100
     )
 
+    # --------------------------------
+    # Render page
+    # --------------------------------
+
     return render(
         request,
         "mock_interview.html",
         {
             "career": career,
+
             "question": current_question,
+
             "question_number":
                 question_index + 1,
+
             "total_questions":
                 len(questions),
+
             "progress":
                 progress,
         }
