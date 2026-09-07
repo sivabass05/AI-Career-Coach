@@ -2060,7 +2060,7 @@ INTERVIEW_QUESTIONS = {
         "Tell me about yourself and why you want to become a Business Analyst.",
     ],
 
-    "AI/ML Engineer": [
+    "AI Engineer": [
 
         "What is Machine Learning?",
 
@@ -2195,7 +2195,7 @@ def evaluate_interview_answer(
             "solution",
         ],
 
-        "AI/ML Engineer": [
+        "AI Engineer": [
             "machine learning",
             "model",
             "training",
