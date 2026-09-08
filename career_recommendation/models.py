@@ -65,6 +65,18 @@ class UserSkillAssessment(models.Model):
         blank=True
     )
 
+    # Stores level for each selected skill
+    # Example:
+    # {
+    #     "Python": "Intermediate",
+    #     "SQL": "Advanced",
+    #     "Java": "Beginner"
+    # }
+    skill_levels = models.JSONField(
+        default=dict,
+        blank=True
+    )
+
     career_interest = models.CharField(
         max_length=150,
         blank=True

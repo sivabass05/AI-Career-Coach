@@ -270,6 +270,8 @@
 
             box-shadow:
                 0 15px 40px rgba(0,0,0,0.28);
+
+            backdrop-filter: blur(10px);
         }
 
         .interview-top {
@@ -282,6 +284,8 @@
             margin-bottom: 20px;
         }
 
+        /* ================= CAREER BADGE ================= */
+
         .career-badge {
             display: inline-block;
 
@@ -292,6 +296,26 @@
             background: rgba(20,190,200,0.15);
 
             color: #6de6ec;
+
+            font-size: 14px;
+
+            font-weight: bold;
+        }
+
+        /* ================= LEVEL BADGE ================= */
+
+        .level-badge {
+            display: inline-block;
+
+            margin-left: 8px;
+
+            padding: 8px 14px;
+
+            border-radius: 20px;
+
+            background: rgba(255,193,7,0.15);
+
+            color: #ffd166;
 
             font-size: 14px;
 
@@ -334,6 +358,8 @@
             );
 
             border-radius: 20px;
+
+            transition: width 0.4s ease;
         }
 
         /* ================= QUESTION ================= */
@@ -475,7 +501,17 @@
 
                 align-items: flex-start;
 
-                gap: 10px;
+                gap: 12px;
+            }
+
+            .career-badge,
+            .level-badge {
+                font-size: 12px;
+                padding: 7px 11px;
+            }
+
+            .level-badge {
+                margin-left: 4px;
             }
         }
 
@@ -520,7 +556,7 @@
 
 <main class="main">
 
-    <!-- HERO -->
+    <!-- ================= HERO ================= -->
 
     <section class="hero">
 
@@ -643,7 +679,13 @@
                 <br>
 
                 You will answer 5 questions based on
-                your selected career.
+                your selected career and skill level.
+
+                <br>
+
+                Questions may include HR,
+                technical, project, practical,
+                scenario and behavioral questions.
 
                 <br>
 
@@ -665,19 +707,30 @@
 
             <div class="interview-top">
 
-                <span class="career-badge">
-                    🎯 {{ career }}
-                </span>
+                <div>
+
+                    <span class="career-badge">
+                        🎯 {{ career }}
+                    </span>
+
+                    <span class="level-badge">
+                        📈 {{ level }} Level
+                    </span>
+
+                </div>
+
 
                 <span class="question-number">
+
                     Question {{ question_number }}
                     of {{ total_questions }}
+
                 </span>
 
             </div>
 
 
-            <!-- PROGRESS -->
+            <!-- ================= PROGRESS ================= -->
 
             <div class="progress-container">
 
@@ -693,7 +746,7 @@
             </div>
 
 
-            <!-- QUESTION -->
+            <!-- ================= QUESTION ================= -->
 
             <div class="question-box">
 
@@ -704,7 +757,7 @@
             </div>
 
 
-            <!-- ANSWER FORM -->
+            <!-- ================= ANSWER FORM ================= -->
 
             <form
                 method="POST"
@@ -744,12 +797,26 @@
             </form>
 
 
+            <!-- ================= TIPS ================= -->
+
             <div class="tips">
 
-                <strong>💡 Interview Tip:</strong>
+                <strong>
+                    💡 Interview Tip:
+                </strong>
 
                 Explain your answer clearly and,
                 whenever possible, give a practical example.
+
+                <br><br>
+
+                <strong>
+                    🎯 Answer Naturally:
+                </strong>
+
+                Imagine you are speaking directly
+                with an interviewer. Keep your answer
+                clear, relevant and professional.
 
             </div>
 

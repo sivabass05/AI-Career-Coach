@@ -4,6 +4,7 @@ from django.contrib.auth.models import User
 from django.contrib import messages
 from django.contrib.messages import get_messages
 from django.contrib.auth.decorators import login_required
+import json
 
 from career_recommendation.models import (
     StudentProfile,
@@ -359,77 +360,177 @@ def profile(request):
 # SKILL ASSESSMENT
 # =========================================================
 
-@login_required
+@login_required(login_url='login')
 def skill_assessment(request):
 
-    try:
-        assessment = UserSkillAssessment.objects.get(
-            user=request.user
-        )
-    except UserSkillAssessment.DoesNotExist:
-        assessment = None
+    assessment, created = UserSkillAssessment.objects.get_or_create(
+        user=request.user
+    )
 
-    if request.method == "POST":
+    show_result = False
 
-        selected_skills = request.POST.getlist(
-            "selected_skills"
+    if request.method == 'POST':
+
+        print("===== SKILL ASSESSMENT POST =====")
+        print(request.POST)
+
+        # =====================================================
+        # SELECTED SKILLS
+        # =====================================================
+
+        skills = request.POST.getlist(
+            'selected_skills'
         )
+
+        # =====================================================
+        # GET SKILL LEVELS
+        # =====================================================
+
+        skill_levels = {}
+
+        skill_levels_raw = request.POST.get(
+            'skill_levels',
+            ''
+        ).strip()
+
+        if skill_levels_raw:
+
+            try:
+                skill_levels = json.loads(
+                    skill_levels_raw
+                )
+
+            except (
+                json.JSONDecodeError,
+                TypeError
+            ):
+                skill_levels = {}
+
+        # =====================================================
+        # BACKUP METHOD
+        # =====================================================
+
+        if not skill_levels:
+
+            for key, value in request.POST.items():
+
+                if (
+                    key.startswith('skill_level_')
+                    and value.strip()
+                ):
+
+                    skill_name = key.replace(
+                        'skill_level_',
+                        '',
+                        1
+                    )
+
+                    skill_levels[skill_name] = (
+                        value.strip()
+                    )
+
+        # =====================================================
+        # CAREER INTEREST
+        # =====================================================
 
         career_interest = request.POST.get(
-            "career_interest",
-            ""
-        )
+            'career_interest',
+            ''
+        ).strip()
+
+        # =====================================================
+        # ENJOYED FIELD
+        # =====================================================
 
         enjoyed_field = request.POST.get(
-            "enjoyed_field",
-            ""
+            'enjoyed_field',
+            ''
+        ).strip()
+
+        # =====================================================
+        # CONVERT SKILLS TO STRING
+        # =====================================================
+
+        skills_str = ", ".join(
+            skills
         )
 
-        # Calculate skill score
-        skill_score = min(
-            len(selected_skills) * 10,
-            100
+        total_skills_count = len(
+            skills
         )
 
-        if assessment:
+        # =====================================================
+        # SKILL SCORE
+        # =====================================================
 
-            assessment.selected_skills = (
-                ", ".join(selected_skills)
+        if total_skills_count > 0:
+
+            calculated_score = min(
+                total_skills_count * 15 + 25,
+                95
             )
-
-            assessment.career_interest = (
-                career_interest
-            )
-
-            assessment.enjoyed_field = (
-                enjoyed_field
-            )
-
-            assessment.skill_score = skill_score
-
-            assessment.save()
 
         else:
 
-            assessment = UserSkillAssessment.objects.create(
-                user=request.user,
-                selected_skills=", ".join(
-                    selected_skills
-                ),
-                career_interest=career_interest,
-                enjoyed_field=enjoyed_field,
-                skill_score=skill_score
-            )
+            calculated_score = 0
 
-        return redirect(
-            "career_recommendation"
+        # =====================================================
+        # CAREER RECOMMENDATION
+        # =====================================================
+
+        recommendation = (
+            career_interest
+            if career_interest
+            else "Full Stack Developer"
         )
+
+        # =====================================================
+        # SAVE ASSESSMENT
+        # =====================================================
+
+        assessment.selected_skills = (
+            skills_str
+        )
+
+        assessment.skill_levels = (
+            skill_levels
+        )
+
+        assessment.career_interest = (
+            career_interest
+        )
+
+        assessment.enjoyed_field = (
+            enjoyed_field
+        )
+
+        assessment.skill_score = (
+            calculated_score
+        )
+
+        assessment.recommended_career = (
+            recommendation
+        )
+
+        assessment.save()
+
+        show_result = True
+
+        messages.success(
+            request,
+            'Skill assessment saved successfully!'
+        )
+
+    # =========================================================
+    # RENDER PAGE
+    # =========================================================
 
     return render(
         request,
-        "skill_assessment.html",
+        'skill-assessment.html',
         {
-            "assessment": assessment
+            'assessment': assessment,
+            'show_result': show_result
         }
     )
 
@@ -2008,109 +2109,228 @@ def resume_view(request):
 
 INTERVIEW_QUESTIONS = {
 
-    "Java Developer": [
+    "Java Developer": {
 
-        "What is OOP in Java? Explain its main principles.",
+        "Beginner": [
+            "Hi, please introduce yourself and tell me why you are interested in Java development.",
+            "Can you explain what Java is and where you have used it?",
+            "What are classes and objects in Java? Can you give a simple example?",
+            "Suppose you are developing a small application. Why would you choose Java for it?",
+            "Tell me about a Java project you have worked on or would like to build."
+        ],
 
-        "What is the difference between ArrayList and LinkedList?",
+        "Intermediate": [
+            "Can you walk me through a Java project you have worked on and explain your contribution?",
+            "How would you decide between using ArrayList and LinkedList in a real application?",
+            "Tell me about a situation where you used exception handling in a project.",
+            "If a Java application becomes slow, how would you investigate the problem?",
+            "How have you used Spring Boot or how would you use it to build a REST API?"
+        ],
 
-        "What is exception handling in Java?",
+        "Advanced": [
+            "Imagine a Java application is handling thousands of requests and response time is increasing. How would you troubleshoot it?",
+            "How would you design a scalable Spring Boot REST API for a production application?",
+            "What techniques would you use to improve Java application performance?",
+            "How would you handle concurrency when multiple users update the same data?",
+            "Tell me about a challenging Java problem you solved and how you approached it."
+        ],
+    },
 
-        "What is Spring Boot and why is it used?",
 
-        "Tell me about yourself and why you want to become a Java Developer.",
-    ],
+    "Python Developer": {
 
-    "Python Developer": [
+        "Beginner": [
+            "Hi, please introduce yourself and tell me why you are interested in Python development.",
+            "What is Python and why is it popular in software development?",
+            "Can you explain the difference between a list and a tuple with an example?",
+            "Suppose you need to store multiple student names. Which Python data structure would you choose and why?",
+            "Tell me about a Python project you have worked on or would like to build."
+        ],
 
-        "What are the main features of Python?",
+        "Intermediate": [
+            "Can you walk me through a Python project you have worked on and explain your contribution?",
+            "How do you handle exceptions in a Python application?",
+            "What are decorators in Python and where might you use them?",
+            "If a Python application is running slowly, how would you identify the bottleneck?",
+            "How would you use Django to build a backend application?"
+        ],
 
-        "What is the difference between a list and a tuple?",
+        "Advanced": [
+            "Imagine your Python application needs to process a very large dataset. How would you improve its performance?",
+            "How would you design a scalable Python backend for a production application?",
+            "When would you use multiprocessing, multithreading, or asynchronous programming in Python?",
+            "How would you identify and fix a memory-related performance issue in Python?",
+            "Tell me about a difficult Python problem you solved and explain your approach."
+        ],
+    },
 
-        "What are decorators in Python?",
 
-        "What is Django and why is it used?",
+    "Data Analyst": {
 
-        "Tell me about yourself and why you want to become a Python Developer.",
-    ],
+        "Beginner": [
+            "Hi, please introduce yourself and tell me why you are interested in Data Analytics.",
+            "What is data analysis and why is it important for a company?",
+            "What is the difference between a row and a column in a dataset?",
+            "Suppose a dataset contains missing values. What would you do?",
+            "Tell me about a data analysis project you have worked on or would like to build."
+        ],
 
-    "Data Analyst": [
+        "Intermediate": [
+            "Walk me through a data analysis project you have worked on. What was your approach?",
+            "How would you use SQL to find useful information from a large dataset?",
+            "Can you explain the difference between INNER JOIN and LEFT JOIN with a practical example?",
+            "A business manager says sales have dropped this month. How would you investigate the reason using data?",
+            "How would you present your analysis and recommendations to a non-technical manager?"
+        ],
 
-        "What is data analysis?",
+        "Advanced": [
+            "Suppose sales decreased by 20% this quarter. How would you identify the root cause using data?",
+            "How would you optimize a complex SQL query running on a large database?",
+            "How would you design a dashboard for senior management to track business performance?",
+            "How would you determine whether an observed business trend is actually meaningful?",
+            "Tell me about a challenging data problem you solved and how your analysis influenced the decision."
+        ],
+    },
 
-        "What is the difference between INNER JOIN and LEFT JOIN in SQL?",
 
-        "What is the purpose of Pivot Tables in Excel?",
+    "Business Analyst": {
 
-        "What is Power BI used for?",
+        "Beginner": [
+            "Hi, please introduce yourself and tell me why you are interested in Business Analysis.",
+            "What does a Business Analyst do in an IT company?",
+            "What is requirements gathering?",
+            "Suppose a client is not clear about what they need. How would you understand their requirement?",
+            "Tell me about a project where you worked with different people or teams."
+        ],
 
-        "Tell me about yourself and why you want to become a Data Analyst.",
-    ],
+        "Intermediate": [
+            "Walk me through a project where you gathered and documented requirements.",
+            "How would you handle two stakeholders who have conflicting requirements?",
+            "Can you explain the difference between functional and non-functional requirements with an example?",
+            "A client changes an important requirement just before development. How would you handle it?",
+            "How would you use data to identify the root cause of a business problem?"
+        ],
 
-    "Business Analyst": [
+        "Advanced": [
+            "A business team reports that a new system is not improving productivity. How would you investigate the problem?",
+            "How would you prioritize requirements when different stakeholders consider everything important?",
+            "How would you measure whether an IT solution has actually delivered business value?",
+            "Imagine the development team says a requirement is technically difficult and expensive. How would you handle the discussion with the stakeholders?",
+            "Tell me about a difficult stakeholder or business problem you handled and how you reached a solution."
+        ],
+    },
 
-        "What does a Business Analyst do?",
 
-        "What is requirements gathering?",
+    "AI Engineer": {
 
-        "What is the difference between functional and non-functional requirements?",
+        "Beginner": [
+            "Hi, please introduce yourself and tell me why you are interested in AI Engineering.",
+            "What is Artificial Intelligence and where do we use it in real life?",
+            "Can you explain Machine Learning in simple terms?",
+            "What is the difference between AI and Machine Learning?",
+            "Tell me about an AI or Machine Learning project you have worked on or would like to build."
+        ],
 
-        "How would you analyze a business problem using data?",
+        "Intermediate": [
+            "Walk me through a Machine Learning project you have worked on and explain your contribution.",
+            "What is the difference between supervised and unsupervised learning?",
+            "Suppose your model performs very well on training data but poorly on test data. What could be the reason?",
+            "How would you handle missing or incorrect data before training a Machine Learning model?",
+            "How would you explain the result of your AI model to a non-technical manager?"
+        ],
 
-        "Tell me about yourself and why you want to become a Business Analyst.",
-    ],
+        "Advanced": [
+            "Imagine your Machine Learning model performs well in testing but poorly after deployment. How would you investigate the problem?",
+            "How would you design an AI system that needs to process a large amount of data in production?",
+            "How would you decide which Machine Learning algorithm is appropriate for a new business problem?",
+            "How would you monitor a Machine Learning model after deployment?",
+            "Tell me about a challenging AI problem you solved and explain the decisions you made."
+        ],
+    },
 
-    "AI Engineer": [
 
-        "What is Machine Learning?",
+    "Full Stack Developer": {
 
-        "What is the difference between supervised and unsupervised learning?",
+        "Beginner": [
+            "Hi, please introduce yourself and tell me why you are interested in Full Stack Development.",
+            "Can you explain the role of HTML, CSS and JavaScript in a web application?",
+            "What is the difference between frontend and backend development?",
+            "Suppose you need to create a simple login page. What technologies would you use?",
+            "Tell me about a web project you have worked on or would like to build."
+        ],
 
-        "What is overfitting?",
+        "Intermediate": [
+            "Walk me through a full stack project you have worked on and explain your contribution.",
+            "How does a REST API allow the frontend and backend to communicate?",
+            "How would you design a login and registration system for a web application?",
+            "If a web application is loading slowly, how would you identify and fix the problem?",
+            "How have you used a database in your web application?"
+        ],
 
-        "What is the difference between AI, Machine Learning and Deep Learning?",
+        "Advanced": [
+            "Imagine your web application suddenly receives ten times more users. How would you make the system scalable?",
+            "How would you design a secure authentication system for a production web application?",
+            "How would you improve the performance of a full stack application?",
+            "How would you handle failures between frontend, backend and database services?",
+            "Tell me about a challenging full stack problem you solved and how you approached it."
+        ],
+    },
 
-        "Tell me about yourself and why you want to become an AI/ML Engineer.",
-    ],
 
-    "Full Stack Developer": [
+    "Cyber Security Analyst": {
 
-        "What is the difference between HTML, CSS and JavaScript?",
+        "Beginner": [
+            "Hi, please introduce yourself and tell me why you are interested in Cyber Security.",
+            "What is Cyber Security and why is it important for an organization?",
+            "What is a firewall and what does it do?",
+            "Can you explain phishing with a real-world example?",
+            "Tell me about a security project you have worked on or would like to build."
+        ],
 
-        "What is React?",
+        "Intermediate": [
+            "Walk me through a security-related project you have worked on.",
+            "A user reports receiving a suspicious email. How would you investigate it?",
+            "What is the difference between authentication and authorization?",
+            "How would you identify a possible security incident in an organization's network?",
+            "What steps would you take after discovering a compromised user account?"
+        ],
 
-        "What is a REST API?",
+        "Advanced": [
+            "Imagine multiple systems in an organization show unusual activity. How would you approach the incident investigation?",
+            "How would you design a security monitoring strategy for a medium-sized organization?",
+            "How would you prioritize vulnerabilities when an organization has hundreds of security findings?",
+            "How would you respond if sensitive company data was suspected to have been exposed?",
+            "Tell me about a challenging security problem you solved and explain your approach."
+        ],
+    },
 
-        "What is Django?",
 
-        "Tell me about yourself and why you want to become a Full Stack Developer.",
-    ],
+    "General": {
 
-    "Cyber Security Analyst": [
+        "Beginner": [
+            "Hi, please introduce yourself.",
+            "What are your strongest technical skills?",
+            "Why did you choose your current career direction?",
+            "Tell me about a project you have worked on.",
+            "What are you currently learning?"
+        ],
 
-        "What is Cyber Security?",
+        "Intermediate": [
+            "Please introduce yourself and walk me through your technical background.",
+            "Tell me about a project where you faced a technical challenge.",
+            "How do you approach learning a new technology?",
+            "Tell me about a time when you worked with a team to solve a problem.",
+            "Where do you see yourself professionally in the next few years?"
+        ],
 
-        "What is a firewall?",
-
-        "What is phishing?",
-
-        "What is the difference between authentication and authorization?",
-
-        "Tell me about yourself and why you want to become a Cyber Security Analyst.",
-    ],
-
-    "General": [
-
-        "Tell me about yourself.",
-
-        "What are your strengths?",
-
-        "What are your weaknesses?",
-
-        "Where do you see yourself in five years?",
-
-        "Why should we hire you?",
-    ],
+        "Advanced": [
+            "Tell me about the most challenging technical problem you have solved.",
+            "How do you make technical decisions when there are multiple possible solutions?",
+            "Describe a situation where your technical decision had a significant impact on a project.",
+            "How would you approach designing a solution for an unfamiliar business problem?",
+            "Why should an IT company hire you for this role?"
+        ],
+    },
 }
 
 
@@ -2427,29 +2647,31 @@ def mock_interview(request):
     career = request.GET.get("career", "").strip()
 
     # --------------------------------
+    # Get assessment
+    # --------------------------------
+
+    try:
+        assessment = UserSkillAssessment.objects.get(
+            user=request.user
+        )
+    except UserSkillAssessment.DoesNotExist:
+        assessment = None
+
+    # --------------------------------
     # If career is not provided,
     # get it from user's assessment
     # --------------------------------
 
-    if not career:
+    if not career and assessment:
 
-        try:
-            assessment = UserSkillAssessment.objects.get(
-                user=request.user
-            )
-
-            career = (
-                assessment.recommended_career
-                or assessment.career_interest
-                or ""
-            ).strip()
-
-        except UserSkillAssessment.DoesNotExist:
-
-            career = ""
+        career = (
+            assessment.recommended_career
+            or assessment.career_interest
+            or ""
+        ).strip()
 
     # --------------------------------
-    # If still empty, use session
+    # Session fallback
     # --------------------------------
 
     if not career:
@@ -2467,99 +2689,186 @@ def mock_interview(request):
         career = "General"
 
     # --------------------------------
+    # Career aliases
+    # --------------------------------
+
+    career_aliases = {
+
+        "Python Developer":
+            "Python Developer",
+
+        "AI/ML Engineer":
+            "AI Engineer",
+
+        "AI & ML Engineer":
+            "AI Engineer",
+
+        "Machine Learning Engineer":
+            "AI Engineer",
+
+        "Cybersecurity Analyst":
+            "Cyber Security Analyst",
+
+        "Business Analytics":
+            "Business Analyst",
+
+        "Data Analytics":
+            "Data Analyst",
+
+    }
+
+    career = career_aliases.get(
+        career,
+        career
+    )
+
+    # --------------------------------
+    # Get student's skill levels
+    # --------------------------------
+
+    skill_levels = {}
+
+    if assessment:
+
+        skill_levels = (
+            assessment.skill_levels
+            if assessment.skill_levels
+            else {}
+        )
+
+    # --------------------------------
+    # Determine interview level
+    # --------------------------------
+    #
+    # If multiple skills have different
+    # levels, use the highest level.
+    #
+    # Beginner = 1
+    # Intermediate = 2
+    # Advanced = 3
+    # --------------------------------
+
+    level_priority = {
+
+        "Beginner": 1,
+
+        "Intermediate": 2,
+
+        "Advanced": 3,
+
+    }
+
+    interview_level = "Beginner"
+
+    if skill_levels:
+
+        highest_level = 1
+
+        for level in skill_levels.values():
+
+            priority = level_priority.get(
+                level,
+                1
+            )
+
+            if priority > highest_level:
+
+                highest_level = priority
+
+                interview_level = level
+
+    # --------------------------------
     # Start / Reset interview
     # --------------------------------
 
     if request.method == "GET":
 
-        request.session["interview_career"] = career
+        request.session[
+            "interview_career"
+        ] = career
 
-        request.session["interview_question_index"] = 0
+        request.session[
+            "interview_level"
+        ] = interview_level
 
-        request.session["interview_scores"] = []
+        request.session[
+            "interview_question_index"
+        ] = 0
 
-        request.session["interview_completed"] = False
+        request.session[
+            "interview_scores"
+        ] = []
+
+        request.session[
+            "interview_completed"
+        ] = False
 
         request.session.modified = True
 
     else:
 
-        # Keep the career during POST
+        # Keep values during POST
+
         career = request.session.get(
             "interview_career",
             career
         )
 
+        interview_level = request.session.get(
+            "interview_level",
+            interview_level
+        )
+
     # --------------------------------
-    # Get questions for selected career
+    # Get career questions
     # --------------------------------
 
-    questions = INTERVIEW_QUESTIONS.get(
+    career_questions = INTERVIEW_QUESTIONS.get(
         career
     )
 
     # --------------------------------
-    # If exact career is not found,
-    # try common career name variations
+    # If career doesn't exist
     # --------------------------------
 
-    if not questions:
-
-        career_aliases = {
-
-            "Cyber Security Analyst":
-                "Cyber Security",
-
-            "Cybersecurity Analyst":
-                "Cyber Security",
-
-            "AI/ML Engineer":
-                "AI Engineer",
-
-            "AI & ML Engineer":
-                "AI Engineer",
-
-            "Machine Learning Engineer":
-                "AI Engineer",
-
-            "Business Analyst":
-                "Data Analyst",
-
-            "Data Analytics":
-                "Data Analyst",
-
-        }
-
-        mapped_career = career_aliases.get(
-            career,
-            career
-        )
-
-        questions = INTERVIEW_QUESTIONS.get(
-            mapped_career
-        )
-
-        if questions:
-            career = mapped_career
-            request.session["interview_career"] = career
-            request.session.modified = True
-
-    # --------------------------------
-    # Final fallback only if no
-    # career-specific questions exist
-    # --------------------------------
-
-    if not questions:
+    if not career_questions:
 
         career = "General"
 
-        questions = INTERVIEW_QUESTIONS.get(
+        career_questions = INTERVIEW_QUESTIONS.get(
             "General",
-            []
+            {}
         )
 
-        request.session["interview_career"] = career
-        request.session.modified = True
+        request.session[
+            "interview_career"
+        ] = career
+
+    # --------------------------------
+    # Get level-specific questions
+    # --------------------------------
+
+    if isinstance(career_questions, dict):
+
+        questions = career_questions.get(
+            interview_level
+        )
+
+        # Safety fallback
+
+        if not questions:
+
+            questions = career_questions.get(
+                "Beginner",
+                []
+            )
+
+    else:
+
+        # Backward compatibility
+        # in case old question format exists
+
+        questions = career_questions
 
     # --------------------------------
     # Current question index
@@ -2571,7 +2880,7 @@ def mock_interview(request):
     )
 
     # --------------------------------
-    # POST - Submit answer
+    # POST - Submit Answer
     # --------------------------------
 
     if request.method == "POST":
@@ -2581,7 +2890,10 @@ def mock_interview(request):
             ""
         ).strip()
 
+        # --------------------------------
         # Prevent empty answer
+        # --------------------------------
+
         if not answer:
 
             current_question = questions[
@@ -2603,20 +2915,29 @@ def mock_interview(request):
                 "mock_interview.html",
                 {
                     "career": career,
-                    "question": current_question,
+
+                    "level":
+                        interview_level,
+
+                    "question":
+                        current_question,
+
                     "question_number":
                         question_index + 1,
+
                     "total_questions":
                         len(questions),
+
                     "progress":
                         progress,
+
                     "error":
                         "Please enter your answer before continuing."
                 }
             )
 
         # --------------------------------
-        # Evaluate current answer
+        # Evaluate answer
         # --------------------------------
 
         if question_index < len(questions):
@@ -2652,6 +2973,7 @@ def mock_interview(request):
                 feedback=evaluation[
                     "feedback"
                 ],
+
             )
 
             # --------------------------------
@@ -2710,15 +3032,23 @@ def mock_interview(request):
             "mock_interview.html",
             {
                 "career": career,
-                "question": "Tell me about yourself.",
+
+                "level":
+                    interview_level,
+
+                "question":
+                    "Tell me about yourself.",
+
                 "question_number": 1,
+
                 "total_questions": 1,
+
                 "progress": 0,
             }
         )
 
     # --------------------------------
-    # Current question
+    # Interview completed
     # --------------------------------
 
     if question_index >= len(questions):
@@ -2726,6 +3056,10 @@ def mock_interview(request):
         return redirect(
             "interview_result"
         )
+
+    # --------------------------------
+    # Current question
+    # --------------------------------
 
     current_question = questions[
         question_index
@@ -2743,16 +3077,21 @@ def mock_interview(request):
     )
 
     # --------------------------------
-    # Render page
+    # Render Interview
     # --------------------------------
 
     return render(
         request,
         "mock_interview.html",
         {
-            "career": career,
+            "career":
+                career,
 
-            "question": current_question,
+            "level":
+                interview_level,
+
+            "question":
+                current_question,
 
             "question_number":
                 question_index + 1,

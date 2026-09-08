@@ -1,12 +1,18 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>Skill Assessment | AI Career Coach</title>
 
     <style>
-        * { box-sizing: border-box; }
+
+        * {
+            box-sizing: border-box;
+        }
 
         body {
             margin: 0;
@@ -15,19 +21,28 @@
             color: #172554;
         }
 
+        /* ================= HEADER ================= */
+
         .header {
             position: fixed;
             top: 0;
             left: 0;
             right: 0;
+
             height: 64px;
+
             background: #234a87;
+
             display: flex;
             align-items: center;
             justify-content: space-between;
+
             padding: 0 36px;
+
             z-index: 1000;
-            box-shadow: 0 2px 12px rgba(0,0,0,.12);
+
+            box-shadow:
+                0 2px 12px rgba(0,0,0,.12);
         }
 
         .logo {
@@ -36,7 +51,9 @@
             font-weight: 700;
         }
 
-        .logo span { color: #19d3c5; }
+        .logo span {
+            color: #19d3c5;
+        }
 
         .nav {
             display: flex;
@@ -50,21 +67,42 @@
             font-size: 14px;
         }
 
-        .nav a:hover { color: #19d3c5; }
+        .nav a:hover {
+            color: #19d3c5;
+        }
+
+        /* ================= PAGE ================= */
 
         .page {
             max-width: 1100px;
+
             margin: 0 auto;
-            padding: 90px 20px 50px;
+
+            padding:
+                90px 20px 50px;
         }
 
+        /* ================= HERO ================= */
+
         .hero {
-            background: linear-gradient(135deg, #234a87, #176b88);
+            background:
+                linear-gradient(
+                    135deg,
+                    #234a87,
+                    #176b88
+                );
+
             color: white;
+
             border-radius: 18px;
+
             padding: 38px 35px;
+
             margin-bottom: 24px;
-            box-shadow: 0 12px 30px rgba(35,74,135,.18);
+
+            box-shadow:
+                0 12px 30px
+                rgba(35,74,135,.18);
         }
 
         .hero-icon {
@@ -79,26 +117,45 @@
 
         .hero p {
             margin: 0;
+
             line-height: 1.7;
+
             max-width: 800px;
+
             font-size: 15px;
         }
 
+        /* ================= MESSAGE ================= */
+
         .message {
             padding: 14px 18px;
+
             border-radius: 10px;
+
             background: #dbeafe;
+
             margin-bottom: 18px;
+
             font-weight: 600;
         }
 
+        /* ================= PREVIOUS ================= */
+
         .previous-assessment {
             background: white;
-            border-left: 5px solid #19b7a8;
+
+            border-left:
+                5px solid #19b7a8;
+
             border-radius: 12px;
+
             padding: 18px 20px;
+
             margin-bottom: 22px;
-            box-shadow: 0 5px 18px rgba(15,23,42,.06);
+
+            box-shadow:
+                0 5px 18px
+                rgba(15,23,42,.06);
         }
 
         .previous-title {
@@ -108,99 +165,178 @@
 
         .previous-text {
             color: #475569;
+
             font-size: 14px;
+
             line-height: 1.6;
         }
 
         .previous-career {
             margin-top: 10px;
+
             font-weight: 700;
+
             color: #176b88;
         }
 
+        .saved-levels {
+            display: flex;
+
+            flex-wrap: wrap;
+
+            gap: 8px;
+
+            margin-top: 12px;
+        }
+
+        .saved-level {
+            background: #eff6ff;
+
+            border: 1px solid #bfdbfe;
+
+            color: #1d4ed8;
+
+            padding: 7px 11px;
+
+            border-radius: 20px;
+
+            font-size: 12px;
+
+            font-weight: 700;
+        }
+
+        /* ================= CARD ================= */
+
         .card {
             background: white;
+
             border-radius: 18px;
+
             padding: 30px;
+
             margin-bottom: 22px;
-            box-shadow: 0 8px 24px rgba(15,23,42,.07);
+
+            box-shadow:
+                0 8px 24px
+                rgba(15,23,42,.07);
         }
+
+        /* ================= SECTION ================= */
 
         .section-header {
             display: flex;
+
             align-items: center;
+
             gap: 13px;
         }
 
         .section-icon {
             width: 42px;
             height: 42px;
+
             border-radius: 12px;
+
             background: #dbeafe;
+
             display: flex;
+
             align-items: center;
+
             justify-content: center;
+
             font-size: 22px;
         }
 
         .section-title {
             margin: 0;
+
             font-size: 21px;
         }
 
         .section-description {
             color: #475569;
-            margin: 10px 0 22px;
+
+            margin:
+                10px 0 22px;
+
             line-height: 1.6;
+
             font-size: 14px;
         }
 
+        /* ================= SKILLS ================= */
+
         .skills-grid {
             display: grid;
-            grid-template-columns: repeat(5, 1fr);
+
+            grid-template-columns:
+                repeat(5, 1fr);
+
             gap: 14px;
         }
 
         .skill-item {
-            border: 2px solid #e2e8f0;
+            border:
+                2px solid #e2e8f0;
+
             border-radius: 12px;
+
             padding: 14px;
+
             background: #f8fafc;
+
             transition: .2s ease;
         }
 
-        .skill-item:has(.skill-checkbox:checked) {
+        .skill-item.selected {
             border-color: #2563eb;
+
             background: #eff6ff;
-            box-shadow: 0 5px 14px rgba(37,99,235,.10);
+
+            box-shadow:
+                0 5px 14px
+                rgba(37,99,235,.10);
         }
 
         .skill-top {
             display: flex;
+
             align-items: center;
+
             gap: 9px;
         }
 
         .skill-checkbox {
             width: 17px;
             height: 17px;
+
             accent-color: #2563eb;
+
             cursor: pointer;
+
             flex-shrink: 0;
         }
 
         .skill-name {
             font-weight: 700;
+
             font-size: 14px;
+
             cursor: pointer;
         }
 
-        /* IMPORTANT: hidden until skill is selected */
+        /* ================= LEVEL ================= */
+
         .level-box {
             display: none;
+
             margin-top: 12px;
+
             padding-top: 10px;
-            border-top: 1px solid #dbeafe;
+
+            border-top:
+                1px solid #dbeafe;
         }
 
         .level-box.show {
@@ -209,519 +345,1712 @@
 
         .level-label {
             display: block;
+
             font-size: 12px;
+
             font-weight: 700;
+
             color: #334155;
+
             margin-bottom: 6px;
         }
 
         .level-select {
             width: 100%;
+
             padding: 9px 10px;
-            border: 1px solid #cbd5e1;
+
+            border:
+                1px solid #cbd5e1;
+
             border-radius: 8px;
+
             background: white;
+
             color: #172554;
+
             font-size: 13px;
+
             cursor: pointer;
         }
 
-        .level-select:focus,
-        .form-select:focus,
-        .form-textarea:focus {
+        .level-select:focus {
             outline: none;
+
             border-color: #2563eb;
-            box-shadow: 0 0 0 3px rgba(37,99,235,.10);
+
+            box-shadow:
+                0 0 0 3px
+                rgba(37,99,235,.10);
         }
+
+        /* ================= COUNTER ================= */
 
         .skill-counter {
             text-align: right;
+
             margin-top: 18px;
+
             color: #64748b;
+
             font-size: 13px;
         }
 
         .skill-counter span {
             color: #2563eb;
+
             font-weight: 700;
         }
 
+        /* ================= FORMS ================= */
+
         .question-label {
             display: block;
+
             font-size: 15px;
+
             font-weight: 700;
+
             margin-bottom: 9px;
         }
 
         .form-select,
         .form-textarea {
             width: 100%;
-            border: 1px solid #cbd5e1;
+
+            border:
+                1px solid #cbd5e1;
+
             border-radius: 10px;
+
             padding: 13px 14px;
+
             font-size: 14px;
+
             color: #172554;
+
             background: white;
+        }
+
+        .form-select:focus,
+        .form-textarea:focus {
+            outline: none;
+
+            border-color: #2563eb;
+
+            box-shadow:
+                0 0 0 3px
+                rgba(37,99,235,.10);
         }
 
         .form-textarea {
             min-height: 110px;
+
             resize: vertical;
         }
 
-        .form-group { margin-bottom: 20px; }
+        .form-group {
+            margin-bottom: 20px;
+        }
 
         .hint {
             color: #64748b;
+
             font-size: 12px;
+
             margin-top: 6px;
         }
 
+        /* ================= SUBMIT ================= */
+
         .submit-area {
             text-align: center;
+
             margin-top: 10px;
         }
 
         .submit-btn {
             border: none;
+
             border-radius: 10px;
+
             padding: 14px 30px;
+
             background: #2563eb;
+
             color: white;
+
             font-size: 15px;
+
             font-weight: 700;
+
             cursor: pointer;
-            box-shadow: 0 8px 18px rgba(37,99,235,.20);
+
+            box-shadow:
+                0 8px 18px
+                rgba(37,99,235,.20);
+
+            transition: .2s;
         }
 
-        .submit-btn:hover { background: #1d4ed8; }
+        .submit-btn:hover {
+            background: #1d4ed8;
+
+            transform:
+                translateY(-1px);
+        }
+
+        /* ================= ERROR ================= */
+
+        .error-box {
+            display: none;
+
+            background: #fee2e2;
+
+            border:
+                1px solid #fecaca;
+
+            color: #991b1b;
+
+            padding: 12px 15px;
+
+            border-radius: 10px;
+
+            margin-bottom: 18px;
+
+            font-size: 14px;
+
+            font-weight: 600;
+        }
+
+        /* ================= RESPONSIVE ================= */
 
         @media (max-width: 900px) {
-            .skills-grid { grid-template-columns: repeat(3, 1fr); }
+
+            .skills-grid {
+                grid-template-columns:
+                    repeat(3, 1fr);
+            }
+
         }
 
         @media (max-width: 650px) {
-            .header { padding: 0 18px; }
-            .logo { font-size: 19px; }
-            .nav { gap: 14px; }
-            .nav a { font-size: 12px; }
-            .page { padding: 82px 14px 35px; }
-            .hero { padding: 28px 22px; }
-            .hero h1 { font-size: 26px; }
-            .card { padding: 22px; }
-            .skills-grid { grid-template-columns: repeat(2, 1fr); }
+
+            .header {
+                padding: 0 18px;
+            }
+
+            .logo {
+                font-size: 19px;
+            }
+
+            .nav {
+                gap: 14px;
+            }
+
+            .nav a {
+                font-size: 12px;
+            }
+
+            .page {
+                padding:
+                    82px 14px 35px;
+            }
+
+            .hero {
+                padding:
+                    28px 22px;
+            }
+
+            .hero h1 {
+                font-size: 26px;
+            }
+
+            .card {
+                padding: 22px;
+            }
+
+            .skills-grid {
+                grid-template-columns:
+                    repeat(2, 1fr);
+            }
+
         }
 
         @media (max-width: 430px) {
-            .nav a:nth-child(2),
-            .nav a:nth-child(3) { display: none; }
-            .skills-grid { grid-template-columns: 1fr; }
+
+            .nav a:nth-child(2) {
+                display: none;
+            }
+
+            .skills-grid {
+                grid-template-columns: 1fr;
+            }
+
         }
+
     </style>
+
 </head>
+
 
 <body>
 
+
+<!-- ================= HEADER ================= -->
+
 <header class="header">
-    <div class="logo">🤖 AI Career <span>Coach</span></div>
+
+    <div class="logo">
+        🤖 AI Career
+        <span>Coach</span>
+    </div>
 
     <nav class="nav">
-        <a href="{% url 'dashboard' %}">Dashboard</a>
-        <a href="{% url 'profile' %}">Profile</a>
-        <a href="{% url 'logout' %}">Logout</a>
+
+        <a href="{% url 'dashboard' %}">
+            Dashboard
+        </a>
+
+        <a href="{% url 'profile' %}">
+            Profile
+        </a>
+
+        <a href="{% url 'logout' %}">
+            Logout
+        </a>
+
     </nav>
+
 </header>
+
+
+<!-- ================= PAGE ================= -->
 
 <main class="page">
 
+
+    <!-- ================= HERO ================= -->
+
     <section class="hero">
-        <div class="hero-icon">🧠</div>
-        <h1>Skill Assessment</h1>
+
+        <div class="hero-icon">
+            🧠
+        </div>
+
+        <h1>
+            Skill Assessment
+        </h1>
+
         <p>
             Discover your current skill level and career direction.
             Select the skills you already know, choose your career
             interest and tell us what type of work you enjoy.
         </p>
+
     </section>
 
+
+    <!-- ================= MESSAGES ================= -->
+
     {% if messages %}
+
         {% for message in messages %}
-            <div class="message {{ message.tags }}">{{ message }}</div>
+
+            <div class="message">
+
+                {{ message }}
+
+            </div>
+
         {% endfor %}
+
     {% endif %}
+
+
+    <!-- ================= PREVIOUS ASSESSMENT ================= -->
 
     {% if assessment %}
+
         <div class="previous-assessment">
-            <div class="previous-title">📌 Previous Assessment Found</div>
-            <div class="previous-text">
-                Your previous assessment is already saved. You can submit
-                the assessment again to update your skills and recommendation.
+
+            <div class="previous-title">
+                📌 Previous Assessment Found
             </div>
+
+            <div class="previous-text">
+
+                Your previous assessment is already saved.
+                You can submit the assessment again to update
+                your skills and recommendation.
+
+            </div>
+
+
             {% if assessment.recommended_career %}
+
                 <div class="previous-career">
-                    🎯 Current Recommendation: {{ assessment.recommended_career }}
+
+                    🎯 Current Recommendation:
+                    {{ assessment.recommended_career }}
+
                 </div>
+
             {% endif %}
+
+
+            {% if assessment.skill_levels %}
+
+                <div class="saved-levels">
+
+                    {% for skill, level in assessment.skill_levels.items %}
+
+                        <span class="saved-level">
+
+                            {{ skill }} → {{ level }}
+
+                        </span>
+
+                    {% endfor %}
+
+                </div>
+
+            {% endif %}
+
         </div>
+
     {% endif %}
 
-    <form method="POST" action="{% url 'skill_assessment' %}" id="assessmentForm">
+
+    <!-- ================= FORM ================= -->
+
+    <form
+        method="POST"
+        action="{% url 'skill_assessment' %}"
+        id="assessmentForm"
+    >
+
         {% csrf_token %}
 
-        <input type="hidden" name="skill_levels" id="skill_levels">
 
-        <!-- SKILLS -->
+        <!-- Hidden JSON field -->
+
+        <input
+            type="hidden"
+            name="skill_levels"
+            id="skill_levels"
+            value=""
+        >
+
+
+        <!-- ================= SKILLS ================= -->
+
         <div class="card">
+
             <div class="section-header">
-                <div class="section-icon">💻</div>
-                <h2 class="section-title">Select Your Skills</h2>
+
+                <div class="section-icon">
+                    💻
+                </div>
+
+                <h2 class="section-title">
+                    Select Your Skills
+                </h2>
+
             </div>
 
+
             <p class="section-description">
-                Select all the technical and professional skills you currently have.
-                After selecting a skill, choose your level: Beginner, Intermediate or Advanced.
+
+                Select all the technical and professional skills
+                you currently have. After selecting a skill,
+                choose your level: Beginner, Intermediate or Advanced.
+
             </p>
+
 
             <div class="skills-grid">
 
-                <div class="skill-item">
-                    <div class="skill-top">
-                        <input class="skill-checkbox" type="checkbox" name="selected_skills" value="Python" id="python">
-                        <label class="skill-name" for="python">🐍 Python</label>
-                    </div>
-                    <div class="level-box" id="level_python">
-                        <label class="level-label">Skill Level</label>
-                        <select class="level-select" data-skill="Python">
-                            <option value="">Select Level</option>
-                            <option value="Beginner">Beginner</option>
-                            <option value="Intermediate">Intermediate</option>
-                            <option value="Advanced">Advanced</option>
-                        </select>
-                    </div>
-                </div>
+
+                <!-- PYTHON -->
 
                 <div class="skill-item">
+
                     <div class="skill-top">
-                        <input class="skill-checkbox" type="checkbox" name="selected_skills" value="Java" id="java">
-                        <label class="skill-name" for="java">☕ Java</label>
+
+                        <input
+                            class="skill-checkbox"
+                            type="checkbox"
+                            name="selected_skills"
+                            value="Python"
+                            id="python"
+                        >
+
+                        <label
+                            class="skill-name"
+                            for="python"
+                        >
+                            🐍 Python
+                        </label>
+
                     </div>
-                    <div class="level-box" id="level_java">
-                        <label class="level-label">Skill Level</label>
-                        <select class="level-select" data-skill="Java">
-                            <option value="">Select Level</option>
-                            <option value="Beginner">Beginner</option>
-                            <option value="Intermediate">Intermediate</option>
-                            <option value="Advanced">Advanced</option>
+
+
+                    <div
+                        class="level-box"
+                        id="level_python"
+                    >
+
+                        <label class="level-label">
+                            Skill Level
+                        </label>
+
+                        <select
+                            class="level-select"
+                            name="skill_level_Python"
+                            data-skill="Python"
+                        >
+
+                            <option value="">
+                                Select Level
+                            </option>
+
+                            <option value="Beginner">
+                                Beginner
+                            </option>
+
+                            <option value="Intermediate">
+                                Intermediate
+                            </option>
+
+                            <option value="Advanced">
+                                Advanced
+                            </option>
+
                         </select>
+
                     </div>
+
                 </div>
 
-                <div class="skill-item">
-                    <div class="skill-top">
-                        <input class="skill-checkbox" type="checkbox" name="selected_skills" value="SQL" id="sql">
-                        <label class="skill-name" for="sql">🗄️ SQL</label>
-                    </div>
-                    <div class="level-box" id="level_sql">
-                        <label class="level-label">Skill Level</label>
-                        <select class="level-select" data-skill="SQL">
-                            <option value="">Select Level</option>
-                            <option value="Beginner">Beginner</option>
-                            <option value="Intermediate">Intermediate</option>
-                            <option value="Advanced">Advanced</option>
-                        </select>
-                    </div>
-                </div>
+
+                <!-- JAVA -->
 
                 <div class="skill-item">
+
                     <div class="skill-top">
-                        <input class="skill-checkbox" type="checkbox" name="selected_skills" value="Excel" id="excel">
-                        <label class="skill-name" for="excel">📊 Excel</label>
+
+                        <input
+                            class="skill-checkbox"
+                            type="checkbox"
+                            name="selected_skills"
+                            value="Java"
+                            id="java"
+                        >
+
+                        <label
+                            class="skill-name"
+                            for="java"
+                        >
+                            ☕ Java
+                        </label>
+
                     </div>
-                    <div class="level-box" id="level_excel">
-                        <label class="level-label">Skill Level</label>
-                        <select class="level-select" data-skill="Excel">
-                            <option value="">Select Level</option>
-                            <option value="Beginner">Beginner</option>
-                            <option value="Intermediate">Intermediate</option>
-                            <option value="Advanced">Advanced</option>
+
+
+                    <div
+                        class="level-box"
+                        id="level_java"
+                    >
+
+                        <label class="level-label">
+                            Skill Level
+                        </label>
+
+                        <select
+                            class="level-select"
+                            name="skill_level_Java"
+                            data-skill="Java"
+                        >
+
+                            <option value="">
+                                Select Level
+                            </option>
+
+                            <option value="Beginner">
+                                Beginner
+                            </option>
+
+                            <option value="Intermediate">
+                                Intermediate
+                            </option>
+
+                            <option value="Advanced">
+                                Advanced
+                            </option>
+
                         </select>
+
                     </div>
+
                 </div>
 
-                <div class="skill-item">
-                    <div class="skill-top">
-                        <input class="skill-checkbox" type="checkbox" name="selected_skills" value="Power BI" id="powerbi">
-                        <label class="skill-name" for="powerbi">📈 Power BI</label>
-                    </div>
-                    <div class="level-box" id="level_powerbi">
-                        <label class="level-label">Skill Level</label>
-                        <select class="level-select" data-skill="Power BI">
-                            <option value="">Select Level</option>
-                            <option value="Beginner">Beginner</option>
-                            <option value="Intermediate">Intermediate</option>
-                            <option value="Advanced">Advanced</option>
-                        </select>
-                    </div>
-                </div>
+
+                <!-- SQL -->
 
                 <div class="skill-item">
+
                     <div class="skill-top">
-                        <input class="skill-checkbox" type="checkbox" name="selected_skills" value="HTML" id="html">
-                        <label class="skill-name" for="html">🌐 HTML</label>
+
+                        <input
+                            class="skill-checkbox"
+                            type="checkbox"
+                            name="selected_skills"
+                            value="SQL"
+                            id="sql"
+                        >
+
+                        <label
+                            class="skill-name"
+                            for="sql"
+                        >
+                            🗄️ SQL
+                        </label>
+
                     </div>
-                    <div class="level-box" id="level_html">
-                        <label class="level-label">Skill Level</label>
-                        <select class="level-select" data-skill="HTML">
-                            <option value="">Select Level</option>
-                            <option value="Beginner">Beginner</option>
-                            <option value="Intermediate">Intermediate</option>
-                            <option value="Advanced">Advanced</option>
+
+
+                    <div
+                        class="level-box"
+                        id="level_sql"
+                    >
+
+                        <label class="level-label">
+                            Skill Level
+                        </label>
+
+                        <select
+                            class="level-select"
+                            name="skill_level_SQL"
+                            data-skill="SQL"
+                        >
+
+                            <option value="">
+                                Select Level
+                            </option>
+
+                            <option value="Beginner">
+                                Beginner
+                            </option>
+
+                            <option value="Intermediate">
+                                Intermediate
+                            </option>
+
+                            <option value="Advanced">
+                                Advanced
+                            </option>
+
                         </select>
+
                     </div>
+
                 </div>
 
-                <div class="skill-item">
-                    <div class="skill-top">
-                        <input class="skill-checkbox" type="checkbox" name="selected_skills" value="CSS" id="css">
-                        <label class="skill-name" for="css">🎨 CSS</label>
-                    </div>
-                    <div class="level-box" id="level_css">
-                        <label class="level-label">Skill Level</label>
-                        <select class="level-select" data-skill="CSS">
-                            <option value="">Select Level</option>
-                            <option value="Beginner">Beginner</option>
-                            <option value="Intermediate">Intermediate</option>
-                            <option value="Advanced">Advanced</option>
-                        </select>
-                    </div>
-                </div>
+
+                <!-- EXCEL -->
 
                 <div class="skill-item">
+
                     <div class="skill-top">
-                        <input class="skill-checkbox" type="checkbox" name="selected_skills" value="JavaScript" id="javascript">
-                        <label class="skill-name" for="javascript">⚡ JavaScript</label>
+
+                        <input
+                            class="skill-checkbox"
+                            type="checkbox"
+                            name="selected_skills"
+                            value="Excel"
+                            id="excel"
+                        >
+
+                        <label
+                            class="skill-name"
+                            for="excel"
+                        >
+                            📊 Excel
+                        </label>
+
                     </div>
-                    <div class="level-box" id="level_javascript">
-                        <label class="level-label">Skill Level</label>
-                        <select class="level-select" data-skill="JavaScript">
-                            <option value="">Select Level</option>
-                            <option value="Beginner">Beginner</option>
-                            <option value="Intermediate">Intermediate</option>
-                            <option value="Advanced">Advanced</option>
+
+
+                    <div
+                        class="level-box"
+                        id="level_excel"
+                    >
+
+                        <label class="level-label">
+                            Skill Level
+                        </label>
+
+                        <select
+                            class="level-select"
+                            name="skill_level_Excel"
+                            data-skill="Excel"
+                        >
+
+                            <option value="">
+                                Select Level
+                            </option>
+
+                            <option value="Beginner">
+                                Beginner
+                            </option>
+
+                            <option value="Intermediate">
+                                Intermediate
+                            </option>
+
+                            <option value="Advanced">
+                                Advanced
+                            </option>
+
                         </select>
+
                     </div>
+
                 </div>
 
-                <div class="skill-item">
-                    <div class="skill-top">
-                        <input class="skill-checkbox" type="checkbox" name="selected_skills" value="React" id="react">
-                        <label class="skill-name" for="react">⚛️ React</label>
-                    </div>
-                    <div class="level-box" id="level_react">
-                        <label class="level-label">Skill Level</label>
-                        <select class="level-select" data-skill="React">
-                            <option value="">Select Level</option>
-                            <option value="Beginner">Beginner</option>
-                            <option value="Intermediate">Intermediate</option>
-                            <option value="Advanced">Advanced</option>
-                        </select>
-                    </div>
-                </div>
+
+                <!-- POWER BI -->
 
                 <div class="skill-item">
+
                     <div class="skill-top">
-                        <input class="skill-checkbox" type="checkbox" name="selected_skills" value="Django" id="django">
-                        <label class="skill-name" for="django">🐍 Django</label>
+
+                        <input
+                            class="skill-checkbox"
+                            type="checkbox"
+                            name="selected_skills"
+                            value="Power BI"
+                            id="powerbi"
+                        >
+
+                        <label
+                            class="skill-name"
+                            for="powerbi"
+                        >
+                            📈 Power BI
+                        </label>
+
                     </div>
-                    <div class="level-box" id="level_django">
-                        <label class="level-label">Skill Level</label>
-                        <select class="level-select" data-skill="Django">
-                            <option value="">Select Level</option>
-                            <option value="Beginner">Beginner</option>
-                            <option value="Intermediate">Intermediate</option>
-                            <option value="Advanced">Advanced</option>
+
+
+                    <div
+                        class="level-box"
+                        id="level_powerbi"
+                    >
+
+                        <label class="level-label">
+                            Skill Level
+                        </label>
+
+                        <select
+                            class="level-select"
+                            name="skill_level_Power BI"
+                            data-skill="Power BI"
+                        >
+
+                            <option value="">
+                                Select Level
+                            </option>
+
+                            <option value="Beginner">
+                                Beginner
+                            </option>
+
+                            <option value="Intermediate">
+                                Intermediate
+                            </option>
+
+                            <option value="Advanced">
+                                Advanced
+                            </option>
+
                         </select>
+
                     </div>
+
                 </div>
 
-                <div class="skill-item">
-                    <div class="skill-top">
-                        <input class="skill-checkbox" type="checkbox" name="selected_skills" value="Machine Learning" id="machine_learning">
-                        <label class="skill-name" for="machine_learning">🤖 Machine Learning</label>
-                    </div>
-                    <div class="level-box" id="level_machine_learning">
-                        <label class="level-label">Skill Level</label>
-                        <select class="level-select" data-skill="Machine Learning">
-                            <option value="">Select Level</option>
-                            <option value="Beginner">Beginner</option>
-                            <option value="Intermediate">Intermediate</option>
-                            <option value="Advanced">Advanced</option>
-                        </select>
-                    </div>
-                </div>
+
+                <!-- HTML -->
 
                 <div class="skill-item">
+
                     <div class="skill-top">
-                        <input class="skill-checkbox" type="checkbox" name="selected_skills" value="Statistics" id="statistics">
-                        <label class="skill-name" for="statistics">📐 Statistics</label>
+
+                        <input
+                            class="skill-checkbox"
+                            type="checkbox"
+                            name="selected_skills"
+                            value="HTML"
+                            id="html"
+                        >
+
+                        <label
+                            class="skill-name"
+                            for="html"
+                        >
+                            🌐 HTML
+                        </label>
+
                     </div>
-                    <div class="level-box" id="level_statistics">
-                        <label class="level-label">Skill Level</label>
-                        <select class="level-select" data-skill="Statistics">
-                            <option value="">Select Level</option>
-                            <option value="Beginner">Beginner</option>
-                            <option value="Intermediate">Intermediate</option>
-                            <option value="Advanced">Advanced</option>
+
+
+                    <div
+                        class="level-box"
+                        id="level_html"
+                    >
+
+                        <label class="level-label">
+                            Skill Level
+                        </label>
+
+                        <select
+                            class="level-select"
+                            name="skill_level_HTML"
+                            data-skill="HTML"
+                        >
+
+                            <option value="">
+                                Select Level
+                            </option>
+
+                            <option value="Beginner">
+                                Beginner
+                            </option>
+
+                            <option value="Intermediate">
+                                Intermediate
+                            </option>
+
+                            <option value="Advanced">
+                                Advanced
+                            </option>
+
                         </select>
+
                     </div>
+
                 </div>
 
-                <div class="skill-item">
-                    <div class="skill-top">
-                        <input class="skill-checkbox" type="checkbox" name="selected_skills" value="Business Analysis" id="business_analysis">
-                        <label class="skill-name" for="business_analysis">💼 Business Analysis</label>
-                    </div>
-                    <div class="level-box" id="level_business_analysis">
-                        <label class="level-label">Skill Level</label>
-                        <select class="level-select" data-skill="Business Analysis">
-                            <option value="">Select Level</option>
-                            <option value="Beginner">Beginner</option>
-                            <option value="Intermediate">Intermediate</option>
-                            <option value="Advanced">Advanced</option>
-                        </select>
-                    </div>
-                </div>
+
+                <!-- CSS -->
 
                 <div class="skill-item">
+
                     <div class="skill-top">
-                        <input class="skill-checkbox" type="checkbox" name="selected_skills" value="Communication" id="communication">
-                        <label class="skill-name" for="communication">🗣️ Communication</label>
+
+                        <input
+                            class="skill-checkbox"
+                            type="checkbox"
+                            name="selected_skills"
+                            value="CSS"
+                            id="css"
+                        >
+
+                        <label
+                            class="skill-name"
+                            for="css"
+                        >
+                            🎨 CSS
+                        </label>
+
                     </div>
-                    <div class="level-box" id="level_communication">
-                        <label class="level-label">Skill Level</label>
-                        <select class="level-select" data-skill="Communication">
-                            <option value="">Select Level</option>
-                            <option value="Beginner">Beginner</option>
-                            <option value="Intermediate">Intermediate</option>
-                            <option value="Advanced">Advanced</option>
+
+
+                    <div
+                        class="level-box"
+                        id="level_css"
+                    >
+
+                        <label class="level-label">
+                            Skill Level
+                        </label>
+
+                        <select
+                            class="level-select"
+                            name="skill_level_CSS"
+                            data-skill="CSS"
+                        >
+
+                            <option value="">
+                                Select Level
+                            </option>
+
+                            <option value="Beginner">
+                                Beginner
+                            </option>
+
+                            <option value="Intermediate">
+                                Intermediate
+                            </option>
+
+                            <option value="Advanced">
+                                Advanced
+                            </option>
+
                         </select>
+
                     </div>
+
                 </div>
 
-                <div class="skill-item">
-                    <div class="skill-top">
-                        <input class="skill-checkbox" type="checkbox" name="selected_skills" value="Git" id="git">
-                        <label class="skill-name" for="git">🔧 Git</label>
-                    </div>
-                    <div class="level-box" id="level_git">
-                        <label class="level-label">Skill Level</label>
-                        <select class="level-select" data-skill="Git">
-                            <option value="">Select Level</option>
-                            <option value="Beginner">Beginner</option>
-                            <option value="Intermediate">Intermediate</option>
-                            <option value="Advanced">Advanced</option>
-                        </select>
-                    </div>
-                </div>
+
+                <!-- JAVASCRIPT -->
 
                 <div class="skill-item">
+
                     <div class="skill-top">
-                        <input class="skill-checkbox" type="checkbox" name="selected_skills" value="Networking" id="networking">
-                        <label class="skill-name" for="networking">🌐 Networking</label>
+
+                        <input
+                            class="skill-checkbox"
+                            type="checkbox"
+                            name="selected_skills"
+                            value="JavaScript"
+                            id="javascript"
+                        >
+
+                        <label
+                            class="skill-name"
+                            for="javascript"
+                        >
+                            ⚡ JavaScript
+                        </label>
+
                     </div>
-                    <div class="level-box" id="level_networking">
-                        <label class="level-label">Skill Level</label>
-                        <select class="level-select" data-skill="Networking">
-                            <option value="">Select Level</option>
-                            <option value="Beginner">Beginner</option>
-                            <option value="Intermediate">Intermediate</option>
-                            <option value="Advanced">Advanced</option>
+
+
+                    <div
+                        class="level-box"
+                        id="level_javascript"
+                    >
+
+                        <label class="level-label">
+                            Skill Level
+                        </label>
+
+                        <select
+                            class="level-select"
+                            name="skill_level_JavaScript"
+                            data-skill="JavaScript"
+                        >
+
+                            <option value="">
+                                Select Level
+                            </option>
+
+                            <option value="Beginner">
+                                Beginner
+                            </option>
+
+                            <option value="Intermediate">
+                                Intermediate
+                            </option>
+
+                            <option value="Advanced">
+                                Advanced
+                            </option>
+
                         </select>
+
                     </div>
+
                 </div>
 
-                <div class="skill-item">
-                    <div class="skill-top">
-                        <input class="skill-checkbox" type="checkbox" name="selected_skills" value="Cyber Security" id="cyber_security">
-                        <label class="skill-name" for="cyber_security">🔐 Cyber Security</label>
-                    </div>
-                    <div class="level-box" id="level_cyber_security">
-                        <label class="level-label">Skill Level</label>
-                        <select class="level-select" data-skill="Cyber Security">
-                            <option value="">Select Level</option>
-                            <option value="Beginner">Beginner</option>
-                            <option value="Intermediate">Intermediate</option>
-                            <option value="Advanced">Advanced</option>
-                        </select>
-                    </div>
-                </div>
+
+                <!-- REACT -->
 
                 <div class="skill-item">
+
                     <div class="skill-top">
-                        <input class="skill-checkbox" type="checkbox" name="selected_skills" value="REST API" id="rest_api">
-                        <label class="skill-name" for="rest_api">🔗 REST API</label>
+
+                        <input
+                            class="skill-checkbox"
+                            type="checkbox"
+                            name="selected_skills"
+                            value="React"
+                            id="react"
+                        >
+
+                        <label
+                            class="skill-name"
+                            for="react"
+                        >
+                            ⚛️ React
+                        </label>
+
                     </div>
-                    <div class="level-box" id="level_rest_api">
-                        <label class="level-label">Skill Level</label>
-                        <select class="level-select" data-skill="REST API">
-                            <option value="">Select Level</option>
-                            <option value="Beginner">Beginner</option>
-                            <option value="Intermediate">Intermediate</option>
-                            <option value="Advanced">Advanced</option>
+
+
+                    <div
+                        class="level-box"
+                        id="level_react"
+                    >
+
+                        <label class="level-label">
+                            Skill Level
+                        </label>
+
+                        <select
+                            class="level-select"
+                            name="skill_level_React"
+                            data-skill="React"
+                        >
+
+                            <option value="">
+                                Select Level
+                            </option>
+
+                            <option value="Beginner">
+                                Beginner
+                            </option>
+
+                            <option value="Intermediate">
+                                Intermediate
+                            </option>
+
+                            <option value="Advanced">
+                                Advanced
+                            </option>
+
                         </select>
+
                     </div>
+
                 </div>
 
-                <div class="skill-item">
-                    <div class="skill-top">
-                        <input class="skill-checkbox" type="checkbox" name="selected_skills" value="Data Analysis" id="data_analysis">
-                        <label class="skill-name" for="data_analysis">📊 Data Analysis</label>
-                    </div>
-                    <div class="level-box" id="level_data_analysis">
-                        <label class="level-label">Skill Level</label>
-                        <select class="level-select" data-skill="Data Analysis">
-                            <option value="">Select Level</option>
-                            <option value="Beginner">Beginner</option>
-                            <option value="Intermediate">Intermediate</option>
-                            <option value="Advanced">Advanced</option>
-                        </select>
-                    </div>
-                </div>
+
+                <!-- DJANGO -->
 
                 <div class="skill-item">
+
                     <div class="skill-top">
-                        <input class="skill-checkbox" type="checkbox" name="selected_skills" value="Problem Solving" id="problem_solving">
-                        <label class="skill-name" for="problem_solving">🧩 Problem Solving</label>
+
+                        <input
+                            class="skill-checkbox"
+                            type="checkbox"
+                            name="selected_skills"
+                            value="Django"
+                            id="django"
+                        >
+
+                        <label
+                            class="skill-name"
+                            for="django"
+                        >
+                            🐍 Django
+                        </label>
+
                     </div>
-                    <div class="level-box" id="level_problem_solving">
-                        <label class="level-label">Skill Level</label>
-                        <select class="level-select" data-skill="Problem Solving">
-                            <option value="">Select Level</option>
-                            <option value="Beginner">Beginner</option>
-                            <option value="Intermediate">Intermediate</option>
-                            <option value="Advanced">Advanced</option>
+
+
+                    <div
+                        class="level-box"
+                        id="level_django"
+                    >
+
+                        <label class="level-label">
+                            Skill Level
+                        </label>
+
+                        <select
+                            class="level-select"
+                            name="skill_level_Django"
+                            data-skill="Django"
+                        >
+
+                            <option value="">
+                                Select Level
+                            </option>
+
+                            <option value="Beginner">
+                                Beginner
+                            </option>
+
+                            <option value="Intermediate">
+                                Intermediate
+                            </option>
+
+                            <option value="Advanced">
+                                Advanced
+                            </option>
+
                         </select>
+
                     </div>
+
                 </div>
+
+
+                <!-- MACHINE LEARNING -->
+
+                <div class="skill-item">
+
+                    <div class="skill-top">
+
+                        <input
+                            class="skill-checkbox"
+                            type="checkbox"
+                            name="selected_skills"
+                            value="Machine Learning"
+                            id="machine_learning"
+                        >
+
+                        <label
+                            class="skill-name"
+                            for="machine_learning"
+                        >
+                            🤖 Machine Learning
+                        </label>
+
+                    </div>
+
+
+                    <div
+                        class="level-box"
+                        id="level_machine_learning"
+                    >
+
+                        <label class="level-label">
+                            Skill Level
+                        </label>
+
+                        <select
+                            class="level-select"
+                            name="skill_level_Machine Learning"
+                            data-skill="Machine Learning"
+                        >
+
+                            <option value="">
+                                Select Level
+                            </option>
+
+                            <option value="Beginner">
+                                Beginner
+                            </option>
+
+                            <option value="Intermediate">
+                                Intermediate
+                            </option>
+
+                            <option value="Advanced">
+                                Advanced
+                            </option>
+
+                        </select>
+
+                    </div>
+
+                </div>
+
+
+                <!-- STATISTICS -->
+
+                <div class="skill-item">
+
+                    <div class="skill-top">
+
+                        <input
+                            class="skill-checkbox"
+                            type="checkbox"
+                            name="selected_skills"
+                            value="Statistics"
+                            id="statistics"
+                        >
+
+                        <label
+                            class="skill-name"
+                            for="statistics"
+                        >
+                            📐 Statistics
+                        </label>
+
+                    </div>
+
+
+                    <div
+                        class="level-box"
+                        id="level_statistics"
+                    >
+
+                        <label class="level-label">
+                            Skill Level
+                        </label>
+
+                        <select
+                            class="level-select"
+                            name="skill_level_Statistics"
+                            data-skill="Statistics"
+                        >
+
+                            <option value="">
+                                Select Level
+                            </option>
+
+                            <option value="Beginner">
+                                Beginner
+                            </option>
+
+                            <option value="Intermediate">
+                                Intermediate
+                            </option>
+
+                            <option value="Advanced">
+                                Advanced
+                            </option>
+
+                        </select>
+
+                    </div>
+
+                </div>
+
+
+                <!-- BUSINESS ANALYSIS -->
+
+                <div class="skill-item">
+
+                    <div class="skill-top">
+
+                        <input
+                            class="skill-checkbox"
+                            type="checkbox"
+                            name="selected_skills"
+                            value="Business Analysis"
+                            id="business_analysis"
+                        >
+
+                        <label
+                            class="skill-name"
+                            for="business_analysis"
+                        >
+                            💼 Business Analysis
+                        </label>
+
+                    </div>
+
+
+                    <div
+                        class="level-box"
+                        id="level_business_analysis"
+                    >
+
+                        <label class="level-label">
+                            Skill Level
+                        </label>
+
+                        <select
+                            class="level-select"
+                            name="skill_level_Business Analysis"
+                            data-skill="Business Analysis"
+                        >
+
+                            <option value="">
+                                Select Level
+                            </option>
+
+                            <option value="Beginner">
+                                Beginner
+                            </option>
+
+                            <option value="Intermediate">
+                                Intermediate
+                            </option>
+
+                            <option value="Advanced">
+                                Advanced
+                            </option>
+
+                        </select>
+
+                    </div>
+
+                </div>
+
+
+                <!-- COMMUNICATION -->
+
+                <div class="skill-item">
+
+                    <div class="skill-top">
+
+                        <input
+                            class="skill-checkbox"
+                            type="checkbox"
+                            name="selected_skills"
+                            value="Communication"
+                            id="communication"
+                        >
+
+                        <label
+                            class="skill-name"
+                            for="communication"
+                        >
+                            🗣️ Communication
+                        </label>
+
+                    </div>
+
+
+                    <div
+                        class="level-box"
+                        id="level_communication"
+                    >
+
+                        <label class="level-label">
+                            Skill Level
+                        </label>
+
+                        <select
+                            class="level-select"
+                            name="skill_level_Communication"
+                            data-skill="Communication"
+                        >
+
+                            <option value="">
+                                Select Level
+                            </option>
+
+                            <option value="Beginner">
+                                Beginner
+                            </option>
+
+                            <option value="Intermediate">
+                                Intermediate
+                            </option>
+
+                            <option value="Advanced">
+                                Advanced
+                            </option>
+
+                        </select>
+
+                    </div>
+
+                </div>
+
+
+                <!-- GIT -->
+
+                <div class="skill-item">
+
+                    <div class="skill-top">
+
+                        <input
+                            class="skill-checkbox"
+                            type="checkbox"
+                            name="selected_skills"
+                            value="Git"
+                            id="git"
+                        >
+
+                        <label
+                            class="skill-name"
+                            for="git"
+                        >
+                            🔧 Git
+                        </label>
+
+                    </div>
+
+
+                    <div
+                        class="level-box"
+                        id="level_git"
+                    >
+
+                        <label class="level-label">
+                            Skill Level
+                        </label>
+
+                        <select
+                            class="level-select"
+                            name="skill_level_Git"
+                            data-skill="Git"
+                        >
+
+                            <option value="">
+                                Select Level
+                            </option>
+
+                            <option value="Beginner">
+                                Beginner
+                            </option>
+
+                            <option value="Intermediate">
+                                Intermediate
+                            </option>
+
+                            <option value="Advanced">
+                                Advanced
+                            </option>
+
+                        </select>
+
+                    </div>
+
+                </div>
+
+
+                <!-- NETWORKING -->
+
+                <div class="skill-item">
+
+                    <div class="skill-top">
+
+                        <input
+                            class="skill-checkbox"
+                            type="checkbox"
+                            name="selected_skills"
+                            value="Networking"
+                            id="networking"
+                        >
+
+                        <label
+                            class="skill-name"
+                            for="networking"
+                        >
+                            🌐 Networking
+                        </label>
+
+                    </div>
+
+
+                    <div
+                        class="level-box"
+                        id="level_networking"
+                    >
+
+                        <label class="level-label">
+                            Skill Level
+                        </label>
+
+                        <select
+                            class="level-select"
+                            name="skill_level_Networking"
+                            data-skill="Networking"
+                        >
+
+                            <option value="">
+                                Select Level
+                            </option>
+
+                            <option value="Beginner">
+                                Beginner
+                            </option>
+
+                            <option value="Intermediate">
+                                Intermediate
+                            </option>
+
+                            <option value="Advanced">
+                                Advanced
+                            </option>
+
+                        </select>
+
+                    </div>
+
+                </div>
+
+
+                <!-- CYBER SECURITY -->
+
+                <div class="skill-item">
+
+                    <div class="skill-top">
+
+                        <input
+                            class="skill-checkbox"
+                            type="checkbox"
+                            name="selected_skills"
+                            value="Cyber Security"
+                            id="cyber_security"
+                        >
+
+                        <label
+                            class="skill-name"
+                            for="cyber_security"
+                        >
+                            🔐 Cyber Security
+                        </label>
+
+                    </div>
+
+
+                    <div
+                        class="level-box"
+                        id="level_cyber_security"
+                    >
+
+                        <label class="level-label">
+                            Skill Level
+                        </label>
+
+                        <select
+                            class="level-select"
+                            name="skill_level_Cyber Security"
+                            data-skill="Cyber Security"
+                        >
+
+                            <option value="">
+                                Select Level
+                            </option>
+
+                            <option value="Beginner">
+                                Beginner
+                            </option>
+
+                            <option value="Intermediate">
+                                Intermediate
+                            </option>
+
+                            <option value="Advanced">
+                                Advanced
+                            </option>
+
+                        </select>
+
+                    </div>
+
+                </div>
+
+
+                <!-- REST API -->
+
+                <div class="skill-item">
+
+                    <div class="skill-top">
+
+                        <input
+                            class="skill-checkbox"
+                            type="checkbox"
+                            name="selected_skills"
+                            value="REST API"
+                            id="rest_api"
+                        >
+
+                        <label
+                            class="skill-name"
+                            for="rest_api"
+                        >
+                            🔗 REST API
+                        </label>
+
+                    </div>
+
+
+                    <div
+                        class="level-box"
+                        id="level_rest_api"
+                    >
+
+                        <label class="level-label">
+                            Skill Level
+                        </label>
+
+                        <select
+                            class="level-select"
+                            name="skill_level_REST API"
+                            data-skill="REST API"
+                        >
+
+                            <option value="">
+                                Select Level
+                            </option>
+
+                            <option value="Beginner">
+                                Beginner
+                            </option>
+
+                            <option value="Intermediate">
+                                Intermediate
+                            </option>
+
+                            <option value="Advanced">
+                                Advanced
+                            </option>
+
+                        </select>
+
+                    </div>
+
+                </div>
+
+
+                <!-- DATA ANALYSIS -->
+
+                <div class="skill-item">
+
+                    <div class="skill-top">
+
+                        <input
+                            class="skill-checkbox"
+                            type="checkbox"
+                            name="selected_skills"
+                            value="Data Analysis"
+                            id="data_analysis"
+                        >
+
+                        <label
+                            class="skill-name"
+                            for="data_analysis"
+                        >
+                            📊 Data Analysis
+                        </label>
+
+                    </div>
+
+
+                    <div
+                        class="level-box"
+                        id="level_data_analysis"
+                    >
+
+                        <label class="level-label">
+                            Skill Level
+                        </label>
+
+                        <select
+                            class="level-select"
+                            name="skill_level_Data Analysis"
+                            data-skill="Data Analysis"
+                        >
+
+                            <option value="">
+                                Select Level
+                            </option>
+
+                            <option value="Beginner">
+                                Beginner
+                            </option>
+
+                            <option value="Intermediate">
+                                Intermediate
+                            </option>
+
+                            <option value="Advanced">
+                                Advanced
+                            </option>
+
+                        </select>
+
+                    </div>
+
+                </div>
+
+
+                <!-- PROBLEM SOLVING -->
+
+                <div class="skill-item">
+
+                    <div class="skill-top">
+
+                        <input
+                            class="skill-checkbox"
+                            type="checkbox"
+                            name="selected_skills"
+                            value="Problem Solving"
+                            id="problem_solving"
+                        >
+
+                        <label
+                            class="skill-name"
+                            for="problem_solving"
+                        >
+                            🧩 Problem Solving
+                        </label>
+
+                    </div>
+
+
+                    <div
+                        class="level-box"
+                        id="level_problem_solving"
+                    >
+
+                        <label class="level-label">
+                            Skill Level
+                        </label>
+
+                        <select
+                            class="level-select"
+                            name="skill_level_Problem Solving"
+                            data-skill="Problem Solving"
+                        >
+
+                            <option value="">
+                                Select Level
+                            </option>
+
+                            <option value="Beginner">
+                                Beginner
+                            </option>
+
+                            <option value="Intermediate">
+                                Intermediate
+                            </option>
+
+                            <option value="Advanced">
+                                Advanced
+                            </option>
+
+                        </select>
+
+                    </div>
+
+                </div>
+
 
             </div>
+
 
             <div class="skill-counter">
-                Selected Skills: <span id="selectedCount">0</span>
+
+                Selected Skills:
+                <span id="selectedCount">0</span>
+
             </div>
+
         </div>
 
-        <!-- CAREER -->
+
+        <!-- ================= CAREER ================= -->
+
         <div class="card">
+
             <div class="section-header">
-                <div class="section-icon">🎯</div>
-                <h2 class="section-title">Career Interest</h2>
+
+                <div class="section-icon">
+                    🎯
+                </div>
+
+                <h2 class="section-title">
+                    Career Interest
+                </h2>
+
             </div>
 
+
             <div class="form-group">
-                <label class="question-label" for="career_interest">
+
+                <label
+                    class="question-label"
+                    for="career_interest"
+                >
                     Which career are you interested in?
                 </label>
+
 
                 <select
                     class="form-select"
@@ -729,29 +2058,72 @@
                     name="career_interest"
                     required
                 >
-                    <option value="">Select Career</option>
-                    <option value="Java Developer">Java Developer</option>
-                    <option value="Python Developer">Python Developer</option>
-                    <option value="Data Analyst">Data Analyst</option>
-                    <option value="Business Analyst">Business Analyst</option>
-                    <option value="AI/ML Engineer">AI/ML Engineer</option>
-                    <option value="Full Stack Developer">Full Stack Developer</option>
-                    <option value="Cyber Security Analyst">Cyber Security Analyst</option>
+
+                    <option value="">
+                        Select Career
+                    </option>
+
+                    <option value="Java Developer">
+                        Java Developer
+                    </option>
+
+                    <option value="Python Developer">
+                        Python Developer
+                    </option>
+
+                    <option value="Data Analyst">
+                        Data Analyst
+                    </option>
+
+                    <option value="Business Analyst">
+                        Business Analyst
+                    </option>
+
+                    <option value="AI/ML Engineer">
+                        AI/ML Engineer
+                    </option>
+
+                    <option value="Full Stack Developer">
+                        Full Stack Developer
+                    </option>
+
+                    <option value="Cyber Security Analyst">
+                        Cyber Security Analyst
+                    </option>
+
                 </select>
+
             </div>
+
         </div>
 
-        <!-- ENJOYED FIELD -->
+
+        <!-- ================= ENJOYED FIELD ================= -->
+
         <div class="card">
+
             <div class="section-header">
-                <div class="section-icon">💡</div>
-                <h2 class="section-title">What Type of Work Do You Enjoy?</h2>
+
+                <div class="section-icon">
+                    💡
+                </div>
+
+                <h2 class="section-title">
+                    What Type of Work Do You Enjoy?
+                </h2>
+
             </div>
 
+
             <div class="form-group">
-                <label class="question-label" for="enjoyed_field">
+
+                <label
+                    class="question-label"
+                    for="enjoyed_field"
+                >
                     Tell us about the field or type of work you enjoy.
                 </label>
+
 
                 <textarea
                     class="form-textarea"
@@ -761,118 +2133,396 @@
                     required
                 ></textarea>
 
+
                 <div class="hint">
-                    This helps the system understand your career preferences.
+
+                    This helps the system understand
+                    your career preferences.
+
                 </div>
+
             </div>
+
         </div>
+
+
+        <!-- ================= ERROR ================= -->
+
+        <div
+            class="error-box"
+            id="errorBox"
+        ></div>
+
+
+        <!-- ================= SUBMIT ================= -->
 
         <div class="submit-area">
-            <button type="submit" class="submit-btn">
+
+            <button
+                type="submit"
+                class="submit-btn"
+            >
+
                 🚀 Submit Skill Assessment
+
             </button>
+
         </div>
 
+
     </form>
+
 </main>
 
-<script>
-    document.addEventListener("DOMContentLoaded", function () {
 
-        const checkboxes = document.querySelectorAll(".skill-checkbox");
-        const selectedCount = document.getElementById("selectedCount");
-        const form = document.getElementById("assessmentForm");
-        const skillLevelsInput = document.getElementById("skill_levels");
+<!-- ================= JAVASCRIPT ================= -->
+
+<script>
+
+document.addEventListener(
+    "DOMContentLoaded",
+    function () {
+
+
+        const checkboxes =
+            document.querySelectorAll(
+                ".skill-checkbox"
+            );
+
+
+        const selectedCount =
+            document.getElementById(
+                "selectedCount"
+            );
+
+
+        const form =
+            document.getElementById(
+                "assessmentForm"
+            );
+
+
+        const skillLevelsInput =
+            document.getElementById(
+                "skill_levels"
+            );
+
+
+        const errorBox =
+            document.getElementById(
+                "errorBox"
+            );
+
+
+        /* =========================
+           UPDATE COUNT
+        ========================= */
 
         function updateCount() {
+
             let count = 0;
 
-            checkboxes.forEach(function (checkbox) {
-                if (checkbox.checked) {
-                    count++;
-                }
-            });
 
-            selectedCount.textContent = count;
+            checkboxes.forEach(
+                function (checkbox) {
+
+                    if (checkbox.checked) {
+
+                        count++;
+
+                    }
+
+                }
+            );
+
+
+            selectedCount.textContent =
+                count;
+
         }
 
-        function showOrHideLevel(checkbox) {
-            const skillItem = checkbox.closest(".skill-item");
-            const levelBox = skillItem.querySelector(".level-box");
-            const levelSelect = skillItem.querySelector(".level-select");
+
+        /* =========================
+           SHOW / HIDE LEVEL
+        ========================= */
+
+        function showOrHideLevel(
+            checkbox
+        ) {
+
+            const skillItem =
+                checkbox.closest(
+                    ".skill-item"
+                );
+
+
+            const levelBox =
+                skillItem.querySelector(
+                    ".level-box"
+                );
+
+
+            const levelSelect =
+                skillItem.querySelector(
+                    ".level-select"
+                );
+
 
             if (checkbox.checked) {
-    levelBox.style.display = "block";
-} else {
-    levelBox.style.display = "none";
-    levelSelect.value = "";
-}
+
+                levelBox.classList.add(
+                    "show"
+                );
+
+                skillItem.classList.add(
+                    "selected"
+                );
+
+            } else {
+
+                levelBox.classList.remove(
+                    "show"
+                );
+
+                skillItem.classList.remove(
+                    "selected"
+                );
+
+                levelSelect.value = "";
+
+            }
+
         }
 
-        checkboxes.forEach(function (checkbox) {
-            checkbox.addEventListener("change", function () {
-                showOrHideLevel(checkbox);
-                updateCount();
-            });
-        });
+
+        /* =========================
+           CHECKBOX EVENTS
+        ========================= */
+
+        checkboxes.forEach(
+            function (checkbox) {
+
+                checkbox.addEventListener(
+                    "change",
+                    function () {
+
+                        showOrHideLevel(
+                            checkbox
+                        );
+
+                        updateCount();
+
+                    }
+                );
+
+            }
+        );
+
 
         updateCount();
 
-        form.addEventListener("submit", function (event) {
 
-            let selectedSkills = 0;
-            let missingLevel = false;
-            const levels = {};
+        /* =========================
+           FORM SUBMIT
+        ========================= */
 
-            checkboxes.forEach(function (checkbox) {
+        form.addEventListener(
+            "submit",
+            function (event) {
 
-                if (checkbox.checked) {
-                    selectedSkills++;
 
-                    const skillItem = checkbox.closest(".skill-item");
-                    const levelSelect = skillItem.querySelector(".level-select");
-                    const level = levelSelect.value;
+                let selectedSkills = 0;
 
-                    if (!level) {
-                        missingLevel = true;
-                    } else {
-                        levels[checkbox.value] = level;
+                let missingLevel = false;
+
+                const levels = {};
+
+
+                /* =====================
+                   COLLECT LEVELS
+                ===================== */
+
+                checkboxes.forEach(
+                    function (checkbox) {
+
+
+                        if (
+                            checkbox.checked
+                        ) {
+
+                            selectedSkills++;
+
+
+                            const skillItem =
+                                checkbox.closest(
+                                    ".skill-item"
+                                );
+
+
+                            const levelSelect =
+                                skillItem.querySelector(
+                                    ".level-select"
+                                );
+
+
+                            const level =
+                                levelSelect.value;
+
+
+                            if (!level) {
+
+                                missingLevel = true;
+
+                            } else {
+
+                                levels[
+                                    checkbox.value
+                                ] = level;
+
+                            }
+
+                        }
+
                     }
+                );
+
+
+                /* =====================
+                   NO SKILLS
+                ===================== */
+
+                if (
+                    selectedSkills === 0
+                ) {
+
+                    event.preventDefault();
+
+                    errorBox.textContent =
+                        "Please select at least one skill.";
+
+                    errorBox.style.display =
+                        "block";
+
+                    window.scrollTo({
+                        top: 0,
+                        behavior: "smooth"
+                    });
+
+                    return;
+
                 }
-            });
 
-            if (selectedSkills === 0) {
-                event.preventDefault();
-                alert("Please select at least one skill.");
-                return;
+
+                /* =====================
+                   MISSING LEVEL
+                ===================== */
+
+                if (
+                    missingLevel
+                ) {
+
+                    event.preventDefault();
+
+                    errorBox.textContent =
+                        "Please select a skill level for every selected skill.";
+
+                    errorBox.style.display =
+                        "block";
+
+                    window.scrollTo({
+                        top: 0,
+                        behavior: "smooth"
+                    });
+
+                    return;
+
+                }
+
+
+                /* =====================
+                   CAREER
+                ===================== */
+
+                const career =
+                    document.getElementById(
+                        "career_interest"
+                    ).value;
+
+
+                if (!career) {
+
+                    event.preventDefault();
+
+                    errorBox.textContent =
+                        "Please select your career interest.";
+
+                    errorBox.style.display =
+                        "block";
+
+                    return;
+
+                }
+
+
+                /* =====================
+                   ENJOYED FIELD
+                ===================== */
+
+                const enjoyed =
+                    document.getElementById(
+                        "enjoyed_field"
+                    ).value.trim();
+
+
+                if (!enjoyed) {
+
+                    event.preventDefault();
+
+                    errorBox.textContent =
+                        "Please describe the field or work you enjoy.";
+
+                    errorBox.style.display =
+                        "block";
+
+                    return;
+
+                }
+
+
+                /* =====================
+                   SAVE JSON
+                ===================== */
+
+                skillLevelsInput.value =
+                    JSON.stringify(
+                        levels
+                    );
+
+
+                /*
+                    Example:
+
+                    {
+                        "Python": "Intermediate",
+                        "SQL": "Advanced"
+                    }
+                */
+
+
+                errorBox.style.display =
+                    "none";
+
+
             }
+        );
 
-            if (missingLevel) {
-                event.preventDefault();
-                alert("Please select a skill level for every selected skill.");
-                return;
-            }
 
-            const career = document.getElementById("career_interest").value;
+    }
+);
 
-            if (!career) {
-                event.preventDefault();
-                alert("Please select your career interest.");
-                return;
-            }
-
-            const enjoyed = document.getElementById("enjoyed_field").value.trim();
-
-            if (!enjoyed) {
-                event.preventDefault();
-                alert("Please describe the field or work you enjoy.");
-                return;
-            }
-
-            /* Send all selected skill levels to Django as JSON */
-            skillLevelsInput.value = JSON.stringify(levels);
-        });
-    });
 </script>
 
+
 </body>
+
+</html>
