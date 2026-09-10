@@ -3692,14 +3692,17 @@ def share_career_profile(request):
     profile.is_profile_shared = True
     profile.save(update_fields=['is_profile_shared'])
 
-    share_url = request.build_absolute_uri(
-        reverse(
-            'public_career_profile',
-            kwargs={
-                'token': profile.share_token
-            }
-        )
+    public_path = reverse(
+        'public_career_profile',
+        kwargs={
+            'token': profile.share_token
+        }
     )
+
+    if request.get_host().startswith('127.0.0.1') or request.get_host().startswith('localhost'):
+        share_url = request.build_absolute_uri(public_path)
+    else:
+        share_url = f"https://ai-career-coach-1-ftre.onrender.com{public_path}"
 
     return render(
         request,
