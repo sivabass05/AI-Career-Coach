@@ -1,3 +1,5 @@
+import uuid
+
 from django.db import models
 from django.contrib.auth.models import User
 
@@ -7,7 +9,6 @@ from django.contrib.auth.models import User
 # =========================================================
 
 class StudentProfile(models.Model):
-
     user = models.OneToOneField(
         User,
         on_delete=models.CASCADE
@@ -46,16 +47,28 @@ class StudentProfile(models.Model):
         auto_now_add=True
     )
 
+    # =====================================================
+    # SHAREABLE CAREER PROFILE
+    # =====================================================
+
+    share_token = models.UUIDField(
+        default=uuid.uuid4,
+        editable=False
+    )
+
+    is_profile_shared = models.BooleanField(
+        default=False
+    )
+
     def __str__(self):
         return self.user.username
 
 
 # =========================================================
-# SKILL ASSESSMENT
+# USER SKILL ASSESSMENT
 # =========================================================
 
 class UserSkillAssessment(models.Model):
-
     user = models.OneToOneField(
         User,
         on_delete=models.CASCADE
@@ -65,13 +78,6 @@ class UserSkillAssessment(models.Model):
         blank=True
     )
 
-    # Stores level for each selected skill
-    # Example:
-    # {
-    #     "Python": "Intermediate",
-    #     "SQL": "Advanced",
-    #     "Java": "Beginner"
-    # }
     skill_levels = models.JSONField(
         default=dict,
         blank=True
@@ -104,6 +110,9 @@ class UserSkillAssessment(models.Model):
         auto_now=True
     )
 
+    learning_progress = models.IntegerField(
+    default=0
+    )
     def __str__(self):
         return f"{self.user.username} - Skill Assessment"
 
@@ -113,7 +122,6 @@ class UserSkillAssessment(models.Model):
 # =========================================================
 
 class Resume(models.Model):
-
     user = models.OneToOneField(
         User,
         on_delete=models.CASCADE
@@ -144,7 +152,6 @@ class Resume(models.Model):
 # =========================================================
 
 class MockInterview(models.Model):
-
     user = models.ForeignKey(
         User,
         on_delete=models.CASCADE

@@ -1,0 +1,926 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Share Career Profile | AI Career Coach</title>
+
+    <style>
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Segoe UI", Arial, sans-serif;
+        }
+
+        body {
+            background: #f4f8fc;
+            color: #172b4d;
+            min-height: 100vh;
+        }
+
+        /* ================================
+           HEADER
+        ================================= */
+
+        .header {
+
+            position: fixed;
+
+            top: 0;
+            left: 0;
+            right: 0;
+
+            width: 100%;
+            height: 72px;
+
+            z-index: 9999;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #123c69,
+                    #087f8c
+                );
+
+            display: flex;
+
+            align-items: center;
+            justify-content: space-between;
+
+            padding: 0 6%;
+
+            color: white;
+
+            box-shadow:
+                0 4px 18px rgba(0,0,0,0.15);
+        }
+
+        .logo {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 12px;
+
+            font-size: 24px;
+
+            font-weight: 700;
+        }
+
+        .logo-icon {
+
+            width: 42px;
+            height: 42px;
+
+            border-radius: 12px;
+
+            display: flex;
+
+            align-items: center;
+            justify-content: center;
+
+            background:
+                rgba(255,255,255,0.18);
+
+            font-size: 22px;
+        }
+
+        .header-right {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 20px;
+        }
+
+        .welcome {
+
+            font-size: 15px;
+
+            font-weight: 500;
+        }
+
+        .logout {
+
+            text-decoration: none;
+
+            color: white;
+
+            padding: 10px 20px;
+
+            border:
+                1px solid rgba(255,255,255,0.45);
+
+            border-radius: 9px;
+
+            font-size: 14px;
+
+            font-weight: 600;
+
+            transition: 0.3s;
+        }
+
+        .logout:hover {
+
+            background: white;
+
+            color: #123c69;
+        }
+
+        /* ================================
+           PAGE
+        ================================= */
+
+        .page {
+
+            padding:
+                115px 20px 70px;
+        }
+
+        .container {
+
+            max-width: 900px;
+
+            margin: auto;
+        }
+
+        /* ================================
+           MAIN CARD
+        ================================= */
+
+        .card {
+
+            background: white;
+
+            border-radius: 25px;
+
+            padding: 45px;
+
+            border:
+                1px solid #e1eaf2;
+
+            box-shadow:
+                0 12px 40px
+                rgba(23,43,77,0.08);
+        }
+
+        .title {
+
+            text-align: center;
+
+            margin-bottom: 10px;
+
+            color: #123c69;
+
+            font-size: 32px;
+
+            font-weight: 800;
+        }
+
+        .subtitle {
+
+            text-align: center;
+
+            color: #718096;
+
+            font-size: 16px;
+
+            line-height: 1.7;
+
+            margin-bottom: 35px;
+        }
+
+        /* ================================
+           SHARE STATUS
+        ================================= */
+
+        .status {
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            gap: 10px;
+
+            background: #eef8f5;
+
+            color: #087f8c;
+
+            border-radius: 12px;
+
+            padding: 14px;
+
+            margin-bottom: 30px;
+
+            font-weight: 700;
+
+            font-size: 14px;
+        }
+
+        /* ================================
+           URL SECTION
+        ================================= */
+
+        .section-title {
+
+            color: #17365d;
+
+            font-size: 19px;
+
+            font-weight: 800;
+
+            margin-bottom: 12px;
+        }
+
+        .url-box {
+
+            display: flex;
+
+            gap: 10px;
+
+            margin-bottom: 30px;
+        }
+
+        .url-input {
+
+            flex: 1;
+
+            min-width: 0;
+
+            padding: 14px 16px;
+
+            border:
+                1px solid #dce6ee;
+
+            border-radius: 10px;
+
+            background: #f7fafc;
+
+            color: #52677d;
+
+            font-size: 14px;
+
+            outline: none;
+        }
+
+        .copy-btn {
+
+            border: none;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #123c69,
+                    #087f8c
+                );
+
+            color: white;
+
+            padding: 13px 20px;
+
+            border-radius: 10px;
+
+            font-size: 14px;
+
+            font-weight: 700;
+
+            cursor: pointer;
+
+            transition: 0.3s;
+
+            white-space: nowrap;
+        }
+
+        .copy-btn:hover {
+
+            transform: translateY(-2px);
+
+            box-shadow:
+                0 7px 18px
+                rgba(8,127,140,0.25);
+        }
+
+        /* ================================
+           QR SECTION
+        ================================= */
+
+        .qr-section {
+
+            margin-top: 15px;
+
+            padding: 30px;
+
+            text-align: center;
+
+            background: #f7fafc;
+
+            border-radius: 20px;
+
+            border:
+                1px solid #e1eaf2;
+        }
+
+        .qr-section h3 {
+
+            color: #123c69;
+
+            font-size: 21px;
+
+            margin-bottom: 8px;
+        }
+
+        .qr-section p {
+
+            color: #718096;
+
+            font-size: 14px;
+
+            margin-bottom: 22px;
+        }
+
+        #qrcode {
+
+            display: inline-block;
+
+            padding: 14px;
+
+            background: white;
+
+            border-radius: 14px;
+
+            box-shadow:
+                0 6px 20px
+                rgba(23,43,77,0.08);
+        }
+
+        #qrcode img {
+
+            display: block;
+        }
+
+        .download-btn {
+
+            margin-top: 22px;
+
+            border: none;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #123c69,
+                    #087f8c
+                );
+
+            color: white;
+
+            padding: 13px 22px;
+
+            border-radius: 10px;
+
+            font-size: 14px;
+
+            font-weight: 700;
+
+            cursor: pointer;
+
+            transition: 0.3s;
+        }
+
+        .download-btn:hover {
+
+            transform: translateY(-2px);
+
+            box-shadow:
+                0 7px 18px
+                rgba(8,127,140,0.25);
+        }
+
+        /* ================================
+           HOW TO SHARE
+        ================================= */
+
+        .info-box {
+
+            margin-top: 30px;
+
+            padding: 24px;
+
+            background: #f7fafc;
+
+            border-radius: 16px;
+
+            border:
+                1px solid #e1eaf2;
+        }
+
+        .info-box h3 {
+
+            color: #17365d;
+
+            font-size: 18px;
+
+            margin-bottom: 15px;
+        }
+
+        .info-list {
+
+            list-style: none;
+        }
+
+        .info-list li {
+
+            color: #52677d;
+
+            font-size: 14px;
+
+            padding: 8px 0;
+
+            line-height: 1.6;
+        }
+
+        /* ================================
+           BACK BUTTON
+        ================================= */
+
+        .back-btn {
+
+            display: inline-block;
+
+            margin-top: 30px;
+
+            text-decoration: none;
+
+            color: #123c69;
+
+            background: #eef4f8;
+
+            padding: 12px 20px;
+
+            border-radius: 10px;
+
+            font-size: 14px;
+
+            font-weight: 700;
+
+            transition: 0.3s;
+        }
+
+        .back-btn:hover {
+
+            background: #123c69;
+
+            color: white;
+        }
+
+        /* ================================
+           MOBILE
+        ================================= */
+
+        @media (max-width: 650px) {
+
+            .header {
+
+                height: 65px;
+
+                padding: 0 18px;
+            }
+
+            .logo {
+
+                font-size: 19px;
+            }
+
+            .logo-icon {
+
+                width: 36px;
+                height: 36px;
+
+                font-size: 19px;
+            }
+
+            .welcome {
+
+                display: none;
+            }
+
+            .logout {
+
+                padding: 8px 14px;
+
+                font-size: 13px;
+            }
+
+            .page {
+
+                padding:
+                    90px 15px 45px;
+            }
+
+            .card {
+
+                padding: 28px 20px;
+
+                border-radius: 20px;
+            }
+
+            .title {
+
+                font-size: 26px;
+            }
+
+            .subtitle {
+
+                font-size: 14px;
+            }
+
+            .url-box {
+
+                flex-direction: column;
+            }
+
+            .copy-btn {
+
+                width: 100%;
+            }
+
+            .qr-section {
+
+                padding: 25px 15px;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+    <!-- ================================
+         HEADER
+    ================================= -->
+
+    <header class="header">
+
+        <div class="logo">
+
+            <div class="logo-icon">
+                🤖
+            </div>
+
+            AI Career Coach
+
+        </div>
+
+
+        <div class="header-right">
+
+            <span class="welcome">
+
+                Welcome,
+                {{ request.user.username }}
+
+            </span>
+
+
+            <a
+                href="{% url 'logout' %}"
+                class="logout"
+            >
+                Logout
+            </a>
+
+        </div>
+
+    </header>
+
+
+
+    <!-- ================================
+         PAGE
+    ================================= -->
+
+    <main class="page">
+
+        <div class="container">
+
+            <div class="card">
+
+
+                <h1 class="title">
+                    🔗 Share Your Career Profile
+                </h1>
+
+
+                <p class="subtitle">
+
+                    Share your verified career profile
+                    with interviewers and showcase your
+                    skills, learning progress and interview
+                    performance.
+
+                </p>
+
+
+
+                <!-- =========================
+                     STATUS
+                ========================== -->
+
+                <div class="status">
+
+                    ✓ Your Career Profile Sharing is Enabled
+
+                </div>
+
+
+
+                <!-- =========================
+                     SHARE LINK
+                ========================== -->
+
+                <div class="section-title">
+
+                    🔗 Your Career Profile Link
+
+                </div>
+
+
+                <div class="url-box">
+
+                    <input
+                        type="text"
+                        id="shareURL"
+                        class="url-input"
+                        value="{{ share_url }}"
+                        readonly
+                    >
+
+
+                    <button
+                        type="button"
+                        class="copy-btn"
+                        onclick="copyShareLink()"
+                    >
+                        📋 Copy Link
+                    </button>
+
+                </div>
+
+
+
+                <!-- =========================
+                     QR CODE
+                ========================== -->
+
+                <div class="qr-section">
+
+                    <h3>
+                        📱 Scan to View My Career Profile
+                    </h3>
+
+
+                    <p>
+                        Interviewer can scan this QR code
+                        to directly view your public profile.
+                    </p>
+
+
+                    <div id="qrcode"></div>
+
+
+                    <br>
+
+
+                    <button
+                        type="button"
+                        class="download-btn"
+                        onclick="downloadQRCode()"
+                    >
+                        ⬇ Download QR Code
+                    </button>
+
+                </div>
+
+
+
+                <!-- =========================
+                     HOW TO SHARE
+                ========================== -->
+
+                <div class="info-box">
+
+                    <h3>
+                        💡 How to Share
+                    </h3>
+
+
+                    <ul class="info-list">
+
+                        <li>
+                            📱 Send the link through WhatsApp
+                            or Email.
+                        </li>
+
+                        <li>
+                            💼 Add the link to your Resume
+                            or LinkedIn profile.
+                        </li>
+
+                        <li>
+                            📄 Download the QR Code and add
+                            it to your Resume.
+                        </li>
+
+                        <li>
+                            🎤 Interviewers can open your
+                            career profile without login.
+                        </li>
+
+                    </ul>
+
+                </div>
+
+
+
+                <!-- =========================
+                     BACK
+                ========================== -->
+
+                <a
+                    href="{% url 'dashboard' %}"
+                    class="back-btn"
+                >
+                    ← Back to Dashboard
+                </a>
+
+
+            </div>
+
+        </div>
+
+    </main>
+
+
+
+    <!-- ================================
+         QR CODE LIBRARY
+    ================================= -->
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
+
+    <script>
+
+        /* ================================
+           SHARE URL
+        ================================= */
+
+        const shareURL =
+            "{{ share_url|escapejs }}";
+
+
+
+        /* ================================
+           COPY LINK
+        ================================= */
+
+        function copyShareLink() {
+
+            const input =
+                document.getElementById("shareURL");
+
+            navigator.clipboard.writeText(
+                input.value
+            ).then(function() {
+
+                const button =
+                    document.querySelector(".copy-btn");
+
+                const oldText =
+                    button.innerHTML;
+
+                button.innerHTML =
+                    "✓ Link Copied!";
+
+                setTimeout(function() {
+
+                    button.innerHTML =
+                        oldText;
+
+                }, 2000);
+
+            }).catch(function() {
+
+                input.select();
+
+                document.execCommand("copy");
+
+                alert(
+                    "Career profile link copied!"
+                );
+
+            });
+
+        }
+
+
+
+        /* ================================
+           GENERATE QR CODE
+        ================================= */
+
+        new QRCode(
+
+            document.getElementById("qrcode"),
+
+            {
+                text: shareURL,
+
+                width: 200,
+
+                height: 200,
+
+                correctLevel:
+                    QRCode.CorrectLevel.H
+            }
+
+        );
+
+
+
+        /* ================================
+           DOWNLOAD QR CODE
+        ================================= */
+
+        function downloadQRCode() {
+
+            const qrContainer =
+                document.getElementById("qrcode");
+
+            const qrCanvas =
+                qrContainer.querySelector("canvas");
+
+            const qrImage =
+                qrContainer.querySelector("img");
+
+
+            const link =
+                document.createElement("a");
+
+
+            link.download =
+                "career-profile-qr-code.png";
+
+
+            if (qrCanvas) {
+
+                link.href =
+                    qrCanvas.toDataURL(
+                        "image/png"
+                    );
+
+                link.click();
+
+                return;
+            }
+
+
+            if (qrImage) {
+
+                link.href =
+                    qrImage.src;
+
+                link.click();
+
+                return;
+            }
+
+
+            alert(
+                "QR Code is not ready yet."
+            );
+
+        }
+
+    </script>
+
+
+</body>
+
+</html>

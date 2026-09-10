@@ -1,4 +1,5 @@
 from django.shortcuts import render, redirect
+from django.urls import reverse
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from django.contrib import messages
@@ -1573,6 +1574,47 @@ def learning_path(request):
                 roadmap
         }
     )
+
+
+@login_required(login_url='login')
+def complete_learning_step(request):
+
+    if request.method == 'POST':
+
+        step_number = int(
+            request.POST.get('step_number', 0)
+        )
+
+        total_steps = int(
+            request.POST.get('total_steps', 0)
+        )
+
+        assessment, created = UserSkillAssessment.objects.get_or_create(
+            user=request.user
+        )
+
+        if total_steps > 0 and step_number > 0:
+
+            completed_steps = assessment.learning_progress
+
+            step_progress = round(
+                100 / total_steps
+            )
+
+            new_progress = min(
+                completed_steps + step_progress,
+                100
+            )
+
+            assessment.learning_progress = new_progress
+
+            assessment.save(
+                update_fields=['learning_progress']
+            )
+
+        return redirect('learning_path')
+
+    return redirect('learning_path')
 
 
 # =========================================================
@@ -3630,4 +3672,100 @@ def job_recommendation(request):
             "resume":
                 resume,
         }
+    )
+
+
+# =========================================================
+# SHARE CAREER PROFILE
+# =========================================================
+
+@login_required(login_url='login')
+def share_career_profile(request):
+
+    profile, created = StudentProfile.objects.get_or_create(
+        user=request.user,
+        defaults={
+            'full_name': request.user.get_full_name()
+        }
+    )
+
+    profile.is_profile_shared = True
+    profile.save(update_fields=['is_profile_shared'])
+
+    share_url = request.build_absolute_uri(
+        reverse(
+            'public_career_profile',
+            kwargs={
+                'token': profile.share_token
+            }
+        )
+    )
+
+    return render(
+        request,
+        'share-profile.html',
+        {
+            'share_url': share_url,
+            'profile': profile,
+        }
+    )
+
+
+# =========================================================
+# PUBLIC CAREER PROFILE - INTERVIEWER VIEW
+# =========================================================
+
+def public_career_profile(request, token):
+
+    try:
+        profile = StudentProfile.objects.get(
+            share_token=token,
+            is_profile_shared=True
+        )
+    except StudentProfile.DoesNotExist:
+        return render(
+            request,
+            'profile-not-found.html'
+        )
+
+    user = profile.user
+
+    # Skill Assessment
+    try:
+        assessment = UserSkillAssessment.objects.get(
+            user=user
+        )
+    except UserSkillAssessment.DoesNotExist:
+        assessment = None
+
+    # Mock Interview Details
+    interviews = MockInterview.objects.filter(
+        user=user
+    ).order_by('-created_at')
+
+    interview_count = interviews.count()
+
+    if interview_count > 0:
+        total_score = sum(
+            interview.score for interview in interviews
+        )
+
+        average_interview_score = round(
+            total_score / interview_count
+        )
+    else:
+        average_interview_score = 0
+
+    context = {
+        'profile': profile,
+        'assessment': assessment,
+        'interviews': interviews,
+        'interview_count': interview_count,
+        'average_interview_score': average_interview_score,
+    }
+
+    return render(
+        request,
+        'public-career-profile.html',
+        context
     )

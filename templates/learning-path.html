@@ -1153,6 +1153,27 @@
 
         }
 
+        .complete-btn {
+    border: none;
+    background: linear-gradient(
+        135deg,
+        #123c69,
+        #087f8c
+    );
+    color: white;
+    padding: 9px 16px;
+    border-radius: 9px;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.complete-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(8,127,140,0.25);
+}
+
     </style>
 
 </head>
@@ -1483,31 +1504,34 @@
 
                 <div class="progress-area">
 
+    <span class="progress-label">
+        Learning Stage {{ forloop.counter }}
+    </span>
 
-                    <span class="progress-label">
+    <form method="POST" action="{% url 'complete_learning_step' %}">
+        {% csrf_token %}
 
-                        Learning Stage {{ forloop.counter }}
+        <input
+            type="hidden"
+            name="step_number"
+            value="{{ forloop.counter }}"
+        >
 
-                    </span>
+        <input
+            type="hidden"
+            name="total_steps"
+            value="{{ roadmap|length }}"
+        >
 
+        <button
+            type="submit"
+            class="complete-btn"
+        >
+            ✓ Complete Stage
+        </button>
+    </form>
 
-                    <div class="progress-bar">
-
-
-                        <div
-                            class="progress-fill"
-                            style="width: 0%;"
-                        >
-                        </div>
-
-
-                    </div>
-
-
-                </div>
-
-
-            </div>
+</div>
 
 
             {% endfor %}

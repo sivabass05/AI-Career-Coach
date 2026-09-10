@@ -8,148 +8,37 @@ from backend import views
 
 
 urlpatterns = [
-
-    # --------------------------------------------------------
-    # ADMIN
-    # --------------------------------------------------------
-
+    path('admin/', admin.site.urls),
+    path('', views.home, name='home'),
+    path('register/', views.register_view, name='register'),
+    path('login/', views.login_view, name='login'),
+    path('logout/', views.logout_view, name='logout'),
+    path('dashboard/', views.dashboard, name='dashboard'),
+    path('profile/', views.profile, name='profile'),
+    path('skill-assessment/', views.skill_assessment, name='skill_assessment'),
+    path('career-recommendation/', views.career_recommendation, name='career_recommendation'),
+    path('recommend-career/', views.recommend_career, name='recommend_career'),
+    path('learning-path/', views.learning_path, name='learning_path'),
     path(
-        "admin/",
-        admin.site.urls
-    ),
-
-
-    # --------------------------------------------------------
-    # HOME
-    # --------------------------------------------------------
-
+    'learning-path/complete/',
+    views.complete_learning_step,
+    name='complete_learning_step'
+),
+    path('resume/', views.resume_view, name='resume'),
+    path('mock-interview/', views.mock_interview, name='mock_interview'),
+    path('interview-result/', views.interview_result, name='interview_result'),
+    path('job-recommendation/', views.job_recommendation, name='job_recommendation'),
     path(
-        "",
-        views.home,
-        name="home"
-    ),
+    'share-career-profile/',
+    views.share_career_profile,
+    name='share_career_profile'
+),
 
-
-    # --------------------------------------------------------
-    # AUTHENTICATION
-    # --------------------------------------------------------
-
+    # Shareable Career Profile
     path(
-        "register/",
-        views.register_view,
-        name="register"
-    ),
-
-    path(
-        "login/",
-        views.login_view,
-        name="login"
-    ),
-
-    path(
-        "logout/",
-        views.logout_view,
-        name="logout"
-    ),
-
-
-    # --------------------------------------------------------
-    # DASHBOARD
-    # --------------------------------------------------------
-
-    path(
-        "dashboard/",
-        views.dashboard,
-        name="dashboard"
-    ),
-
-
-    # --------------------------------------------------------
-    # PROFILE
-    # --------------------------------------------------------
-
-    path(
-        "profile/",
-        views.profile,
-        name="profile"
-    ),
-
-
-    # --------------------------------------------------------
-    # SKILL ASSESSMENT
-    # --------------------------------------------------------
-
-    path(
-        "skill-assessment/",
-        views.skill_assessment,
-        name="skill_assessment"
-    ),
-
-
-    # --------------------------------------------------------
-    # CAREER RECOMMENDATION
-    # --------------------------------------------------------
-
-    path(
-        "career-recommendation/",
-        views.career_recommendation,
-        name="career_recommendation"
-    ),
-
-    path(
-        "recommend-career/",
-        views.recommend_career,
-        name="recommend_career"
-    ),
-
-
-    # --------------------------------------------------------
-    # LEARNING PATH
-    # --------------------------------------------------------
-
-    path(
-        "learning-path/",
-        views.learning_path,
-        name="learning_path"
-    ),
-
-
-    # --------------------------------------------------------
-    # RESUME
-    # --------------------------------------------------------
-
-    path(
-        "resume/",
-        views.resume_view,
-        name="resume"
-    ),
-
-
-    # --------------------------------------------------------
-    # MOCK INTERVIEW
-    # --------------------------------------------------------
-
-    path(
-        "mock-interview/",
-        views.mock_interview,
-        name="mock_interview"
-    ),
-
-    path(
-        "interview-result/",
-        views.interview_result,
-        name="interview_result"
-    ),
-
-
-    # --------------------------------------------------------
-    # JOB RECOMMENDATION
-    # --------------------------------------------------------
-
-    path(
-        "job-recommendation/",
-        views.job_recommendation,
-        name="job_recommendation"
+        'career-profile/<uuid:token>/',
+        views.public_career_profile,
+        name='public_career_profile'
     ),
 ]
 
