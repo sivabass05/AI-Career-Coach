@@ -6,7 +6,7 @@ from django.contrib.auth.models import User
 
 class Command(BaseCommand):
 
-    help = "Create the Render admin superuser if it does not exist"
+    help = "Create or promote the Render admin user"
 
     def handle(self, *args, **options):
 
@@ -16,32 +16,35 @@ class Command(BaseCommand):
 
         if not username or not password:
             self.stdout.write(
-                self.style.WARNING(
+                self.style.ERROR(
                     "ADMIN_USERNAME or ADMIN_PASSWORD is not configured."
                 )
             )
             return
 
-        user = User.objects.filter(
+        user, created = User.objects.get_or_create(
             username=username
-        ).first()
+        )
 
-        if user:
+        user.email = email
+
+        user.set_password(password)
+
+        user.is_staff = True
+        user.is_superuser = True
+        user.is_active = True
+
+        user.save()
+
+        if created:
             self.stdout.write(
                 self.style.SUCCESS(
-                    "Admin user already exists. No changes made."
+                    f"Admin user '{username}' created successfully."
                 )
             )
-            return
-
-        user = User.objects.create_superuser(
-            username=username,
-            email=email,
-            password=password
-        )
-
-        self.stdout.write(
-            self.style.SUCCESS(
-                f"Admin superuser '{user.username}' created successfully."
+        else:
+            self.stdout.write(
+                self.style.SUCCESS(
+                    f"Existing user '{username}' promoted to admin successfully."
+                )
             )
-        )
