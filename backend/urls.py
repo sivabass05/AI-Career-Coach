@@ -9,6 +9,11 @@ from backend import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path(
+    'admin-dashboard/',
+    views.admin_dashboard,
+    name='admin_dashboard'
+),
     path('', views.home, name='home'),
     path('register/', views.register_view, name='register'),
     path('login/', views.login_view, name='login'),
@@ -32,6 +37,11 @@ urlpatterns = [
     'share-career-profile/',
     views.share_career_profile,
     name='share_career_profile'
+),
+    path(
+    'gemini-test/',
+    views.gemini_test,
+    name='gemini_test'
 ),
 
     # Shareable Career Profile

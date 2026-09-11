@@ -5,7 +5,11 @@ from django.contrib.auth.models import User
 from django.contrib import messages
 from django.contrib.messages import get_messages
 from django.contrib.auth.decorators import login_required
+from django.conf import settings
+from django.http import HttpResponse
 import json
+
+from google import genai
 
 from career_recommendation.models import (
     StudentProfile,
@@ -2389,7 +2393,6 @@ def evaluate_interview_answer(
     answer = answer.strip()
 
     if not answer:
-
         return {
             "technical_score": 0,
             "relevance_score": 0,
@@ -2402,291 +2405,472 @@ def evaluate_interview_answer(
                 "Provide a clear and complete answer."
             ],
             "feedback": (
-                "Please provide an answer "
-                "to receive a meaningful evaluation."
+                "Please provide an answer to receive "
+                "a meaningful evaluation."
+            ),
+            "better_answer_tip": (
+                "Give a clear answer with a practical example."
             ),
         }
 
-    answer_lower = answer.lower()
+    try:
 
-    # --------------------------------
-    # Technical score
-    # --------------------------------
+        if not settings.GEMINI_API_KEY:
+            raise Exception(
+                "Gemini API key is not configured."
+            )
 
-    technical_keywords = {
-
-        "Java Developer": [
-            "java",
-            "class",
-            "object",
-            "inheritance",
-            "polymorphism",
-            "encapsulation",
-            "exception",
-            "spring",
-        ],
-
-        "Python Developer": [
-            "python",
-            "list",
-            "tuple",
-            "function",
-            "decorator",
-            "django",
-            "class",
-            "object",
-        ],
-
-        "Data Analyst": [
-            "data",
-            "sql",
-            "excel",
-            "power bi",
-            "analysis",
-            "statistics",
-            "query",
-        ],
-
-        "Business Analyst": [
-            "business",
-            "requirement",
-            "stakeholder",
-            "analysis",
-            "data",
-            "process",
-            "solution",
-        ],
-
-        "AI Engineer": [
-            "machine learning",
-            "model",
-            "training",
-            "data",
-            "algorithm",
-            "supervised",
-            "unsupervised",
-            "deep learning",
-        ],
-
-        "Full Stack Developer": [
-            "html",
-            "css",
-            "javascript",
-            "react",
-            "django",
-            "api",
-            "frontend",
-            "backend",
-        ],
-
-        "Cyber Security Analyst": [
-            "security",
-            "network",
-            "firewall",
-            "attack",
-            "authentication",
-            "authorization",
-            "phishing",
-            "threat",
-        ],
-
-        "General": [
-            "experience",
-            "skill",
-            "team",
-            "goal",
-            "learning",
-            "communication",
-        ],
-    }
-
-    keywords = technical_keywords.get(
-        career,
-        technical_keywords["General"]
-    )
-
-    matched_keywords = sum(
-        1
-        for keyword in keywords
-        if keyword in answer_lower
-    )
-
-    technical_score = min(
-        100,
-        matched_keywords * 15
-    )
-
-    # --------------------------------
-    # Relevance
-    # --------------------------------
-
-    question_words = set(
-        re.findall(
-            r"\b[a-zA-Z]{4,}\b",
-            question.lower()
-        )
-    )
-
-    answer_words = set(
-        re.findall(
-            r"\b[a-zA-Z]{4,}\b",
-            answer_lower
-        )
-    )
-
-    common_words = (
-        question_words & answer_words
-    )
-
-    relevance_score = min(
-        100,
-        40 + len(common_words) * 10
-    )
-
-    # --------------------------------
-    # Communication
-    # --------------------------------
-
-    word_count = len(
-        answer.split()
-    )
-
-    communication_score = 0
-
-    if word_count >= 80:
-        communication_score = 95
-
-    elif word_count >= 50:
-        communication_score = 85
-
-    elif word_count >= 30:
-        communication_score = 75
-
-    elif word_count >= 15:
-        communication_score = 60
-
-    else:
-        communication_score = 40
-
-    # --------------------------------
-    # Overall
-    # --------------------------------
-
-    overall_score = round(
-
-        technical_score * 0.40
-
-        + relevance_score * 0.30
-
-        + communication_score * 0.30
-    )
-
-    # --------------------------------
-    # Strengths
-    # --------------------------------
-
-    strengths = []
-
-    if word_count >= 30:
-
-        strengths.append(
-            "Good answer length and explanation."
+        client = genai.Client(
+            api_key=settings.GEMINI_API_KEY
         )
 
-    if matched_keywords >= 3:
+        prompt = f"""
+You are a professional interviewer at a real IT company.
 
-        strengths.append(
-            "Good use of relevant technical keywords."
+Evaluate the candidate's answer for the role below.
+
+Career Role:
+{career}
+
+Interview Question:
+{question}
+
+Candidate Answer:
+{answer}
+
+Scoring rules:
+- Technical Knowledge: 0 to 100
+- Relevance to Question: 0 to 100
+- Communication Quality: 0 to 100
+- Overall Score = Technical * 40% + Relevance * 30% + Communication * 30%
+
+Important:
+- Judge the candidate's actual answer fairly.
+- Do not give 0 unless the answer is completely missing, meaningless,
+  or unrelated to the question.
+- A short but correct answer should receive a reasonable score.
+- Do not punish the candidate for grammar mistakes alone.
+- Give practical, interview-style feedback.
+- Return ONLY JSON. Do not use markdown or code fences.
+
+Return exactly this JSON structure:
+
+{{
+    "technical_score": 0,
+    "relevance_score": 0,
+    "communication_score": 0,
+    "strengths": [
+        "strength 1",
+        "strength 2"
+    ],
+    "improvements": [
+        "improvement 1",
+        "improvement 2"
+    ],
+    "feedback": "Professional interview feedback",
+    "better_answer_tip": "One short suggestion"
+}}
+"""
+
+        # Ask Gemini for JSON so the application receives a
+        # predictable response instead of free-form text.
+        response = client.models.generate_content(
+            model="gemini-3.6-flash",
+            contents=prompt,
+            config={
+                "response_mime_type": "application/json"
+            }
         )
 
-    if relevance_score >= 70:
-
-        strengths.append(
-            "Answer is relevant to the question."
+        result_text = (
+            response.text.strip()
+            if response.text
+            else ""
         )
 
-    if not strengths:
+        if not result_text:
+            raise Exception(
+                "Gemini returned an empty response."
+            )
 
-        strengths.append(
-            "You attempted to answer the question."
+        # Safety cleanup in case the model still returns
+        # markdown JSON fences.
+        if result_text.startswith("```"):
+            result_text = (
+                result_text
+                .replace("```json", "")
+                .replace("```", "")
+                .strip()
+            )
+
+        evaluation = json.loads(result_text)
+
+        # -----------------------------------------
+        # Read scores safely
+        # -----------------------------------------
+
+        try:
+            technical_score = int(
+                float(
+                    evaluation.get(
+                        "technical_score",
+                        0
+                    )
+                )
+            )
+        except (TypeError, ValueError):
+            technical_score = 0
+
+        try:
+            relevance_score = int(
+                float(
+                    evaluation.get(
+                        "relevance_score",
+                        0
+                    )
+                )
+            )
+        except (TypeError, ValueError):
+            relevance_score = 0
+
+        try:
+            communication_score = int(
+                float(
+                    evaluation.get(
+                        "communication_score",
+                        0
+                    )
+                )
+            )
+        except (TypeError, ValueError):
+            communication_score = 0
+
+        # Keep every score inside the valid range.
+        technical_score = max(
+            0,
+            min(100, technical_score)
         )
 
-    # --------------------------------
-    # Improvements
-    # --------------------------------
-
-    improvements = []
-
-    if technical_score < 60:
-
-        improvements.append(
-            "Include more technical concepts "
-            "related to the question."
+        relevance_score = max(
+            0,
+            min(100, relevance_score)
         )
 
-    if relevance_score < 70:
-
-        improvements.append(
-            "Keep your answer more closely "
-            "related to the question."
+        communication_score = max(
+            0,
+            min(100, communication_score)
         )
 
-    if communication_score < 70:
+        # -----------------------------------------
+        # Calculate overall score in Python
+        # -----------------------------------------
 
-        improvements.append(
-            "Give a more detailed and structured answer."
+        overall_score = round(
+            technical_score * 0.40
+            + relevance_score * 0.30
+            + communication_score * 0.30
         )
 
-    if not improvements:
+        # -----------------------------------------
+        # Read AI feedback safely
+        # -----------------------------------------
 
-        improvements.append(
-            "Continue using examples to strengthen your answer."
+        strengths = evaluation.get(
+            "strengths",
+            []
         )
 
-    feedback = (
-        f"Your overall score is {overall_score}/100. "
-        f"Technical: {technical_score}/100, "
-        f"Relevance: {relevance_score}/100, "
-        f"Communication: {communication_score}/100."
-    )
+        improvements = evaluation.get(
+            "improvements",
+            []
+        )
 
-    return {
+        feedback = evaluation.get(
+            "feedback",
+            "Good attempt. Continue improving your answer."
+        )
 
-        "technical_score":
-            technical_score,
+        better_answer_tip = evaluation.get(
+            "better_answer_tip",
+            "Give a clear answer with a practical example."
+        )
 
-        "relevance_score":
-            relevance_score,
+        if not isinstance(strengths, list):
+            strengths = [str(strengths)]
 
-        "communication_score":
-            communication_score,
+        if not isinstance(improvements, list):
+            improvements = [str(improvements)]
 
-        "overall_score":
-            overall_score,
+        strengths = [
+            str(item).strip()
+            for item in strengths
+            if str(item).strip()
+        ]
 
-        "strengths":
-            strengths,
+        improvements = [
+            str(item).strip()
+            for item in improvements
+            if str(item).strip()
+        ]
 
-        "improvements":
-            improvements,
+        if not strengths:
+            strengths = [
+                "The answer was evaluated successfully."
+            ]
 
-        "feedback":
-            feedback,
-    }
+        if not improvements:
+            improvements = [
+                "Add a practical example to make the answer stronger."
+            ]
+
+        feedback = str(feedback).strip()
+
+        better_answer_tip = str(
+            better_answer_tip
+        ).strip()
+
+        if not feedback:
+            feedback = (
+                "Your answer was evaluated successfully."
+            )
+
+        if not better_answer_tip:
+            better_answer_tip = (
+                "Give a clear and practical example."
+            )
+
+        return {
+            "technical_score":
+                technical_score,
+
+            "relevance_score":
+                relevance_score,
+
+            "communication_score":
+                communication_score,
+
+            "overall_score":
+                overall_score,
+
+            "strengths":
+                strengths,
+
+            "improvements":
+                improvements,
+
+            "feedback":
+                feedback,
+
+            "better_answer_tip":
+                better_answer_tip,
+        }
+
+    except Exception as e:
+
+        # Keep the interview application running even if
+        # Gemini is temporarily unavailable.
+        return {
+            "technical_score": 0,
+
+            "relevance_score": 0,
+
+            "communication_score": 0,
+
+            "overall_score": 0,
+
+            "strengths": [
+                "Your answer was submitted successfully."
+            ],
+
+            "improvements": [
+                "AI evaluation could not be completed for this answer."
+            ],
+
+            "feedback": (
+                f"Gemini evaluation error: {str(e)}"
+            ),
+
+            "better_answer_tip": (
+                "Please try the interview again."
+            ),
+        }
 
 
 # =========================================================
 # MOCK INTERVIEW
 # =========================================================
 
-@login_required
+# =========================================================
+# AI INTERVIEW QUESTION GENERATION
+# =========================================================
+
+def generate_ai_interview_questions(
+    career,
+    interview_level,
+    skill_levels=None
+):
+
+    skill_levels = skill_levels or {}
+
+    # Existing fixed questions are kept as a safety fallback.
+    fallback_data = INTERVIEW_QUESTIONS.get(
+        career,
+        INTERVIEW_QUESTIONS.get("General", {})
+    )
+
+    if isinstance(fallback_data, dict):
+        fallback_questions = fallback_data.get(
+            interview_level,
+            fallback_data.get("Beginner", [])
+        )
+    else:
+        fallback_questions = fallback_data
+
+    fallback_questions = list(
+        fallback_questions or []
+    )[:5]
+
+    try:
+
+        if not settings.GEMINI_API_KEY:
+            raise Exception(
+                "Gemini API key is not configured."
+            )
+
+        client = genai.Client(
+            api_key=settings.GEMINI_API_KEY
+        )
+
+        skill_text = ", ".join(
+            f"{skill}: {level}"
+            for skill, level in skill_levels.items()
+        )
+
+        prompt = f"""
+You are a professional interviewer conducting a realistic IT company
+mock interview.
+
+Generate exactly 5 interview questions for this candidate.
+
+Career Role:
+{career}
+
+Candidate Interview Level:
+{interview_level}
+
+Candidate Skill Levels:
+{skill_text or "Not provided"}
+
+Requirements:
+1. Generate exactly 5 questions.
+2. Questions must be appropriate for the candidate's career and level.
+3. Make every question different and useful for interview preparation.
+4. Mix question types:
+   - one introduction/HR or motivation question
+   - technical knowledge
+   - practical/project question
+   - real-world scenario/problem-solving question
+   - behavioral or experience-based question
+5. For Beginner, keep technical concepts simple.
+6. For Intermediate, include practical development and troubleshooting.
+7. For Advanced, include architecture, production, scalability, security,
+   optimization or decision-making where relevant.
+8. Avoid repeating the same wording.
+9. Do not provide answers.
+10. Do not number the questions.
+11. Return ONLY valid JSON.
+
+Return exactly:
+
+{{
+    "questions": [
+        "Question 1",
+        "Question 2",
+        "Question 3",
+        "Question 4",
+        "Question 5"
+    ]
+}}
+"""
+
+        response = client.models.generate_content(
+            model="gemini-3.6-flash",
+            contents=prompt,
+            config={
+                "response_mime_type": "application/json"
+            }
+        )
+
+        result_text = (
+            response.text.strip()
+            if response.text
+            else ""
+        )
+
+        if not result_text:
+            raise Exception(
+                "Gemini returned an empty question list."
+            )
+
+        if result_text.startswith("```"):
+            result_text = (
+                result_text
+                .replace("```json", "")
+                .replace("```", "")
+                .strip()
+            )
+
+        result = json.loads(
+            result_text
+        )
+
+        questions = result.get(
+            "questions",
+            []
+        )
+
+        if not isinstance(questions, list):
+            raise Exception(
+                "Gemini returned an invalid question format."
+            )
+
+        cleaned_questions = []
+
+        for question in questions:
+
+            question = str(
+                question
+            ).strip()
+
+            if question and question not in cleaned_questions:
+                cleaned_questions.append(
+                    question
+                )
+
+        if len(cleaned_questions) < 5:
+            raise Exception(
+                "Gemini did not generate 5 unique questions."
+            )
+
+        return cleaned_questions[:5], True
+
+    except Exception:
+        # If Gemini is temporarily unavailable or the quota is exhausted,
+        # keep the interview usable with the existing level-based questions.
+        return fallback_questions, False
+
+
+@login_required(login_url='login')
 def mock_interview(request):
 
     # --------------------------------
     # Get career from URL
     # --------------------------------
 
-    career = request.GET.get("career", "").strip()
+    career = request.GET.get(
+        "career",
+        ""
+    ).strip()
 
     # --------------------------------
     # Get assessment
@@ -2700,8 +2884,7 @@ def mock_interview(request):
         assessment = None
 
     # --------------------------------
-    # If career is not provided,
-    # get it from user's assessment
+    # Get career from assessment
     # --------------------------------
 
     if not career and assessment:
@@ -2781,14 +2964,6 @@ def mock_interview(request):
     # --------------------------------
     # Determine interview level
     # --------------------------------
-    #
-    # If multiple skills have different
-    # levels, use the highest level.
-    #
-    # Beginner = 1
-    # Intermediate = 2
-    # Advanced = 3
-    # --------------------------------
 
     level_priority = {
 
@@ -2820,7 +2995,7 @@ def mock_interview(request):
                 interview_level = level
 
     # --------------------------------
-    # Start / Reset interview
+    # Start a NEW interview
     # --------------------------------
 
     if request.method == "GET":
@@ -2842,15 +3017,35 @@ def mock_interview(request):
         ] = []
 
         request.session[
+            "interview_ids"
+        ] = []
+
+        request.session[
             "interview_completed"
         ] = False
+
+        # Generate one fresh set of 5 AI questions.
+        questions, ai_generated = (
+            generate_ai_interview_questions(
+                career,
+                interview_level,
+                skill_levels
+            )
+        )
+
+        request.session[
+            "interview_questions"
+        ] = questions
+
+        request.session[
+            "interview_ai_generated"
+        ] = ai_generated
 
         request.session.modified = True
 
     else:
 
-        # Keep values during POST
-
+        # Keep all interview values during POST.
         career = request.session.get(
             "interview_career",
             career
@@ -2862,55 +3057,49 @@ def mock_interview(request):
         )
 
     # --------------------------------
-    # Get career questions
+    # Read questions from session
     # --------------------------------
 
-    career_questions = INTERVIEW_QUESTIONS.get(
-        career
+    questions = request.session.get(
+        "interview_questions",
+        []
     )
 
-    # --------------------------------
-    # If career doesn't exist
-    # --------------------------------
+    # Safety fallback if an old session does not
+    # contain generated questions.
+    if not questions:
 
-    if not career_questions:
-
-        career = "General"
-
-        career_questions = INTERVIEW_QUESTIONS.get(
-            "General",
-            {}
+        fallback_data = INTERVIEW_QUESTIONS.get(
+            career,
+            INTERVIEW_QUESTIONS.get(
+                "General",
+                {}
+            )
         )
 
-        request.session[
-            "interview_career"
-        ] = career
+        if isinstance(fallback_data, dict):
 
-    # --------------------------------
-    # Get level-specific questions
-    # --------------------------------
-
-    if isinstance(career_questions, dict):
-
-        questions = career_questions.get(
-            interview_level
-        )
-
-        # Safety fallback
-
-        if not questions:
-
-            questions = career_questions.get(
-                "Beginner",
-                []
+            questions = fallback_data.get(
+                interview_level,
+                fallback_data.get(
+                    "Beginner",
+                    []
+                )
             )
 
-    else:
+        else:
 
-        # Backward compatibility
-        # in case old question format exists
+            questions = fallback_data
 
-        questions = career_questions
+        questions = list(
+            questions or []
+        )[:5]
+
+        request.session[
+            "interview_questions"
+        ] = questions
+
+        request.session.modified = True
 
     # --------------------------------
     # Current question index
@@ -2956,7 +3145,8 @@ def mock_interview(request):
                 request,
                 "mock_interview.html",
                 {
-                    "career": career,
+                    "career":
+                        career,
 
                     "level":
                         interview_level,
@@ -2973,13 +3163,19 @@ def mock_interview(request):
                     "progress":
                         progress,
 
+                    "ai_generated":
+                        request.session.get(
+                            "interview_ai_generated",
+                            False
+                        ),
+
                     "error":
                         "Please enter your answer before continuing."
                 }
             )
 
         # --------------------------------
-        # Evaluate answer
+        # Evaluate answer with Gemini
         # --------------------------------
 
         if question_index < len(questions):
@@ -2998,7 +3194,7 @@ def mock_interview(request):
             # Save interview result
             # --------------------------------
 
-            MockInterview.objects.create(
+            interview_record = MockInterview.objects.create(
 
                 user=request.user,
 
@@ -3012,11 +3208,55 @@ def mock_interview(request):
                     "overall_score"
                 ],
 
+                technical_score=evaluation[
+                    "technical_score"
+                ],
+
+                relevance_score=evaluation[
+                    "relevance_score"
+                ],
+
+                communication_score=evaluation[
+                    "communication_score"
+                ],
+
+                strengths=json.dumps(
+                    evaluation.get(
+                        "strengths",
+                        []
+                    )
+                ),
+
+                improvements=json.dumps(
+                    evaluation.get(
+                        "improvements",
+                        []
+                    )
+                ),
+
+                better_answer_tip=evaluation.get(
+                    "better_answer_tip",
+                    ""
+                ),
+
                 feedback=evaluation[
                     "feedback"
                 ],
 
             )
+
+            interview_ids = request.session.get(
+                "interview_ids",
+                []
+            )
+
+            interview_ids.append(
+                interview_record.id
+            )
+
+            request.session[
+                "interview_ids"
+            ] = interview_ids
 
             # --------------------------------
             # Save score in session
@@ -3073,7 +3313,8 @@ def mock_interview(request):
             request,
             "mock_interview.html",
             {
-                "career": career,
+                "career":
+                    career,
 
                 "level":
                     interview_level,
@@ -3086,6 +3327,8 @@ def mock_interview(request):
                 "total_questions": 1,
 
                 "progress": 0,
+
+                "ai_generated": False,
             }
         )
 
@@ -3143,8 +3386,15 @@ def mock_interview(request):
 
             "progress":
                 progress,
+
+            "ai_generated":
+                request.session.get(
+                    "interview_ai_generated",
+                    False
+                ),
         }
     )
+
 
 
 # =========================================================
@@ -3159,15 +3409,29 @@ def interview_result(request):
         "General"
     )
 
-    # Latest 5 interviews for career
-    interviews = MockInterview.objects.filter(
-        user=request.user,
-        career=career
-    ).order_by("-created_at")[:5]
-
-    interviews = list(
-        reversed(interviews)
+    # Show only records created by the current interview.
+    interview_ids = request.session.get(
+        "interview_ids",
+        []
     )
+
+    if interview_ids:
+        interviews = list(
+            MockInterview.objects.filter(
+                user=request.user,
+                id__in=interview_ids,
+                career=career
+            ).order_by("created_at")
+        )
+    else:
+        # Backward-compatible fallback for older sessions.
+        interviews = list(
+            MockInterview.objects.filter(
+                user=request.user,
+                career=career
+            ).order_by("-created_at")[:5]
+        )
+        interviews.reverse()
 
     average_score = 0
     highest_score = 0
@@ -3182,7 +3446,7 @@ def interview_result(request):
     if interviews:
 
         scores = [
-            interview.score
+            max(0, min(100, int(interview.score)))
             for interview in interviews
         ]
 
@@ -3199,32 +3463,92 @@ def interview_result(request):
 
         for interview in interviews:
 
-            evaluation = evaluate_interview_answer(
-                interview.question,
-                interview.answer,
-                career
+            # IMPORTANT: Never call Gemini from this page.
+            technical_score = max(
+                0,
+                min(
+                    100,
+                    int(
+                        getattr(
+                            interview,
+                            "technical_score",
+                            0
+                        )
+                    )
+                )
             )
 
-            technical_scores.append(
-                evaluation[
-                    "technical_score"
-                ]
+            relevance_score = max(
+                0,
+                min(
+                    100,
+                    int(
+                        getattr(
+                            interview,
+                            "relevance_score",
+                            0
+                        )
+                    )
+                )
             )
 
-            relevance_scores.append(
-                evaluation[
-                    "relevance_score"
-                ]
+            communication_score = max(
+                0,
+                min(
+                    100,
+                    int(
+                        getattr(
+                            interview,
+                            "communication_score",
+                            0
+                        )
+                    )
+                )
             )
 
-            communication_scores.append(
-                evaluation[
-                    "communication_score"
-                ]
+            technical_scores.append(technical_score)
+            relevance_scores.append(relevance_score)
+            communication_scores.append(communication_score)
+
+            strengths_text = getattr(
+                interview,
+                "strengths",
+                ""
             )
+
+            improvements_text = getattr(
+                interview,
+                "improvements",
+                ""
+            )
+
+            try:
+                strengths = json.loads(
+                    strengths_text
+                )
+                if not isinstance(strengths, list):
+                    strengths = [str(strengths)]
+            except (json.JSONDecodeError, TypeError):
+                strengths = (
+                    [strengths_text]
+                    if strengths_text
+                    else []
+                )
+
+            try:
+                improvements = json.loads(
+                    improvements_text
+                )
+                if not isinstance(improvements, list):
+                    improvements = [str(improvements)]
+            except (json.JSONDecodeError, TypeError):
+                improvements = (
+                    [improvements_text]
+                    if improvements_text
+                    else []
+                )
 
             detailed_results.append({
-
                 "question":
                     interview.question,
 
@@ -3235,34 +3559,29 @@ def interview_result(request):
                     interview.score,
 
                 "technical_score":
-                    evaluation[
-                        "technical_score"
-                    ],
+                    technical_score,
 
                 "relevance_score":
-                    evaluation[
-                        "relevance_score"
-                    ],
+                    relevance_score,
 
                 "communication_score":
-                    evaluation[
-                        "communication_score"
-                    ],
+                    communication_score,
 
                 "strengths":
-                    evaluation[
-                        "strengths"
-                    ],
+                    strengths,
 
                 "improvements":
-                    evaluation[
-                        "improvements"
-                    ],
+                    improvements,
 
                 "feedback":
-                    evaluation[
-                        "feedback"
-                    ],
+                    interview.feedback,
+
+                "better_answer_tip":
+                    getattr(
+                        interview,
+                        "better_answer_tip",
+                        ""
+                    ),
             })
 
         technical_average = round(
@@ -3281,7 +3600,6 @@ def interview_result(request):
         )
 
     context = {
-
         "career":
             career,
 
@@ -3318,8 +3636,268 @@ def interview_result(request):
 
 
 # =========================================================
-# JOB RECOMMENDATION
+# AI JOB RECOMMENDATION
 # =========================================================
+
+def recommend_jobs_with_gemini(
+    skills,
+    skill_levels=None,
+    career="",
+    career_interest="",
+    enjoyed_field="",
+    resume_analysis=None
+):
+    """
+    Generate personalized job-role recommendations using Gemini.
+
+    This returns job roles, not live vacancies. The application still
+    has a rule-based fallback so the page works when Gemini quota/API
+    is unavailable.
+    """
+
+    try:
+
+        if not settings.GEMINI_API_KEY:
+            return None
+
+        client = genai.Client(
+            api_key=settings.GEMINI_API_KEY
+        )
+
+        skill_levels = skill_levels or {}
+
+        resume_info = ""
+
+        if isinstance(resume_analysis, dict):
+
+            resume_info = f"""
+Resume Career Match:
+{resume_analysis.get('career_match', '')}
+
+Resume Career Match Score:
+{resume_analysis.get('career_match_score', 0)}
+
+Resume Strengths:
+{resume_analysis.get('strengths', [])}
+
+Resume Missing Skills:
+{resume_analysis.get('missing_skills', [])}
+"""
+
+        prompt = f"""
+You are an expert AI career coach helping an IT student identify
+suitable entry-level and junior job roles.
+
+Student Skills:
+{skills}
+
+Skill Levels:
+{skill_levels}
+
+Recommended Career:
+{career}
+
+Career Interest:
+{career_interest}
+
+Enjoyed Field:
+{enjoyed_field}
+
+{resume_info}
+
+Return ONLY valid JSON in exactly this format:
+
+{{
+    "jobs": [
+        {{
+            "title": "Job Role",
+            "company": "Suitable Industry or Company Type",
+            "location": "Chennai / Bangalore / Remote",
+            "type": "Full Time",
+            "description": "Short professional job description",
+            "match_score": 0,
+            "matched_skills": [
+                "Skill 1",
+                "Skill 2"
+            ],
+            "missing_skills": [
+                "Skill 1",
+                "Skill 2"
+            ],
+            "why_match": "Short explanation of why this role suits the candidate",
+            "next_step": "One practical skill or action to improve job readiness"
+        }}
+    ]
+}}
+
+Rules:
+- Return exactly 5 different IT job roles.
+- Prefer realistic entry-level or junior roles for a student/fresher.
+- Match roles to the candidate's actual skills and skill levels.
+- Consider recommended career, career interest and enjoyed field.
+- Consider resume information when available.
+- Never invent skills as if the candidate already has them.
+- matched_skills must contain only skills supplied by the candidate.
+- missing_skills should contain useful skills the candidate should learn.
+- match_score must be between 0 and 100.
+- Rank the jobs from highest match to lowest match.
+- These are job-role recommendations, NOT confirmed live vacancies.
+- Keep descriptions and explanations short and professional.
+"""
+
+        response = client.models.generate_content(
+            model="gemini-3.6-flash",
+            contents=prompt,
+            config={
+                "response_mime_type": "application/json"
+            }
+        )
+
+        result_text = (
+            response.text.strip()
+            if response.text
+            else ""
+        )
+
+        if not result_text:
+            raise Exception(
+                "Gemini returned an empty job recommendation response."
+            )
+
+        if result_text.startswith("```"):
+            result_text = (
+                result_text
+                .replace("```json", "")
+                .replace("```", "")
+                .strip()
+            )
+
+        result = json.loads(result_text)
+        jobs = result.get("jobs", [])
+
+        if not isinstance(jobs, list):
+            raise Exception(
+                "Gemini returned an invalid job format."
+            )
+
+        valid_jobs = []
+
+        for item in jobs:
+
+            if not isinstance(item, dict):
+                continue
+
+            title = str(
+                item.get("title", "")
+            ).strip()
+
+            if not title:
+                continue
+
+            try:
+                match_score = int(
+                    float(
+                        item.get(
+                            "match_score",
+                            0
+                        )
+                    )
+                )
+            except (TypeError, ValueError):
+                match_score = 0
+
+            match_score = max(
+                0,
+                min(100, match_score)
+            )
+
+            matched_skills = item.get(
+                "matched_skills",
+                []
+            )
+
+            missing_skills = item.get(
+                "missing_skills",
+                []
+            )
+
+            if not isinstance(matched_skills, list):
+                matched_skills = [matched_skills]
+
+            if not isinstance(missing_skills, list):
+                missing_skills = [missing_skills]
+
+            matched_skills = [
+                str(skill).strip()
+                for skill in matched_skills
+                if str(skill).strip()
+            ]
+
+            missing_skills = [
+                str(skill).strip()
+                for skill in missing_skills
+                if str(skill).strip()
+            ]
+
+            valid_jobs.append({
+                "title": title,
+                "name": title,
+                "company": str(
+                    item.get(
+                        "company",
+                        "Technology Company"
+                    )
+                ).strip(),
+                "location": str(
+                    item.get(
+                        "location",
+                        "Chennai / Remote"
+                    )
+                ).strip(),
+                "type": str(
+                    item.get(
+                        "type",
+                        "Full Time"
+                    )
+                ).strip(),
+                "description": str(
+                    item.get(
+                        "description",
+                        "Suitable role based on your profile."
+                    )
+                ).strip(),
+                "required_skills": missing_skills,
+                "matched_skills": matched_skills,
+                "missing_skills": missing_skills,
+                "match": match_score,
+                "why_match": str(
+                    item.get(
+                        "why_match",
+                        "Recommended based on your skills and career profile."
+                    )
+                ).strip(),
+                "next_step": str(
+                    item.get(
+                        "next_step",
+                        "Strengthen the missing skills and build a practical project."
+                    )
+                ).strip(),
+                "ai_generated": True,
+            })
+
+        if len(valid_jobs) < 1:
+            return None
+
+        valid_jobs.sort(
+            key=lambda x: x["match"],
+            reverse=True
+        )
+
+        return valid_jobs[:5]
+
+    except Exception:
+        return None
+
 
 @login_required
 def job_recommendation(request):
@@ -3350,54 +3928,85 @@ def job_recommendation(request):
     if assessment:
 
         assessment_skills = (
-            assessment.selected_skills
-            or ""
+            assessment.selected_skills or ""
         )
 
         for skill in assessment_skills.split(","):
-
             skill = skill.strip().lower()
-
             if skill:
                 user_skills.add(skill)
 
-    # Resume skills
+    # --------------------------------
+    # Resume detected skills
+    # --------------------------------
+
     if resume:
 
         resume_skills = (
-            resume.detected_skills
-            or ""
+            resume.detected_skills or ""
         )
 
         for skill in resume_skills.split(","):
-
             skill = skill.strip().lower()
-
             if skill:
                 user_skills.add(skill)
 
     # --------------------------------
-    # Static job recommendations
+    # Student profile information
     # --------------------------------
 
+    career = ""
+    career_interest = ""
+    enjoyed_field = ""
+    skill_levels = {}
+
+    if assessment:
+
+        career = (
+            assessment.recommended_career or ""
+        ).strip()
+
+        career_interest = (
+            assessment.career_interest or ""
+        ).strip()
+
+        enjoyed_field = (
+            assessment.enjoyed_field or ""
+        ).strip()
+
+        skill_levels = (
+            assessment.skill_levels
+            if assessment.skill_levels
+            else {}
+        )
+
+    # --------------------------------
+    # Resume AI analysis
+    # --------------------------------
+
+    resume_analysis = {}
+
+    if resume:
+        stored_analysis = getattr(
+            resume,
+            "ai_analysis",
+            {}
+        )
+
+        if isinstance(stored_analysis, dict):
+            resume_analysis = stored_analysis
+
+    # =========================================================
+    # RULE-BASED FALLBACK JOB DATA
+    # =========================================================
+
     jobs = [
-
         {
-            "title":
-                "Junior Java Developer",
-
-            "company":
-                "Software Development Company",
-
-            "location":
-                "Chennai",
-
-            "type":
-                "Full Time",
-
-            "description":
-                "Develop and maintain Java-based applications.",
-
+            "title": "Junior Java Developer",
+            "company": "Software Development Company",
+            "location": "Chennai",
+            "type": "Full Time",
+            "description": "Develop and maintain Java-based applications.",
             "required_skills": [
                 "java",
                 "sql",
@@ -3406,23 +4015,12 @@ def job_recommendation(request):
                 "git",
             ],
         },
-
         {
-            "title":
-                "Full Stack Developer",
-
-            "company":
-                "Technology Company",
-
-            "location":
-                "Bangalore",
-
-            "type":
-                "Full Time",
-
-            "description":
-                "Work on frontend and backend web applications.",
-
+            "title": "Full Stack Developer",
+            "company": "Technology Company",
+            "location": "Bangalore",
+            "type": "Full Time",
+            "description": "Work on frontend and backend web applications.",
             "required_skills": [
                 "html",
                 "css",
@@ -3433,23 +4031,12 @@ def job_recommendation(request):
                 "git",
             ],
         },
-
         {
-            "title":
-                "Data Analyst",
-
-            "company":
-                "Analytics Company",
-
-            "location":
-                "Chennai",
-
-            "type":
-                "Full Time",
-
-            "description":
-                "Analyze business data and create analytical reports.",
-
+            "title": "Data Analyst",
+            "company": "Analytics Company",
+            "location": "Chennai",
+            "type": "Full Time",
+            "description": "Analyze business data and create analytical reports.",
             "required_skills": [
                 "python",
                 "sql",
@@ -3459,23 +4046,12 @@ def job_recommendation(request):
                 "statistics",
             ],
         },
-
         {
-            "title":
-                "Business Analyst",
-
-            "company":
-                "Consulting Company",
-
-            "location":
-                "Chennai",
-
-            "type":
-                "Full Time",
-
-            "description":
-                "Analyze business requirements and support decision making.",
-
+            "title": "Business Analyst",
+            "company": "Consulting Company",
+            "location": "Chennai",
+            "type": "Full Time",
+            "description": "Analyze business requirements and support decision making.",
             "required_skills": [
                 "business analysis",
                 "excel",
@@ -3485,23 +4061,12 @@ def job_recommendation(request):
                 "data analysis",
             ],
         },
-
         {
-            "title":
-                "Cyber Security Analyst",
-
-            "company":
-                "Cyber Security Company",
-
-            "location":
-                "Bangalore",
-
-            "type":
-                "Full Time",
-
-            "description":
-                "Monitor systems and identify potential security threats.",
-
+            "title": "Cyber Security Analyst",
+            "company": "Cyber Security Company",
+            "location": "Bangalore",
+            "type": "Full Time",
+            "description": "Monitor systems and identify potential security threats.",
             "required_skills": [
                 "cyber security",
                 "networking",
@@ -3510,23 +4075,12 @@ def job_recommendation(request):
                 "security",
             ],
         },
-
         {
-            "title":
-                "AI/ML Engineer",
-
-            "company":
-                "AI Technology Company",
-
-            "location":
-                "Bangalore",
-
-            "type":
-                "Full Time",
-
-            "description":
-                "Develop machine learning and AI-based solutions.",
-
+            "title": "AI/ML Engineer",
+            "company": "AI Technology Company",
+            "location": "Bangalore",
+            "type": "Full Time",
+            "description": "Develop machine learning and AI-based solutions.",
             "required_skills": [
                 "python",
                 "machine learning",
@@ -3535,23 +4089,12 @@ def job_recommendation(request):
                 "sql",
             ],
         },
-
         {
-            "title":
-                "Python Developer",
-
-            "company":
-                "Technology Company",
-
-            "location":
-                "Remote",
-
-            "type":
-                "Full Time",
-
-            "description":
-                "Develop Python and Django-based web applications.",
-
+            "title": "Python Developer",
+            "company": "Technology Company",
+            "location": "Remote",
+            "type": "Full Time",
+            "description": "Develop Python and Django-based web applications.",
             "required_skills": [
                 "python",
                 "django",
@@ -3562,94 +4105,96 @@ def job_recommendation(request):
         },
     ]
 
-    recommendations = []
+    # =========================================================
+    # AI RECOMMENDATION FIRST
+    # =========================================================
 
-    career_interest = ""
-
-    if assessment:
-
-        career_interest = (
-            assessment.career_interest
-            or ""
-        ).lower()
-
-    for job in jobs:
-
-        required = job[
-            "required_skills"
-        ]
-
-        matched_skills = []
-
-        missing_skills = []
-
-        for skill in required:
-
-            if skill.lower() in user_skills:
-
-                matched_skills.append(
-                    skill
-                )
-
-            else:
-
-                missing_skills.append(
-                    skill
-                )
-
-        if required:
-
-            match = round(
-                len(matched_skills)
-                / len(required)
-                * 100
-            )
-
-        else:
-
-            match = 0
-
-        # Career interest bonus
-        if (
-            career_interest
-            and (
-                career_interest
-                in job["title"].lower()
-                or job["title"].lower()
-                in career_interest
-            )
-        ):
-
-            match += 10
-
-        match = min(
-            match,
-            100
-        )
-
-        job_copy = job.copy()
-
-        job_copy[
-            "matched_skills"
-        ] = matched_skills
-
-        job_copy[
-            "missing_skills"
-        ] = missing_skills
-
-        job_copy[
-            "match"
-        ] = match
-
-        recommendations.append(
-            job_copy
-        )
-
-    # Highest matches first
-    recommendations.sort(
-        key=lambda x: x["match"],
-        reverse=True
+    recommendations = recommend_jobs_with_gemini(
+        skills=sorted(user_skills),
+        skill_levels=skill_levels,
+        career=career,
+        career_interest=career_interest,
+        enjoyed_field=enjoyed_field,
+        resume_analysis=resume_analysis,
     )
+
+    ai_generated = bool(recommendations)
+
+    # =========================================================
+    # FALLBACK RECOMMENDATION
+    # =========================================================
+
+    if not recommendations:
+
+        recommendations = []
+
+        career_interest_lower = career_interest.lower()
+        career_lower = career.lower()
+
+        for job in jobs:
+
+            required = job["required_skills"]
+
+            matched_skills = []
+            missing_skills = []
+
+            for skill in required:
+
+                if skill.lower() in user_skills:
+                    matched_skills.append(skill)
+                else:
+                    missing_skills.append(skill)
+
+            if required:
+                match = round(
+                    len(matched_skills)
+                    / len(required)
+                    * 100
+                )
+            else:
+                match = 0
+
+            # Career interest bonus
+            if (
+                career_interest_lower
+                and (
+                    career_interest_lower in job["title"].lower()
+                    or job["title"].lower() in career_interest_lower
+                )
+            ):
+                match += 10
+
+            # Recommended career bonus
+            if (
+                career_lower
+                and (
+                    career_lower in job["title"].lower()
+                    or job["title"].lower() in career_lower
+                )
+            ):
+                match += 10
+
+            match = min(match, 100)
+
+            job_copy = job.copy()
+
+            job_copy["matched_skills"] = matched_skills
+            job_copy["missing_skills"] = missing_skills
+            job_copy["match"] = match
+            job_copy["why_match"] = (
+                "Matched based on your assessed and resume skills."
+            )
+            job_copy["next_step"] = (
+                "Improve the missing skills and build a practical project."
+            )
+            job_copy["ai_generated"] = False
+
+            recommendations.append(job_copy)
+
+        recommendations.sort(
+            key=lambda x: x["match"],
+            reverse=True
+        )
 
     top_jobs = recommendations[:3]
 
@@ -3657,20 +4202,13 @@ def job_recommendation(request):
         request,
         "job_recommendation.html",
         {
-            "recommendations":
-                recommendations,
-
-            "top_jobs":
-                top_jobs,
-
-            "user_skills":
-                user_skills,
-
-            "assessment":
-                assessment,
-
-            "resume":
-                resume,
+            "recommendations": recommendations,
+            "top_jobs": top_jobs,
+            "user_skills": user_skills,
+            "assessment": assessment,
+            "resume": resume,
+            "ai_generated": ai_generated,
+            "career": career,
         }
     )
 
@@ -3770,5 +4308,93 @@ def public_career_profile(request, token):
     return render(
         request,
         'public-career-profile.html',
+        context
+    )
+
+
+# =========================================================
+# GEMINI API TEST
+# =========================================================
+
+def gemini_test(request):
+
+    try:
+
+        if not settings.GEMINI_API_KEY:
+            return HttpResponse(
+                "Gemini API key is not configured.",
+                status=500
+            )
+
+        client = genai.Client(
+            api_key=settings.GEMINI_API_KEY
+        )
+
+        response = client.models.generate_content(
+            model="gemini-3.6-flash",
+            contents=(
+                "Say hello to AI Career Coach "
+                "in one short sentence."
+            )
+        )
+
+        return HttpResponse(
+            response.text
+        )
+
+    except Exception as e:
+
+        return HttpResponse(
+            f"Gemini API Error: {str(e)}",
+            status=500
+        )
+
+
+@login_required(login_url='login')
+def admin_dashboard(request):
+
+    if not request.user.is_superuser:
+        return redirect('dashboard')
+
+    total_users = User.objects.count()
+
+    total_assessments = UserSkillAssessment.objects.count()
+
+    total_recommendations = UserSkillAssessment.objects.exclude(
+        recommended_career=''
+    ).exclude(
+        recommended_career__isnull=True
+    ).count()
+
+    total_resumes = Resume.objects.count()
+
+    total_interviews = MockInterview.objects.count()
+
+    interview_scores = list(
+        MockInterview.objects.values_list(
+            'score',
+            flat=True
+        )
+    )
+
+    if interview_scores:
+        average_score = round(
+            sum(interview_scores) / len(interview_scores)
+        )
+    else:
+        average_score = 0
+
+    context = {
+        'total_users': total_users,
+        'total_assessments': total_assessments,
+        'total_recommendations': total_recommendations,
+        'total_resumes': total_resumes,
+        'total_interviews': total_interviews,
+        'average_score': average_score,
+    }
+
+    return render(
+        request,
+        'admin-dashboard.html',
         context
     )

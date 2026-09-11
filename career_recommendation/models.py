@@ -4,52 +4,15 @@ from django.db import models
 from django.contrib.auth.models import User
 
 
-# =========================================================
-# STUDENT PROFILE
-# =========================================================
-
 class StudentProfile(models.Model):
-    user = models.OneToOneField(
-        User,
-        on_delete=models.CASCADE
-    )
-
-    full_name = models.CharField(
-        max_length=150
-    )
-
-    phone = models.CharField(
-        max_length=15,
-        blank=True
-    )
-
-    education = models.CharField(
-        max_length=150,
-        blank=True
-    )
-
-    college = models.CharField(
-        max_length=200,
-        blank=True
-    )
-
-    graduation_year = models.IntegerField(
-        null=True,
-        blank=True
-    )
-
-    career_goal = models.CharField(
-        max_length=150,
-        blank=True
-    )
-
-    created_at = models.DateTimeField(
-        auto_now_add=True
-    )
-
-    # =====================================================
-    # SHAREABLE CAREER PROFILE
-    # =====================================================
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    full_name = models.CharField(max_length=150)
+    phone = models.CharField(max_length=15, blank=True)
+    education = models.CharField(max_length=150, blank=True)
+    college = models.CharField(max_length=200, blank=True)
+    graduation_year = models.IntegerField(null=True, blank=True)
+    career_goal = models.CharField(max_length=150, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
 
     share_token = models.UUIDField(
         default=uuid.uuid4,
@@ -64,11 +27,8 @@ class StudentProfile(models.Model):
         return self.user.username
 
 
-# =========================================================
-# USER SKILL ASSESSMENT
-# =========================================================
-
 class UserSkillAssessment(models.Model):
+
     user = models.OneToOneField(
         User,
         on_delete=models.CASCADE
@@ -102,6 +62,17 @@ class UserSkillAssessment(models.Model):
         default='Not Assessed'
     )
 
+    # Learning progress percentage
+    learning_progress = models.IntegerField(
+        default=0
+    )
+
+    # Example: [1, 2, 3]
+    completed_learning_steps = models.JSONField(
+        default=list,
+        blank=True
+    )
+
     created_at = models.DateTimeField(
         auto_now_add=True
     )
@@ -110,46 +81,21 @@ class UserSkillAssessment(models.Model):
         auto_now=True
     )
 
-    learning_progress = models.IntegerField(
-    default=0
-    )
     def __str__(self):
         return f"{self.user.username} - Skill Assessment"
 
 
-# =========================================================
-# RESUME
-# =========================================================
-
 class Resume(models.Model):
-    user = models.OneToOneField(
-        User,
-        on_delete=models.CASCADE
-    )
-
-    resume_file = models.FileField(
-        upload_to='resumes/'
-    )
-
-    ats_score = models.IntegerField(
-        default=0
-    )
-
-    detected_skills = models.TextField(
-        blank=True
-    )
-
-    uploaded_at = models.DateTimeField(
-        auto_now=True
-    )
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    resume_file = models.FileField(upload_to='resumes/')
+    ats_score = models.IntegerField(default=0)
+    detected_skills = models.TextField(blank=True)
+    ai_analysis = models.JSONField(default=dict, blank=True)
+    uploaded_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return f"{self.user.username}'s Resume"
 
-
-# =========================================================
-# MOCK INTERVIEW
-# =========================================================
 
 class MockInterview(models.Model):
     user = models.ForeignKey(
@@ -165,8 +111,36 @@ class MockInterview(models.Model):
 
     answer = models.TextField()
 
+    # Final weighted score
     score = models.IntegerField(
         default=0
+    )
+
+    # Saved Gemini category scores.
+    # The Interview Result page reads these fields directly.
+    technical_score = models.IntegerField(
+        default=0
+    )
+
+    relevance_score = models.IntegerField(
+        default=0
+    )
+
+    communication_score = models.IntegerField(
+        default=0
+    )
+
+    # Saved AI feedback data.
+    strengths = models.TextField(
+        blank=True
+    )
+
+    improvements = models.TextField(
+        blank=True
+    )
+
+    better_answer_tip = models.TextField(
+        blank=True
     )
 
     feedback = models.TextField(

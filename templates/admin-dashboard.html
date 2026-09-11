@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Admin Dashboard | AI Career Coach</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f7fb;
+            color: #172033;
+        }
+
+        .header {
+            background: #0b1f3a;
+            color: white;
+            padding: 20px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header h1 {
+            font-size: 26px;
+        }
+
+        .header span {
+            font-size: 14px;
+            opacity: 0.85;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        .welcome {
+            margin-bottom: 30px;
+        }
+
+        .welcome h2 {
+            font-size: 30px;
+            margin-bottom: 8px;
+        }
+
+        .welcome p {
+            color: #64748b;
+            font-size: 16px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 22px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 16px;
+            padding: 28px;
+            box-shadow: 0 8px 25px rgba(15, 23, 42, 0.08);
+            border: 1px solid #e5eaf1;
+            transition: 0.25s;
+        }
+
+        .card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 30px rgba(15, 23, 42, 0.12);
+        }
+
+        .icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            background: #e6f7f5;
+            color: #087f75;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 23px;
+            margin-bottom: 18px;
+        }
+
+        .card h3 {
+            font-size: 15px;
+            color: #64748b;
+            margin-bottom: 10px;
+        }
+
+        .number {
+            font-size: 34px;
+            font-weight: bold;
+            color: #0b1f3a;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 50px;
+            padding: 20px;
+            color: #64748b;
+            font-size: 14px;
+        }
+
+        @media (max-width: 850px) {
+
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .header {
+                padding: 18px 20px;
+            }
+
+        }
+
+        @media (max-width: 550px) {
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .container {
+                margin-top: 25px;
+            }
+
+            .welcome h2 {
+                font-size: 24px;
+            }
+
+            .header h1 {
+                font-size: 20px;
+            }
+
+        }
+
+    </style>
+</head>
+
+<body>
+
+    <header class="header">
+
+        <h1>🤖 AI Career Coach</h1>
+
+        <span>Administrator Dashboard</span>
+
+    </header>
+
+
+    <main class="container">
+
+        <section class="welcome">
+
+            <h2>Admin Dashboard</h2>
+
+            <p>
+                Monitor users, assessments, resumes and interview performance.
+            </p>
+
+        </section>
+
+
+        <section class="stats-grid">
+
+
+            <div class="card">
+
+                <div class="icon">👥</div>
+
+                <h3>Total Users</h3>
+
+                <div class="number">
+                    {{ total_users }}
+                </div>
+
+            </div>
+
+
+            <div class="card">
+
+                <div class="icon">🧠</div>
+
+                <h3>Skill Assessments</h3>
+
+                <div class="number">
+                    {{ total_assessments }}
+                </div>
+
+            </div>
+
+
+            <div class="card">
+
+                <div class="icon">🎯</div>
+
+                <h3>Career Recommendations</h3>
+
+                <div class="number">
+                    {{ total_recommendations }}
+                </div>
+
+            </div>
+
+
+            <div class="card">
+
+                <div class="icon">📄</div>
+
+                <h3>Resumes Analyzed</h3>
+
+                <div class="number">
+                    {{ total_resumes }}
+                </div>
+
+            </div>
+
+
+            <div class="card">
+
+                <div class="icon">🎤</div>
+
+                <h3>Mock Interviews</h3>
+
+                <div class="number">
+                    {{ total_interviews }}
+                </div>
+
+            </div>
+
+
+            <div class="card">
+
+                <div class="icon">⭐</div>
+
+                <h3>Average Interview Score</h3>
+
+                <div class="number">
+                    {{ average_score }}%
+                </div>
+
+            </div>
+
+
+        </section>
+
+    </main>
+
+
+    <footer class="footer">
+
+        AI Powered Career Coach & Skill Development System
+
+    </footer>
+
+</body>
+</html>

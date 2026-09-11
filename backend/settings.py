@@ -1,8 +1,12 @@
 from pathlib import Path
 import os
 
-import dj_database_url
+# ... existing settings ...
+
+GEMINI_API_KEY = os.getenv("GEMINI_API_KEY", "")
+
 from dotenv import load_dotenv
+import dj_database_url
 
 
 # ---------------------------------------------------------
@@ -10,6 +14,7 @@ from dotenv import load_dotenv
 # ---------------------------------------------------------
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+# Load .env file
 load_dotenv(BASE_DIR / ".env")
 
 
@@ -21,7 +26,17 @@ SECRET_KEY = os.getenv(
     "django-insecure-change-this-key-for-local-development"
 )
 
-DEBUG = os.getenv("DEBUG", "True").lower() == "true"
+DEBUG = os.getenv(
+    "DEBUG",
+    "True"
+).lower() == "true"
+
+
+# ---------------------------------------------------------
+# GEMINI API
+# ---------------------------------------------------------
+# API key is stored safely inside .env
+GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
 
 
 # ---------------------------------------------------------
@@ -33,10 +48,14 @@ ALLOWED_HOSTS = [
 ]
 
 # Render provides this automatically
-RENDER_EXTERNAL_HOSTNAME = os.getenv("RENDER_EXTERNAL_HOSTNAME")
+RENDER_EXTERNAL_HOSTNAME = os.getenv(
+    "RENDER_EXTERNAL_HOSTNAME"
+)
 
 if RENDER_EXTERNAL_HOSTNAME:
-    ALLOWED_HOSTS.append(RENDER_EXTERNAL_HOSTNAME)
+    ALLOWED_HOSTS.append(
+        RENDER_EXTERNAL_HOSTNAME
+    )
 
 
 # ---------------------------------------------------------
@@ -123,6 +142,7 @@ WSGI_APPLICATION = "backend.wsgi.application"
 DATABASE_URL = os.getenv("DATABASE_URL")
 
 if DATABASE_URL:
+
     # Render PostgreSQL
     DATABASES = {
         "default": dj_database_url.parse(
@@ -131,7 +151,9 @@ if DATABASE_URL:
             conn_health_checks=True,
         )
     }
+
 else:
+
     # Local MySQL
     DATABASES = {
         "default": {
@@ -222,13 +244,13 @@ STATIC_ROOT = BASE_DIR / "staticfiles"
 
 STORAGES = {
     "default": {
-        "BACKEND": "django.core.files.storage.FileSystemStorage",
+        "BACKEND":
+            "django.core.files.storage.FileSystemStorage",
     },
 
     "staticfiles": {
-        "BACKEND": (
-            "whitenoise.storage.CompressedManifestStaticFilesStorage"
-        ),
+        "BACKEND":
+            "whitenoise.storage.CompressedManifestStaticFilesStorage",
     },
 }
 
@@ -244,7 +266,9 @@ MEDIA_ROOT = BASE_DIR / "media"
 # ---------------------------------------------------------
 # DEFAULT PRIMARY KEY
 # ---------------------------------------------------------
-DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+DEFAULT_AUTO_FIELD = (
+    "django.db.models.BigAutoField"
+)
 
 
 # ---------------------------------------------------------
@@ -260,9 +284,13 @@ LOGOUT_REDIRECT_URL = "/"
 # ---------------------------------------------------------
 # FILE UPLOAD SETTINGS
 # ---------------------------------------------------------
-FILE_UPLOAD_MAX_MEMORY_SIZE = 10 * 1024 * 1024
+FILE_UPLOAD_MAX_MEMORY_SIZE = (
+    10 * 1024 * 1024
+)
 
-DATA_UPLOAD_MAX_MEMORY_SIZE = 10 * 1024 * 1024
+DATA_UPLOAD_MAX_MEMORY_SIZE = (
+    10 * 1024 * 1024
+)
 
 
 # ---------------------------------------------------------
@@ -287,6 +315,7 @@ X_FRAME_OPTIONS = "DENY"
 # PRODUCTION SECURITY
 # ---------------------------------------------------------
 if not DEBUG:
+
     SECURE_SSL_REDIRECT = True
 
     SESSION_COOKIE_SECURE = True
@@ -305,6 +334,7 @@ if not DEBUG:
 CSRF_TRUSTED_ORIGINS = []
 
 if RENDER_EXTERNAL_HOSTNAME:
+
     CSRF_TRUSTED_ORIGINS.append(
         f"https://{RENDER_EXTERNAL_HOSTNAME}"
     )
