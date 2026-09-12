@@ -27,7 +27,11 @@ import re
 
 def home(request):
     if request.user.is_authenticated:
-        return redirect("dashboard")
+
+        if request.user.is_superuser:
+            return redirect("admin_dashboard")
+
+            return redirect("dashboard")
 
     return render(request, "home.html")
 
@@ -148,6 +152,10 @@ def register_view(request):
 # LOGIN
 # =========================================================
 
+# =========================================================
+# LOGIN
+# =========================================================
+
 def login_view(request):
 
     if request.user.is_authenticated:
@@ -167,6 +175,9 @@ def login_view(request):
         if user is not None:
 
             login(request, user)
+
+            if user.is_superuser:
+                return redirect("admin_dashboard")
 
             return redirect("dashboard")
 
@@ -4353,22 +4364,32 @@ def gemini_test(request):
 @login_required(login_url='login')
 def admin_dashboard(request):
 
+    # Only superusers can access the Admin Dashboard
     if not request.user.is_superuser:
         return redirect('dashboard')
+
+    # =========================================================
+    # COUNTS
+    # =========================================================
 
     total_users = User.objects.count()
 
     total_assessments = UserSkillAssessment.objects.count()
 
-    total_recommendations = UserSkillAssessment.objects.exclude(
-        recommended_career=''
-    ).exclude(
-        recommended_career__isnull=True
-    ).count()
+    total_recommendations = (
+        UserSkillAssessment.objects
+        .exclude(recommended_career='')
+        .exclude(recommended_career__isnull=True)
+        .count()
+    )
 
     total_resumes = Resume.objects.count()
 
     total_interviews = MockInterview.objects.count()
+
+    # =========================================================
+    # AVERAGE INTERVIEW SCORE
+    # =========================================================
 
     interview_scores = list(
         MockInterview.objects.values_list(
@@ -4384,13 +4405,66 @@ def admin_dashboard(request):
     else:
         average_score = 0
 
+    # =========================================================
+    # RECENT USERS
+    # =========================================================
+
+    recent_users = User.objects.order_by(
+        '-date_joined'
+    )[:5]
+
+    # =========================================================
+    # RECENT ASSESSMENTS
+    # =========================================================
+
+    recent_assessments = (
+        UserSkillAssessment.objects
+        .select_related('user')
+        .order_by('-created_at')[:5]
+    )
+
+    # =========================================================
+    # RECENT INTERVIEWS
+    # =========================================================
+
+    recent_interviews = (
+        MockInterview.objects
+        .select_related('user')
+        .order_by('-created_at')[:5]
+    )
+
+    # =========================================================
+    # CONTEXT
+    # =========================================================
+
     context = {
-        'total_users': total_users,
-        'total_assessments': total_assessments,
-        'total_recommendations': total_recommendations,
-        'total_resumes': total_resumes,
-        'total_interviews': total_interviews,
-        'average_score': average_score,
+
+        'total_users':
+            total_users,
+
+        'total_assessments':
+            total_assessments,
+
+        'total_recommendations':
+            total_recommendations,
+
+        'total_resumes':
+            total_resumes,
+
+        'total_interviews':
+            total_interviews,
+
+        'average_score':
+            average_score,
+
+        'recent_users':
+            recent_users,
+
+        'recent_assessments':
+            recent_assessments,
+
+        'recent_interviews':
+            recent_interviews,
     }
 
     return render(

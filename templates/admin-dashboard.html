@@ -20,6 +20,8 @@
             color: #172033;
         }
 
+        /* HEADER */
+
         .header {
             background: #0b1f3a;
             color: white;
@@ -30,22 +32,49 @@
         }
 
         .header h1 {
-            font-size: 26px;
+            font-size: 25px;
         }
 
-        .header span {
-            font-size: 14px;
-            opacity: 0.85;
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 15px;
         }
+
+        .admin-badge {
+            background: rgba(255,255,255,0.12);
+            padding: 8px 14px;
+            border-radius: 20px;
+            font-size: 13px;
+        }
+
+        .logout-btn {
+            color: white;
+            text-decoration: none;
+            border: 1px solid rgba(255,255,255,0.4);
+            padding: 8px 15px;
+            border-radius: 8px;
+            font-size: 13px;
+            transition: 0.2s;
+        }
+
+        .logout-btn:hover {
+            background: white;
+            color: #0b1f3a;
+        }
+
+        /* CONTAINER */
 
         .container {
-            max-width: 1200px;
-            margin: 40px auto;
+            max-width: 1250px;
+            margin: 35px auto;
             padding: 0 20px;
         }
 
+        /* WELCOME */
+
         .welcome {
-            margin-bottom: 30px;
+            margin-bottom: 28px;
         }
 
         .welcome h2 {
@@ -55,20 +84,23 @@
 
         .welcome p {
             color: #64748b;
-            font-size: 16px;
+            font-size: 15px;
         }
+
+        /* STATISTICS */
 
         .stats-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 22px;
+            gap: 20px;
+            margin-bottom: 35px;
         }
 
         .card {
             background: white;
             border-radius: 16px;
-            padding: 28px;
-            box-shadow: 0 8px 25px rgba(15, 23, 42, 0.08);
+            padding: 24px;
+            box-shadow: 0 8px 25px rgba(15, 23, 42, 0.07);
             border: 1px solid #e5eaf1;
             transition: 0.25s;
         }
@@ -76,6 +108,12 @@
         .card:hover {
             transform: translateY(-4px);
             box-shadow: 0 12px 30px rgba(15, 23, 42, 0.12);
+        }
+
+        .card-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
 
         .icon {
@@ -87,46 +125,206 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 23px;
-            margin-bottom: 18px;
+            font-size: 22px;
         }
 
         .card h3 {
-            font-size: 15px;
+            font-size: 14px;
             color: #64748b;
-            margin-bottom: 10px;
+            margin-top: 18px;
+            margin-bottom: 8px;
         }
 
         .number {
-            font-size: 34px;
+            font-size: 32px;
             font-weight: bold;
             color: #0b1f3a;
         }
 
-        .footer {
-            text-align: center;
-            margin-top: 50px;
-            padding: 20px;
+        /* SECTION */
+
+        .section-title {
+            font-size: 21px;
+            margin-bottom: 16px;
+            color: #0b1f3a;
+        }
+
+        /* RECENT GRID */
+
+        .recent-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 22px;
+            margin-bottom: 30px;
+        }
+
+        /* TABLE CARD */
+
+        .table-card {
+            background: white;
+            border-radius: 16px;
+            border: 1px solid #e5eaf1;
+            box-shadow: 0 8px 25px rgba(15, 23, 42, 0.07);
+            overflow: hidden;
+        }
+
+        .table-header {
+            padding: 20px 22px;
+            border-bottom: 1px solid #e5eaf1;
+        }
+
+        .table-header h3 {
+            font-size: 17px;
+            color: #0b1f3a;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            text-align: left;
+            padding: 13px 20px;
+            font-size: 12px;
             color: #64748b;
+            background: #f8fafc;
+            text-transform: uppercase;
+        }
+
+        td {
+            padding: 14px 20px;
+            border-top: 1px solid #eef2f7;
             font-size: 14px;
         }
 
-        @media (max-width: 850px) {
+        td:first-child {
+            font-weight: 600;
+            color: #172033;
+        }
+
+        .score {
+            font-weight: bold;
+            color: #087f75;
+        }
+
+        .empty {
+            text-align: center;
+            padding: 25px;
+            color: #94a3b8;
+            font-size: 14px;
+        }
+
+        /* QUICK ACTIONS */
+
+        .quick-actions {
+            margin-top: 10px;
+            margin-bottom: 30px;
+        }
+
+        .action-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 18px;
+        }
+
+        .action {
+            background: white;
+            border: 1px solid #e5eaf1;
+            border-radius: 14px;
+            padding: 20px;
+            text-decoration: none;
+            color: #172033;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            transition: 0.25s;
+            box-shadow: 0 6px 20px rgba(15, 23, 42, 0.05);
+        }
+
+        .action:hover {
+            transform: translateY(-3px);
+            border-color: #b9dcd8;
+        }
+
+        .action-icon {
+            width: 42px;
+            height: 42px;
+            border-radius: 10px;
+            background: #eef8f7;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 19px;
+        }
+
+        .action strong {
+            display: block;
+            margin-bottom: 4px;
+        }
+
+        .action span {
+            font-size: 12px;
+            color: #64748b;
+        }
+
+        /* FOOTER */
+
+        .footer {
+            text-align: center;
+            margin-top: 45px;
+            padding: 20px;
+            color: #64748b;
+            font-size: 13px;
+        }
+
+        /* RESPONSIVE */
+
+        @media (max-width: 900px) {
 
             .stats-grid {
                 grid-template-columns: repeat(2, 1fr);
             }
 
-            .header {
-                padding: 18px 20px;
+            .recent-grid {
+                grid-template-columns: 1fr;
             }
 
+            .action-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .header {
+                padding: 18px 22px;
+            }
         }
 
         @media (max-width: 550px) {
 
             .stats-grid {
                 grid-template-columns: 1fr;
+            }
+
+            .action-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .header {
+                padding: 16px 18px;
+            }
+
+            .header h1 {
+                font-size: 19px;
+            }
+
+            .admin-badge {
+                font-size: 11px;
+                padding: 7px 10px;
+            }
+
+            .logout-btn {
+                font-size: 11px;
+                padding: 7px 10px;
             }
 
             .container {
@@ -137,10 +335,14 @@
                 font-size: 24px;
             }
 
-            .header h1 {
-                font-size: 20px;
+            table {
+                font-size: 12px;
             }
 
+            th,
+            td {
+                padding: 11px 12px;
+            }
         }
 
     </style>
@@ -148,16 +350,30 @@
 
 <body>
 
+    <!-- HEADER -->
+
     <header class="header">
 
         <h1>🤖 AI Career Coach</h1>
 
-        <span>Administrator Dashboard</span>
+        <div class="header-right">
+
+            <span class="admin-badge">
+                🔐 Administrator
+            </span>
+
+            <a href="{% url 'logout' %}" class="logout-btn">
+                Logout
+            </a>
+
+        </div>
 
     </header>
 
 
     <main class="container">
+
+        <!-- WELCOME -->
 
         <section class="welcome">
 
@@ -170,12 +386,17 @@
         </section>
 
 
+        <!-- STATISTICS -->
+
         <section class="stats-grid">
 
+            <!-- TOTAL USERS -->
 
             <div class="card">
 
-                <div class="icon">👥</div>
+                <div class="card-top">
+                    <div class="icon">👥</div>
+                </div>
 
                 <h3>Total Users</h3>
 
@@ -186,9 +407,13 @@
             </div>
 
 
+            <!-- ASSESSMENTS -->
+
             <div class="card">
 
-                <div class="icon">🧠</div>
+                <div class="card-top">
+                    <div class="icon">🧠</div>
+                </div>
 
                 <h3>Skill Assessments</h3>
 
@@ -199,9 +424,13 @@
             </div>
 
 
+            <!-- CAREER RECOMMENDATIONS -->
+
             <div class="card">
 
-                <div class="icon">🎯</div>
+                <div class="card-top">
+                    <div class="icon">🎯</div>
+                </div>
 
                 <h3>Career Recommendations</h3>
 
@@ -212,9 +441,13 @@
             </div>
 
 
+            <!-- RESUMES -->
+
             <div class="card">
 
-                <div class="icon">📄</div>
+                <div class="card-top">
+                    <div class="icon">📄</div>
+                </div>
 
                 <h3>Resumes Analyzed</h3>
 
@@ -225,9 +458,13 @@
             </div>
 
 
+            <!-- MOCK INTERVIEWS -->
+
             <div class="card">
 
-                <div class="icon">🎤</div>
+                <div class="card-top">
+                    <div class="icon">🎤</div>
+                </div>
 
                 <h3>Mock Interviews</h3>
 
@@ -238,9 +475,13 @@
             </div>
 
 
+            <!-- AVERAGE SCORE -->
+
             <div class="card">
 
-                <div class="icon">⭐</div>
+                <div class="card-top">
+                    <div class="icon">⭐</div>
+                </div>
 
                 <h3>Average Interview Score</h3>
 
@@ -250,11 +491,272 @@
 
             </div>
 
+        </section>
+
+
+        <!-- RECENT ACTIVITY -->
+
+        <h2 class="section-title">
+            Recent Activity
+        </h2>
+
+
+        <section class="recent-grid">
+
+
+            <!-- RECENT USERS -->
+
+            <div class="table-card">
+
+                <div class="table-header">
+                    <h3>👥 Recent Users</h3>
+                </div>
+
+                {% if recent_users %}
+
+                <table>
+
+                    <thead>
+
+                        <tr>
+                            <th>Username</th>
+                            <th>Joined</th>
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                        {% for user in recent_users %}
+
+                        <tr>
+
+                            <td>
+                                {{ user.username }}
+                            </td>
+
+                            <td>
+                                {{ user.date_joined|date:"d M Y" }}
+                            </td>
+
+                        </tr>
+
+                        {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+                {% else %}
+
+                <div class="empty">
+                    No users found.
+                </div>
+
+                {% endif %}
+
+            </div>
+
+
+            <!-- RECENT ASSESSMENTS -->
+
+            <div class="table-card">
+
+                <div class="table-header">
+                    <h3>🧠 Recent Assessments</h3>
+                </div>
+
+                {% if recent_assessments %}
+
+                <table>
+
+                    <thead>
+
+                        <tr>
+                            <th>User</th>
+                            <th>Date</th>
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                        {% for assessment in recent_assessments %}
+
+                        <tr>
+
+                            <td>
+                                {{ assessment.user.username }}
+                            </td>
+
+                            <td>
+                                {{ assessment.created_at|date:"d M Y" }}
+                            </td>
+
+                        </tr>
+
+                        {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+                {% else %}
+
+                <div class="empty">
+                    No assessments found.
+                </div>
+
+                {% endif %}
+
+            </div>
+
+
+            <!-- RECENT INTERVIEWS -->
+
+            <div class="table-card">
+
+                <div class="table-header">
+                    <h3>🎤 Recent Interviews</h3>
+                </div>
+
+                {% if recent_interviews %}
+
+                <table>
+
+                    <thead>
+
+                        <tr>
+                            <th>User</th>
+                            <th>Score</th>
+                            <th>Date</th>
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                        {% for interview in recent_interviews %}
+
+                        <tr>
+
+                            <td>
+                                {{ interview.user.username }}
+                            </td>
+
+                            <td class="score">
+                                {{ interview.score }}%
+                            </td>
+
+                            <td>
+                                {{ interview.created_at|date:"d M Y" }}
+                            </td>
+
+                        </tr>
+
+                        {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+                {% else %}
+
+                <div class="empty">
+                    No interviews found.
+                </div>
+
+                {% endif %}
+
+            </div>
+
+
+        </section>
+
+
+        <!-- QUICK ACTIONS -->
+
+        <section class="quick-actions">
+
+            <h2 class="section-title">
+                Quick Actions
+            </h2>
+
+
+            <div class="action-grid">
+
+
+                <!-- REFRESH -->
+
+                <a href="{% url 'admin_dashboard' %}" class="action">
+
+                    <div class="action-icon">
+                        📊
+                    </div>
+
+                    <div>
+
+                        <strong>Refresh Dashboard</strong>
+
+                        <span>
+                            View latest statistics
+                        </span>
+
+                    </div>
+
+                </a>
+
+
+                <!-- DJANGO ADMIN -->
+
+                <a href="/admin/" class="action">
+
+                    <div class="action-icon">
+                        ⚙️
+                    </div>
+
+                    <div>
+
+                        <strong>Django Admin</strong>
+
+                        <span>
+                            Manage system data
+                        </span>
+
+                    </div>
+
+                </a>
+
+
+                <!-- USER DASHBOARD -->
+
+                <a href="{% url 'dashboard' %}" class="action">
+
+                    <div class="action-icon">
+                        🏠
+                    </div>
+
+                    <div>
+
+                        <strong>User Dashboard</strong>
+
+                        <span>
+                            View main application
+                        </span>
+
+                    </div>
+
+                </a>
+
+
+            </div>
 
         </section>
 
     </main>
 
+
+    <!-- FOOTER -->
 
     <footer class="footer">
 
