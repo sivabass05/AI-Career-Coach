@@ -1153,26 +1153,53 @@
 
         }
 
-        .complete-btn {
-    border: none;
-    background: linear-gradient(
-        135deg,
-        #123c69,
-        #087f8c
-    );
-    color: white;
-    padding: 9px 16px;
-    border-radius: 9px;
-    font-size: 13px;
-    font-weight: 700;
-    cursor: pointer;
-    transition: 0.3s;
-}
+    
+            .stage-action {
+                margin-top: 14px;
+                display: flex;
+                justify-content: flex-end;
+            }
 
-.complete-btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 15px rgba(8,127,140,0.25);
-}
+            .stage-btn {
+                border: none;
+                background: #0b4f78;
+                color: white;
+                padding: 10px 16px;
+                border-radius: 8px;
+                font-weight: 600;
+                cursor: pointer;
+            }
+
+            .stage-btn.completed {
+                background: #2e8b57;
+                cursor: default;
+            }
+
+            .stage-btn.locked {
+                background: #cbd5e1;
+                color: #64748b;
+                cursor: not-allowed;
+            }
+
+        /* Consistent Dashboard button */
+        .dashboard-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            color: white;
+            padding: 10px 20px;
+            border: 1px solid rgba(255,255,255,0.45);
+            border-radius: 9px;
+            font-size: 15px;
+            font-weight: 600;
+            transition: 0.3s;
+            white-space: nowrap;
+        }
+        .dashboard-btn:hover {
+            background: white;
+            color: #123c69;
+        }
 
     </style>
 
@@ -1210,6 +1237,8 @@
 
         </span>
 
+
+        <a href="{% url 'dashboard' %}" class="dashboard-btn">← Dashboard</a>
 
         <a
             href="{% url 'logout' %}"
@@ -1368,6 +1397,10 @@
         </div>
 
 
+        <div style="text-align:center; margin: 10px 0 24px; font-weight:600;">
+            Overall Progress: {{ assessment.learning_progress|default:0 }}%
+        </div>
+
 
         <!-- =================================================
              ROADMAP
@@ -1504,34 +1537,85 @@
 
                 <div class="progress-area">
 
-    <span class="progress-label">
-        Learning Stage {{ forloop.counter }}
-    </span>
+                    <span class="progress-label">
 
-    <form method="POST" action="{% url 'complete_learning_step' %}">
-        {% csrf_token %}
+                        {% if forloop.counter <= completed_steps %}
+                            ✓ Stage {{ forloop.counter }} Completed
+                        {% else %}
+                            Learning Stage {{ forloop.counter }}
+                        {% endif %}
 
-        <input
-            type="hidden"
-            name="step_number"
-            value="{{ forloop.counter }}"
-        >
+                    </span>
 
-        <input
-            type="hidden"
-            name="total_steps"
-            value="{{ roadmap|length }}"
-        >
+                    <div class="progress-bar">
 
-        <button
-            type="submit"
-            class="complete-btn"
-        >
-            ✓ Complete Stage
-        </button>
-    </form>
+                        <div
+                            class="progress-fill"
+                            style="width: {% if forloop.counter <= completed_steps %}100{% else %}0{% endif %}%;"
+                        >
+                        </div>
 
-</div>
+                    </div>
+
+                </div>
+
+                <!-- STAGE ACTION -->
+
+                <div class="stage-action">
+
+                    {% if forloop.counter <= completed_steps %}
+
+                        <button
+                            type="button"
+                            class="stage-btn completed"
+                            disabled
+                        >
+                            ✓ Completed
+                        </button>
+
+                    {% elif forloop.counter == completed_steps|add:"1" %}
+
+                        <form method="post" action="{% url 'complete_learning_step' %}">
+
+                            {% csrf_token %}
+
+                            <input
+                                type="hidden"
+                                name="step_number"
+                                value="{{ forloop.counter }}"
+                            >
+
+                            <input
+                                type="hidden"
+                                name="total_steps"
+                                value="{{ total_steps }}"
+                            >
+
+                            <button
+                                type="submit"
+                                class="stage-btn"
+                            >
+                                ✓ Complete Stage
+                            </button>
+
+                        </form>
+
+                    {% else %}
+
+                        <button
+                            type="button"
+                            class="stage-btn locked"
+                            disabled
+                        >
+                            🔒 Locked
+                        </button>
+
+                    {% endif %}
+
+                </div>
+
+
+            </div>
 
 
             {% endfor %}
@@ -1639,3 +1723,5 @@
 
 
 </body>
+
+</html>

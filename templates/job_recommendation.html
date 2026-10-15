@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -500,6 +500,21 @@
                 padding: 22px;
             }
         }
+.nav .dashboard-btn {
+    text-decoration: none;
+    color: white;
+    padding: 10px 20px;
+    border: 1px solid rgba(255,255,255,0.45);
+    border-radius: 9px;
+    font-size: 15px;
+    font-weight: 600;
+    transition: 0.3s;
+}
+
+.nav .dashboard-btn:hover {
+    background: white;
+    color: #123c69;
+}
 
     </style>
 
@@ -515,14 +530,12 @@
         href="{% url 'dashboard' %}"
         class="logo"
     >
-        🤖 AI Career Coach
+        AI Career Coach
     </a>
 
     <nav class="nav">
 
-        <a href="{% url 'dashboard' %}">
-            Dashboard
-        </a>
+        <a href="{% url 'dashboard' %}" class="dashboard-btn">← Dashboard</a>
 
         <a href="{% url 'profile' %}">
             Profile
@@ -551,7 +564,7 @@
     <section class="hero">
 
         <h1>
-            💼 Job Recommendations
+            Job Recommendations
         </h1>
 
         <p>
@@ -614,7 +627,7 @@
     {% if recommendations %}
 
         <h2 class="section-title">
-            🎯 Jobs Matching Your Profile
+            Jobs Matching Your Profile
         </h2>
 
 
@@ -635,7 +648,7 @@
                             </h2>
 
                             <div class="company">
-                                🏢 {{ job.company }}
+                                {{ job.company }}
                             </div>
 
                         </div>
@@ -659,11 +672,11 @@
                     <div class="meta">
 
                         <span>
-                            📍 {{ job.location }}
+                            {{ job.location }}
                         </span>
 
                         <span>
-                            💼 {{ job.type }}
+                            {{ job.type }}
                         </span>
 
                     </div>
@@ -708,7 +721,7 @@
                     {% if job.matched_skills %}
 
                         <div class="skill-title">
-                            ✅ Matched Skills
+                            Matched Skills
                         </div>
 
                         <div class="skills">
@@ -731,7 +744,7 @@
                     {% if job.missing_skills %}
 
                         <div class="skill-title">
-                            📚 Skills to Improve
+                            Skills to Improve
                         </div>
 
                         <div class="skills">
@@ -763,7 +776,7 @@
         <section class="empty">
 
             <div class="empty-icon">
-                🔍
+                
             </div>
 
             <h2>
@@ -780,7 +793,7 @@
                 href="{% url 'skill_assessment' %}"
                 class="btn"
             >
-                🎯 Take Skill Assessment
+                Take Skill Assessment
             </a>
 
         </section>
@@ -790,7 +803,7 @@
 
     <div class="footer">
 
-        AI Career Coach • Personalized Job Matching
+        AI Career Coach â€¢ Personalized Job Matching
 
     </div>
 
@@ -798,3 +811,4 @@
 
 </body>
 </html>
+

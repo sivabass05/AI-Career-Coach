@@ -1,0 +1,756 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>AI Resume Analyzer | AI Career Coach</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f7fb;
+            color: #172033;
+        }
+
+        .header {
+            background: #0b1f3a;
+            color: white;
+            padding: 20px 6%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .back-link {
+            color: white;
+            text-decoration: none;
+            font-size: 15px;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 40px auto;
+        }
+
+        .hero {
+            background: linear-gradient(
+                135deg,
+                #0b1f3a,
+                #126e82
+            );
+
+            color: white;
+            padding: 45px;
+            border-radius: 20px;
+            margin-bottom: 30px;
+        }
+
+        .hero h1 {
+            font-size: 36px;
+            margin-bottom: 12px;
+        }
+
+        .hero p {
+            font-size: 17px;
+            line-height: 1.6;
+            opacity: 0.9;
+        }
+
+        .upload-card {
+            background: white;
+            padding: 30px;
+            border-radius: 18px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.07);
+            margin-bottom: 30px;
+        }
+
+        .upload-card h2 {
+            margin-bottom: 18px;
+            color: #0b1f3a;
+        }
+
+        .file-input {
+            width: 100%;
+            padding: 14px;
+            border: 2px dashed #8aa0b8;
+            border-radius: 12px;
+            background: #f8fafc;
+            margin-bottom: 20px;
+        }
+
+        .analyze-btn {
+            border: none;
+            background: #126e82;
+            color: white;
+            padding: 14px 28px;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .analyze-btn:hover {
+            background: #0b5262;
+        }
+
+        .message {
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+
+        .success {
+            background: #e7f8ef;
+            color: #17663c;
+        }
+
+        .error {
+            background: #fdeaea;
+            color: #a12626;
+        }
+
+        .section-title {
+            margin: 35px 0 18px;
+            color: #0b1f3a;
+            font-size: 26px;
+        }
+
+        .score-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+
+        .score-card {
+            background: white;
+            padding: 28px;
+            border-radius: 18px;
+            text-align: center;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.06);
+        }
+
+        .score-number {
+            font-size: 44px;
+            font-weight: bold;
+            color: #126e82;
+            margin: 12px 0;
+        }
+
+        .score-label {
+            color: #667085;
+            font-size: 15px;
+        }
+
+        .content-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .card {
+            background: white;
+            padding: 28px;
+            border-radius: 18px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.06);
+        }
+
+        .card h3 {
+            color: #0b1f3a;
+            margin-bottom: 15px;
+            font-size: 20px;
+        }
+
+        .summary {
+            line-height: 1.7;
+            color: #4b5563;
+        }
+
+        .career-box {
+            background: #eef8fa;
+            padding: 20px;
+            border-radius: 12px;
+        }
+
+        .career-name {
+            font-size: 22px;
+            font-weight: bold;
+            color: #126e82;
+            margin-bottom: 8px;
+        }
+
+        .skill-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            list-style: none;
+        }
+
+        .skill-list li {
+            background: #e9f2f7;
+            color: #0b5262;
+            padding: 9px 14px;
+            border-radius: 20px;
+            font-size: 14px;
+        }
+
+        .bullet-list {
+            padding-left: 20px;
+        }
+
+        .bullet-list li {
+            margin-bottom: 12px;
+            line-height: 1.5;
+        }
+
+        .strengths li {
+            color: #17663c;
+        }
+
+        .missing li {
+            color: #a35a00;
+        }
+
+        .improvements li {
+            color: #344054;
+        }
+
+        .keyword {
+            display: inline-block;
+            background: #f0ecff;
+            color: #5942a8;
+            padding: 9px 14px;
+            border-radius: 20px;
+            margin: 5px;
+        }
+
+        .basic-info {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .info-box {
+            background: #f8fafc;
+            padding: 18px;
+            border-radius: 12px;
+            text-align: center;
+        }
+
+        .info-number {
+            font-size: 25px;
+            font-weight: bold;
+            color: #0b1f3a;
+        }
+
+        .info-label {
+            color: #667085;
+            margin-top: 5px;
+            font-size: 13px;
+        }
+
+        .empty {
+            text-align: center;
+            padding: 50px 20px;
+            color: #667085;
+            background: white;
+            border-radius: 18px;
+        }
+
+        @media (max-width: 768px) {
+
+            .header {
+                padding: 18px 5%;
+            }
+
+            .hero {
+                padding: 30px 22px;
+            }
+
+            .hero h1 {
+                font-size: 28px;
+            }
+
+            .score-grid,
+            .content-grid,
+            .basic-info {
+                grid-template-columns: 1fr;
+            }
+
+            .container {
+                width: 94%;
+                margin: 25px auto;
+            }
+
+        }
+
+    </style>
+</head>
+
+<body>
+
+    <header class="header">
+
+        <div class="logo">
+            🤖 AI Career Coach
+        </div>
+
+        <a
+            href="{% url 'dashboard' %}"
+            class="back-link"
+        >
+            ← Dashboard
+        </a>
+
+    </header>
+
+
+    <main class="container">
+
+        <!-- HERO -->
+
+        <section class="hero">
+
+            <h1>
+                📄 AI Resume Analyzer
+            </h1>
+
+            <p>
+                Upload your resume and get AI-powered insights
+                including ATS score, career match, strengths,
+                missing skills and improvement suggestions.
+            </p>
+
+        </section>
+
+
+        <!-- UPLOAD -->
+
+        <section class="upload-card">
+
+            <h2>
+                Upload Your Resume
+            </h2>
+
+            {% if error %}
+
+                <div class="message error">
+                    {{ error }}
+                </div>
+
+            {% endif %}
+
+
+            {% if success %}
+
+                <div class="message success">
+                    {{ success }}
+                </div>
+
+            {% endif %}
+
+
+            <form
+                method="POST"
+                enctype="multipart/form-data"
+            >
+
+                {% csrf_token %}
+
+                <input
+                    type="file"
+                    name="resume"
+                    accept=".pdf,.docx"
+                    class="file-input"
+                    required
+                >
+
+                <button
+                    type="submit"
+                    class="analyze-btn"
+                >
+                    🤖 Analyze Resume with AI
+                </button>
+
+            </form>
+
+        </section>
+
+
+        {% if analysis %}
+
+        <!-- SCORE -->
+
+        <h2 class="section-title">
+            📊 Resume Performance
+        </h2>
+
+
+        <div class="score-grid">
+
+
+            <div class="score-card">
+
+                <div class="score-label">
+                    ATS Resume Score
+                </div>
+
+                <div class="score-number">
+                    {{ analysis.ats_score }}%
+                </div>
+
+                <div class="score-label">
+                    Resume Compatibility
+                </div>
+
+            </div>
+
+
+            <div class="score-card">
+
+                <div class="score-label">
+                    Career Match
+                </div>
+
+                <div class="score-number">
+                    {{ analysis.career_match_score }}%
+                </div>
+
+                <div class="score-label">
+                    AI Career Fit
+                </div>
+
+            </div>
+
+
+            <div class="score-card">
+
+                <div class="score-label">
+                    Detected Skills
+                </div>
+
+                <div class="score-number">
+                    {{ analysis.detected_skills|length }}
+                </div>
+
+                <div class="score-label">
+                    Skills Found
+                </div>
+
+            </div>
+
+
+        </div>
+
+
+        <!-- CAREER MATCH -->
+
+        <h2 class="section-title">
+            🎯 AI Career Match
+        </h2>
+
+        <div class="card">
+
+            <div class="career-box">
+
+                <div class="career-name">
+                    {{ analysis.career_match }}
+                </div>
+
+                <p>
+                    Your resume has been analyzed against
+                    your career goal and available resume
+                    information.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <!-- SUMMARY -->
+
+        <h2 class="section-title">
+            📝 AI Resume Summary
+        </h2>
+
+        <div class="card">
+
+            <p class="summary">
+
+                {% if analysis.resume_summary %}
+
+                    {{ analysis.resume_summary }}
+
+                {% else %}
+
+                    No AI summary available.
+
+                {% endif %}
+
+            </p>
+
+        </div>
+
+
+        <!-- SKILLS -->
+
+        <h2 class="section-title">
+            💻 Detected Skills
+        </h2>
+
+        <div class="card">
+
+            {% if analysis.detected_skills %}
+
+                <ul class="skill-list">
+
+                    {% for skill in analysis.detected_skills %}
+
+                        <li>
+                            {{ skill }}
+                        </li>
+
+                    {% endfor %}
+
+                </ul>
+
+            {% else %}
+
+                <p>
+                    No predefined skills were detected.
+                </p>
+
+            {% endif %}
+
+        </div>
+
+
+        <!-- STRENGTHS + MISSING -->
+
+        <h2 class="section-title">
+            🔍 AI Skill Analysis
+        </h2>
+
+        <div class="content-grid">
+
+
+            <div class="card">
+
+                <h3>
+                    ✅ Strengths
+                </h3>
+
+                {% if analysis.strengths %}
+
+                    <ul class="bullet-list strengths">
+
+                        {% for item in analysis.strengths %}
+
+                            <li>
+                                {{ item }}
+                            </li>
+
+                        {% endfor %}
+
+                    </ul>
+
+                {% else %}
+
+                    <p>
+                        No AI strengths available.
+                    </p>
+
+                {% endif %}
+
+            </div>
+
+
+            <div class="card">
+
+                <h3>
+                    ⚠️ Missing / Recommended Skills
+                </h3>
+
+                {% if analysis.missing_skills %}
+
+                    <ul class="bullet-list missing">
+
+                        {% for item in analysis.missing_skills %}
+
+                            <li>
+                                {{ item }}
+                            </li>
+
+                        {% endfor %}
+
+                    </ul>
+
+                {% else %}
+
+                    <p>
+                        No missing skills identified.
+                    </p>
+
+                {% endif %}
+
+            </div>
+
+
+        </div>
+
+
+        <!-- IMPROVEMENTS -->
+
+        <h2 class="section-title">
+            🚀 AI Improvement Suggestions
+        </h2>
+
+        <div class="card">
+
+            {% if analysis.improvements %}
+
+                <ul class="bullet-list improvements">
+
+                    {% for item in analysis.improvements %}
+
+                        <li>
+                            {{ item }}
+                        </li>
+
+                    {% endfor %}
+
+                </ul>
+
+            {% else %}
+
+                <p>
+                    No improvement suggestions available.
+                </p>
+
+            {% endif %}
+
+        </div>
+
+
+        <!-- KEYWORDS -->
+
+        <h2 class="section-title">
+            🔑 Recommended Keywords
+        </h2>
+
+        <div class="card">
+
+            {% if analysis.keyword_suggestions %}
+
+                {% for keyword in analysis.keyword_suggestions %}
+
+                    <span class="keyword">
+                        {{ keyword }}
+                    </span>
+
+                {% endfor %}
+
+            {% else %}
+
+                <p>
+                    No keyword suggestions available.
+                </p>
+
+            {% endif %}
+
+        </div>
+
+
+        <!-- BASIC INFORMATION -->
+
+        <h2 class="section-title">
+            📋 Resume Information
+        </h2>
+
+        <div class="card">
+
+            <div class="basic-info">
+
+
+                <div class="info-box">
+
+                    <div class="info-number">
+                        {{ analysis.word_count }}
+                    </div>
+
+                    <div class="info-label">
+                        Words
+                    </div>
+
+                </div>
+
+
+                <div class="info-box">
+
+                    <div class="info-number">
+                        {{ analysis.sections_found|length }}
+                    </div>
+
+                    <div class="info-label">
+                        Sections
+                    </div>
+
+                </div>
+
+
+                <div class="info-box">
+
+                    <div class="info-number">
+                        {{ analysis.action_words }}
+                    </div>
+
+                    <div class="info-label">
+                        Action Words
+                    </div>
+
+                </div>
+
+
+            </div>
+
+        </div>
+
+
+        {% else %}
+
+
+        <div class="empty">
+
+            <h2>
+                🚀 Ready to Analyze?
+            </h2>
+
+            <p style="margin-top: 10px;">
+                Upload your PDF or DOCX resume above
+                to receive your AI-powered analysis.
+            </p>
+
+        </div>
+
+
+        {% endif %}
+
+    </main>
+
+</body>
+</html>

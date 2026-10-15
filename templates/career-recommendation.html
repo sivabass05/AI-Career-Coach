@@ -1042,6 +1042,25 @@
 
         }
 
+    
+        /* ================= DASHBOARD BUTTON ================= */
+
+        .dashboard-btn {
+            text-decoration: none;
+            color: white;
+            padding: 10px 20px;
+            border: 1px solid rgba(255,255,255,0.45);
+            border-radius: 9px;
+            font-size: 15px;
+            font-weight: 600;
+            transition: 0.3s;
+        }
+
+        .dashboard-btn:hover {
+            background: white;
+            color: #123c69;
+        }
+
     </style>
 
 </head>
@@ -1073,6 +1092,14 @@
         <span class="welcome">
             Welcome, {{ request.user.username }}
         </span>
+
+
+        <a
+            href="{% url 'dashboard' %}"
+            class="dashboard-btn"
+        >
+            ← Dashboard
+        </a>
 
 
         <a
@@ -1203,7 +1230,7 @@
 
 
                     <h3>
-                        {{ top.title }}
+                        {{ top.name }}
                     </h3>
 
 
@@ -1352,7 +1379,7 @@
                 <!-- CAREER NAME -->
 
                 <h3>
-                    {{ career.title }}
+                    {{ career.name }}
                 </h3>
 
 

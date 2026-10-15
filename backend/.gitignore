@@ -1,0 +1,13 @@
+venv/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.env
+*.sql
+media/
+staticfiles/
+.git/
+tesume/
+resumes/
+db.sqlite3

@@ -1,0 +1,1000 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Interview Result | AI Career Coach</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+
+            font-family: Arial, sans-serif;
+
+            background:
+                radial-gradient(
+                    circle at top right,
+                    #123c69,
+                    transparent 40%
+                ),
+                #071525;
+
+            color: white;
+
+            min-height: 100vh;
+        }
+
+        /* HEADER */
+
+        .header {
+
+            position: fixed;
+
+            top: 0;
+            left: 0;
+            right: 0;
+
+            height: 70px;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #1e3c72,
+                    #2a5298
+                );
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: space-between;
+
+            padding: 0 40px;
+
+            z-index: 9999;
+
+            box-shadow:
+                0 4px 20px rgba(0,0,0,.3);
+        }
+
+        .logo {
+
+            font-size: 24px;
+
+            font-weight: bold;
+        }
+
+        .nav a {
+
+            color: white;
+
+            text-decoration: none;
+
+            margin-left: 25px;
+
+            font-size: 16px;
+        }
+
+        .nav a:hover {
+
+            color: #5eead4;
+        }
+
+        /* CONTAINER */
+
+        .container {
+
+            max-width: 1150px;
+
+            margin: auto;
+
+            padding:
+                115px 25px 60px;
+        }
+
+        .title {
+
+            text-align: center;
+
+            margin-bottom: 35px;
+        }
+
+        .title h1 {
+
+            font-size: 40px;
+
+            margin-bottom: 10px;
+        }
+
+        .title p {
+
+            color: #a9c1d9;
+
+            font-size: 18px;
+        }
+
+        /* MAIN SCORE */
+
+        .main-score {
+
+            max-width: 500px;
+
+            margin: auto;
+
+            padding: 40px;
+
+            text-align: center;
+
+            background:
+                rgba(255,255,255,.07);
+
+            border:
+                1px solid rgba(255,255,255,.12);
+
+            border-radius: 22px;
+
+            box-shadow:
+                0 20px 50px rgba(0,0,0,.3);
+        }
+
+        .circle {
+
+            width: 180px;
+
+            height: 180px;
+
+            margin: auto;
+
+            border-radius: 50%;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            background:
+                conic-gradient(
+                    #14b8a6
+                    {{ average_score }}%,
+                    #19344e
+                    {{ average_score }}%
+                );
+
+            position: relative;
+        }
+
+        .circle::before {
+
+            content: "";
+
+            position: absolute;
+
+            width: 145px;
+
+            height: 145px;
+
+            background: #091b2d;
+
+            border-radius: 50%;
+        }
+
+        .score-number {
+
+            position: relative;
+
+            z-index: 2;
+
+            font-size: 45px;
+
+            font-weight: bold;
+        }
+
+        .score-label {
+
+            margin-top: 20px;
+
+            font-size: 26px;
+
+            color: #5eead4;
+
+            font-weight: bold;
+        }
+
+        .message {
+
+            color: #a9c1d9;
+
+            margin-top: 12px;
+
+            line-height: 1.6;
+        }
+
+        /* CATEGORY SCORES */
+
+        .section-title {
+
+            margin-top: 40px;
+
+            margin-bottom: 20px;
+
+            font-size: 25px;
+        }
+
+        .category-grid {
+
+            display: grid;
+
+            grid-template-columns:
+                repeat(3, 1fr);
+
+            gap: 20px;
+        }
+
+        .category-card {
+
+            background:
+                rgba(255,255,255,.06);
+
+            border:
+                1px solid rgba(255,255,255,.1);
+
+            border-radius: 18px;
+
+            padding: 25px;
+
+            text-align: center;
+        }
+
+        .category-icon {
+
+            font-size: 35px;
+
+            margin-bottom: 10px;
+        }
+
+        .category-card h3 {
+
+            font-size: 17px;
+
+            color: #b8cce0;
+
+            margin-bottom: 12px;
+        }
+
+        .category-score {
+
+            font-size: 35px;
+
+            font-weight: bold;
+
+            color: #5eead4;
+        }
+
+        .bar {
+
+            height: 8px;
+
+            background: #18324c;
+
+            border-radius: 20px;
+
+            overflow: hidden;
+
+            margin-top: 15px;
+        }
+
+        .bar-fill {
+
+            height: 100%;
+
+            background:
+                linear-gradient(
+                    90deg,
+                    #14b8a6,
+                    #22d3ee
+                );
+        }
+
+        /* STATS */
+
+        .stats {
+
+            display: grid;
+
+            grid-template-columns:
+                repeat(3, 1fr);
+
+            gap: 20px;
+
+            margin-top: 25px;
+        }
+
+        .stat {
+
+            background:
+                rgba(255,255,255,.05);
+
+            padding: 22px;
+
+            border-radius: 15px;
+
+            text-align: center;
+        }
+
+        .stat h3 {
+
+            color: #9eb5cc;
+
+            font-size: 15px;
+
+            margin-bottom: 10px;
+        }
+
+        .stat strong {
+
+            font-size: 28px;
+
+            color: #5eead4;
+        }
+
+        /* ANSWER REVIEW */
+
+        .review {
+
+            margin-top: 40px;
+        }
+
+        .answer-card {
+
+            background:
+                rgba(255,255,255,.06);
+
+            border:
+                1px solid rgba(255,255,255,.1);
+
+            border-radius: 18px;
+
+            padding: 28px;
+
+            margin-bottom: 20px;
+        }
+
+        .question {
+
+            font-size: 19px;
+
+            line-height: 1.6;
+
+            margin-bottom: 15px;
+        }
+
+        .your-answer {
+
+            background: #0b1d31;
+
+            padding: 18px;
+
+            border-radius: 10px;
+
+            color: #bfd0df;
+
+            line-height: 1.7;
+
+            margin-bottom: 20px;
+        }
+
+        /* MINI SCORES */
+
+        .mini-scores {
+
+            display: grid;
+
+            grid-template-columns:
+                repeat(3, 1fr);
+
+            gap: 12px;
+
+            margin-bottom: 20px;
+        }
+
+        .mini-score {
+
+            background: #10283f;
+
+            padding: 14px;
+
+            border-radius: 10px;
+
+            text-align: center;
+        }
+
+        .mini-score span {
+
+            display: block;
+
+            color: #9eb5cc;
+
+            font-size: 13px;
+
+            margin-bottom: 6px;
+        }
+
+        .mini-score strong {
+
+            color: #5eead4;
+
+            font-size: 20px;
+        }
+
+        .overall {
+
+            display: inline-block;
+
+            padding: 8px 15px;
+
+            background:
+                rgba(20,184,166,.15);
+
+            color: #5eead4;
+
+            border-radius: 20px;
+
+            font-weight: bold;
+
+            margin-bottom: 18px;
+        }
+
+        /* FEEDBACK */
+
+        .feedback-box {
+
+            background:
+                rgba(20,184,166,.07);
+
+            padding: 18px;
+
+            border-left:
+                4px solid #14b8a6;
+
+            border-radius: 8px;
+
+            line-height: 1.6;
+
+            color: #c6d6e5;
+
+            margin-bottom: 15px;
+        }
+
+        .strengths {
+
+            background:
+                rgba(34,197,94,.07);
+
+            padding: 16px;
+
+            border-radius: 10px;
+
+            margin-bottom: 12px;
+        }
+
+        .strengths h4 {
+
+            color: #6ee7b7;
+
+            margin-bottom: 8px;
+        }
+
+        .strengths li {
+
+            margin-left: 20px;
+
+            margin-top: 5px;
+
+            color: #c5d6e5;
+        }
+
+        .improvements {
+
+            background:
+                rgba(245,158,11,.07);
+
+            padding: 16px;
+
+            border-radius: 10px;
+        }
+
+        .improvements h4 {
+
+            color: #fbbf24;
+
+            margin-bottom: 8px;
+        }
+
+        .improvements li {
+
+            margin-left: 20px;
+
+            margin-top: 5px;
+
+            color: #c5d6e5;
+        }
+
+        /* BUTTONS */
+
+        .actions {
+
+            display: flex;
+
+            justify-content: center;
+
+            gap: 15px;
+
+            margin-top: 40px;
+        }
+
+        .btn {
+
+            text-decoration: none;
+
+            padding: 15px 25px;
+
+            border-radius: 10px;
+
+            color: white;
+
+            font-weight: bold;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #14b8a6,
+                    #06b6d4
+                );
+        }
+
+        .btn.secondary {
+
+            background: #17324d;
+        }
+
+        @media(max-width:750px) {
+
+            .header {
+
+                padding: 0 15px;
+            }
+
+            .nav {
+
+                display: none;
+            }
+
+            .category-grid {
+
+                grid-template-columns: 1fr;
+            }
+
+            .stats {
+
+                grid-template-columns: 1fr;
+            }
+
+            .mini-scores {
+
+                grid-template-columns: 1fr;
+            }
+
+            .title h1 {
+
+                font-size: 30px;
+            }
+
+            .actions {
+
+                flex-direction: column;
+            }
+
+            .btn {
+
+                text-align: center;
+            }
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+<header class="header">
+
+    <div class="logo">
+        🤖 AI Career Coach
+    </div>
+
+    <nav class="nav">
+
+        <a href="{% url 'dashboard' %}">
+            Dashboard
+        </a>
+
+        <a href="{% url 'mock_interview' %}">
+            New Interview
+        </a>
+
+        <a href="{% url 'logout' %}">
+            Logout
+        </a>
+
+    </nav>
+
+</header>
+
+
+<main class="container">
+
+    <!-- TITLE -->
+
+    <div class="title">
+
+        <h1>
+            🎯 Interview Performance
+        </h1>
+
+        <p>
+            {{ career }} Mock Interview
+        </p>
+
+    </div>
+
+
+    <!-- OVERALL SCORE -->
+
+    <div class="main-score">
+
+        <div class="circle">
+
+            <div class="score-number">
+                {{ average_score }}
+            </div>
+
+        </div>
+
+        <div class="score-label">
+            {{ performance }}
+        </div>
+
+        <p class="message">
+            {{ performance_message }}
+        </p>
+
+    </div>
+
+
+    <!-- CATEGORY SCORES -->
+
+    <h2 class="section-title">
+        📊 Performance Analysis
+    </h2>
+
+
+    <div class="category-grid">
+
+        <div class="category-card">
+
+            <div class="category-icon">
+                🎯
+            </div>
+
+            <h3>
+                Technical Knowledge
+            </h3>
+
+            <div class="category-score">
+                {{ technical_average }}
+            </div>
+
+            <div class="bar">
+
+                <div
+                    class="bar-fill"
+                    style="width: {{ technical_average }}%;">
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="category-card">
+
+            <div class="category-icon">
+                🧠
+            </div>
+
+            <h3>
+                Answer Relevance
+            </h3>
+
+            <div class="category-score">
+                {{ relevance_average }}
+            </div>
+
+            <div class="bar">
+
+                <div
+                    class="bar-fill"
+                    style="width: {{ relevance_average }}%;">
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="category-card">
+
+            <div class="category-icon">
+                💬
+            </div>
+
+            <h3>
+                Communication
+            </h3>
+
+            <div class="category-score">
+                {{ communication_average }}
+            </div>
+
+            <div class="bar">
+
+                <div
+                    class="bar-fill"
+                    style="width: {{ communication_average }}%;">
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- GENERAL STATS -->
+
+    <div class="stats">
+
+        <div class="stat">
+
+            <h3>
+                Questions Answered
+            </h3>
+
+            <strong>
+                {{ total_questions }}
+            </strong>
+
+        </div>
+
+
+        <div class="stat">
+
+            <h3>
+                Highest Score
+            </h3>
+
+            <strong>
+                {{ highest_score }}
+            </strong>
+
+        </div>
+
+
+        <div class="stat">
+
+            <h3>
+                Lowest Score
+            </h3>
+
+            <strong>
+                {{ lowest_score }}
+            </strong>
+
+        </div>
+
+    </div>
+
+
+    <!-- ANSWER REVIEW -->
+
+    <div class="review">
+
+        <h2 class="section-title">
+            📝 Detailed Answer Review
+        </h2>
+
+
+        {% for item in detailed_results %}
+
+        <div class="answer-card">
+
+            <div class="question">
+
+                <strong>
+                    Q{{ forloop.counter }}.
+                </strong>
+
+                {{ item.question }}
+
+            </div>
+
+
+            <div class="your-answer">
+
+                <strong>
+                    Your Answer:
+                </strong>
+
+                <br><br>
+
+                {{ item.answer }}
+
+            </div>
+
+
+            <span class="overall">
+
+                ⭐ Overall:
+                {{ item.score }}/100
+
+            </span>
+
+
+            <div class="mini-scores">
+
+                <div class="mini-score">
+
+                    <span>
+                        Technical
+                    </span>
+
+                    <strong>
+                        {{ item.technical_score }}
+                    </strong>
+
+                </div>
+
+
+                <div class="mini-score">
+
+                    <span>
+                        Relevance
+                    </span>
+
+                    <strong>
+                        {{ item.relevance_score }}
+                    </strong>
+
+                </div>
+
+
+                <div class="mini-score">
+
+                    <span>
+                        Communication
+                    </span>
+
+                    <strong>
+                        {{ item.communication_score }}
+                    </strong>
+
+                </div>
+
+            </div>
+
+
+            <div class="feedback-box">
+
+                🤖 <strong>Feedback</strong>
+
+                <br><br>
+
+                {{ item.feedback }}
+
+            </div>
+
+
+            <div class="strengths">
+
+                <h4>
+                    ✅ Strengths
+                </h4>
+
+                <ul>
+
+                    {% for strength in item.strengths %}
+
+                    <li>
+                        {{ strength }}
+                    </li>
+
+                    {% endfor %}
+
+                </ul>
+
+            </div>
+
+
+            <div class="improvements">
+
+                <h4>
+                    ⚠️ Areas to Improve
+                </h4>
+
+                <ul>
+
+                    {% for improvement in item.improvements %}
+
+                    <li>
+                        {{ improvement }}
+                    </li>
+
+                    {% endfor %}
+
+                </ul>
+
+            </div>
+
+        </div>
+
+        {% empty %}
+
+        <p>
+            No interview answers available.
+        </p>
+
+        {% endfor %}
+
+    </div>
+
+
+    <!-- ACTION BUTTONS -->
+
+    <div class="actions">
+
+        <a
+            href="{% url 'mock_interview' %}"
+            class="btn">
+
+            🔄 Start New Interview
+
+        </a>
+
+
+        <a
+            href="{% url 'dashboard' %}"
+            class="btn secondary">
+
+            🏠 Dashboard
+
+        </a>
+
+    </div>
+
+</main>
+
+</body>
+
+</html>

@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Login | AI Career Coach</title>
+
+    <style>
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            background: linear-gradient(
+                135deg,
+                #172554,
+                #1e3a8a,
+                #0f766e
+            );
+
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+            padding: 20px;
+        }
+
+        .login-container {
+            width: 430px;
+            max-width: 100%;
+
+            background: white;
+
+            border-radius: 20px;
+
+            padding: 45px 40px;
+
+            box-shadow:
+                0 25px 60px rgba(0,0,0,0.25);
+
+            text-align: center;
+        }
+
+        .logo {
+            font-size: 45px;
+            margin-bottom: 10px;
+        }
+
+        h1 {
+            color: #172554;
+            font-size: 32px;
+            margin-bottom: 8px;
+        }
+
+        .subtitle {
+            color: #64748b;
+            font-size: 15px;
+            margin-bottom: 28px;
+        }
+
+        /* Messages */
+
+        .messages {
+            margin-bottom: 20px;
+        }
+
+        .message {
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 14px;
+            margin-bottom: 8px;
+        }
+
+        .message.error {
+            background: #fee2e2;
+            color: #991b1b;
+            border: 1px solid #fecaca;
+        }
+
+        .message.success {
+            background: #fef3c7;
+            color: #92400e;
+            border: 1px solid #fde68a;
+        }
+
+        /* Form */
+
+        .form-group {
+            text-align: left;
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+
+            color: #173b78;
+
+            font-size: 14px;
+
+            font-weight: 700;
+
+            margin-bottom: 8px;
+        }
+
+        .input-wrapper {
+            position: relative;
+        }
+
+        input {
+            width: 100%;
+
+            height: 48px;
+
+            border: 1px solid #cbd5e1;
+
+            border-radius: 10px;
+
+            background: #f8fafc;
+
+            padding: 0 14px;
+
+            font-size: 14px;
+
+            color: #0f172a;
+
+            outline: none;
+        }
+
+        input:focus {
+            background: white;
+
+            border-color: #2563eb;
+
+            box-shadow:
+                0 0 0 3px rgba(
+                    37,
+                    99,
+                    235,
+                    0.10
+                );
+        }
+
+        .password-input {
+            padding-right: 45px;
+        }
+
+        .toggle-password {
+            position: absolute;
+
+            right: 14px;
+
+            top: 50%;
+
+            transform: translateY(-50%);
+
+            cursor: pointer;
+
+            font-size: 17px;
+        }
+
+        /* Login Button */
+
+        .login-btn {
+            width: 100%;
+
+            height: 50px;
+
+            border: none;
+
+            border-radius: 30px;
+
+            background: linear-gradient(
+                135deg,
+                #1e3a8a,
+                #2854a3
+            );
+
+            color: white;
+
+            font-size: 16px;
+
+            font-weight: 700;
+
+            cursor: pointer;
+
+            transition: 0.25s;
+        }
+
+        .login-btn:hover {
+            transform: translateY(-2px);
+
+            box-shadow:
+                0 8px 20px rgba(
+                    30,
+                    58,
+                    138,
+                    0.3
+                );
+        }
+
+        /* Register */
+
+        .register-link {
+            margin-top: 22px;
+
+            font-size: 14px;
+
+            color: #64748b;
+        }
+
+        .register-link a {
+            color: #0284c7;
+
+            font-weight: 700;
+
+            text-decoration: none;
+        }
+
+        .register-link a:hover {
+            text-decoration: underline;
+        }
+
+        .home-link {
+            margin-top: 20px;
+
+            font-size: 13px;
+
+            color: #64748b;
+        }
+
+        .home-link a {
+            color: #64748b;
+
+            text-decoration: none;
+        }
+
+        /* Mobile */
+
+        @media (max-width: 500px) {
+
+            .login-container {
+                padding: 35px 25px;
+            }
+
+            h1 {
+                font-size: 28px;
+            }
+
+        }
+
+    </style>
+</head>
+
+<body>
+
+<div class="login-container">
+
+    <div class="logo">
+        🤖
+    </div>
+
+    <h1>
+        Login 🔐
+    </h1>
+
+    <p class="subtitle">
+        Login to continue your career journey.
+    </p>
+
+
+    <!-- Django Messages -->
+
+    {% if messages %}
+
+    <div class="messages">
+
+        {% for message in messages %}
+
+            <div class="message {{ message.tags }}">
+                {{ message }}
+            </div>
+
+        {% endfor %}
+
+    </div>
+
+    {% endif %}
+
+
+    <!-- Login Form -->
+
+    <form
+        method="POST"
+        action="{% url 'login' %}"
+        autocomplete="off"
+    >
+
+        {% csrf_token %}
+
+
+        <!-- Username -->
+
+        <div class="form-group">
+
+            <label for="username">
+                👤 Username
+            </label>
+
+            <input
+                type="text"
+                id="username"
+                name="username"
+                placeholder="Enter your username"
+                autocomplete="off"
+                required
+            >
+
+        </div>
+
+
+        <!-- Password -->
+
+        <div class="form-group">
+
+            <label for="password">
+                🔐 Password
+            </label>
+
+            <div class="input-wrapper">
+
+                <input
+                    type="password"
+                    id="password"
+                    name="password"
+                    class="password-input"
+                    placeholder="Enter your password"
+                    autocomplete="new-password"
+                    required
+                >
+
+                <span
+                    class="toggle-password"
+                    onclick="togglePassword()"
+                >
+                    👁️
+                </span>
+
+            </div>
+
+        </div>
+
+
+        <!-- Login -->
+
+        <button
+            type="submit"
+            class="login-btn"
+        >
+            🔐 Login
+        </button>
+
+    </form>
+
+
+    <!-- Register -->
+
+    <div class="register-link">
+
+        Don't have an account?
+
+        <a href="{% url 'register' %}">
+            Create Account
+        </a>
+
+    </div>
+
+
+    <!-- Home -->
+
+    <div class="home-link">
+
+        <a href="{% url 'home' %}">
+            ← Back to Home
+        </a>
+
+    </div>
+
+</div>
+
+
+<script>
+
+function togglePassword() {
+
+    const password =
+        document.getElementById("password");
+
+    const icon =
+        document.querySelector(".toggle-password");
+
+    if (password.type === "password") {
+
+        password.type = "text";
+
+        icon.textContent = "🙈";
+
+    } else {
+
+        password.type = "password";
+
+        icon.textContent = "👁️";
+
+    }
+
+}
+
+</script>
+
+</body>
+</html>

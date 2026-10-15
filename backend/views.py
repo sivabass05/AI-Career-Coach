@@ -19,6 +19,7 @@ from career_recommendation.models import (
 )
 
 import re
+import time
 
 
 # =========================================================
@@ -27,11 +28,7 @@ import re
 
 def home(request):
     if request.user.is_authenticated:
-
-        if request.user.is_superuser:
-            return redirect("admin_dashboard")
-
-            return redirect("dashboard")
+        return redirect("dashboard")
 
     return render(request, "home.html")
 
@@ -152,13 +149,11 @@ def register_view(request):
 # LOGIN
 # =========================================================
 
-# =========================================================
-# LOGIN
-# =========================================================
-
 def login_view(request):
 
     if request.user.is_authenticated:
+        if request.user.is_superuser:
+            return redirect("admin_dashboard")
         return redirect("dashboard")
 
     if request.method == "POST":
@@ -198,6 +193,82 @@ def logout_view(request):
     logout(request)
 
     return redirect("login")
+
+
+# =========================================================
+# ADMIN DASHBOARD
+# =========================================================
+
+@login_required(login_url='login')
+def admin_dashboard(request):
+
+    # Only superusers can access the Admin Dashboard
+    if not request.user.is_superuser:
+        return redirect('dashboard')
+
+    # COUNTS
+    total_users = User.objects.count()
+    total_assessments = UserSkillAssessment.objects.count()
+
+    total_recommendations = (
+        UserSkillAssessment.objects
+        .exclude(recommended_career='')
+        .exclude(recommended_career__isnull=True)
+        .count()
+    )
+
+    total_resumes = Resume.objects.count()
+    total_interviews = MockInterview.objects.count()
+
+    # AVERAGE INTERVIEW SCORE
+    interview_scores = list(
+        MockInterview.objects.values_list(
+            'score',
+            flat=True
+        )
+    )
+
+    if interview_scores:
+        average_score = round(
+            sum(interview_scores) / len(interview_scores)
+        )
+    else:
+        average_score = 0
+
+    # RECENT USERS
+    recent_users = User.objects.order_by('-date_joined')[:5]
+
+    # RECENT ASSESSMENTS
+    recent_assessments = (
+        UserSkillAssessment.objects
+        .select_related('user')
+        .order_by('-created_at')[:5]
+    )
+
+    # RECENT INTERVIEWS
+    recent_interviews = (
+        MockInterview.objects
+        .select_related('user')
+        .order_by('-created_at')[:5]
+    )
+
+    context = {
+        'total_users': total_users,
+        'total_assessments': total_assessments,
+        'total_recommendations': total_recommendations,
+        'total_resumes': total_resumes,
+        'total_interviews': total_interviews,
+        'average_score': average_score,
+        'recent_users': recent_users,
+        'recent_assessments': recent_assessments,
+        'recent_interviews': recent_interviews,
+    }
+
+    return render(
+        request,
+        'admin-dashboard.html',
+        context
+    )
 
 
 # =========================================================
@@ -1569,6 +1640,24 @@ def learning_path(request):
     roadmap = career_path['steps']
 
     # -----------------------------------------------------
+    # Learning progress
+    # -----------------------------------------------------
+
+    total_steps = len(roadmap)
+
+    if total_steps > 0:
+        completed_steps = round(
+            (assessment.learning_progress or 0)
+            * total_steps / 100
+        )
+        completed_steps = min(
+            completed_steps,
+            total_steps
+        )
+    else:
+        completed_steps = 0
+
+    # -----------------------------------------------------
     # Render
     # -----------------------------------------------------
 
@@ -1586,7 +1675,13 @@ def learning_path(request):
                 career_path['duration'],
 
             'roadmap':
-                roadmap
+                roadmap,
+
+            'total_steps':
+                total_steps,
+
+            'completed_steps':
+                completed_steps
         }
     )
 
@@ -1610,22 +1705,28 @@ def complete_learning_step(request):
 
         if total_steps > 0 and step_number > 0:
 
-            completed_steps = assessment.learning_progress
-
-            step_progress = round(
-                100 / total_steps
+            # Number of stages already completed
+            completed_steps = round(
+                (assessment.learning_progress or 0)
+                * total_steps / 100
             )
 
-            new_progress = min(
-                completed_steps + step_progress,
-                100
-            )
+            # Only allow the next stage to be completed.
+            # This prevents duplicate clicks from increasing progress.
+            if step_number == completed_steps + 1:
 
-            assessment.learning_progress = new_progress
+                new_progress = round(
+                    step_number / total_steps * 100
+                )
 
-            assessment.save(
-                update_fields=['learning_progress']
-            )
+                assessment.learning_progress = min(
+                    new_progress,
+                    100
+                )
+
+                assessment.save(
+                    update_fields=['learning_progress']
+                )
 
         return redirect('learning_path')
 
@@ -2485,13 +2586,35 @@ Return exactly this JSON structure:
 
         # Ask Gemini for JSON so the application receives a
         # predictable response instead of free-form text.
-        response = client.models.generate_content(
-            model="gemini-3.6-flash",
-            contents=prompt,
-            config={
-                "response_mime_type": "application/json"
-            }
-        )
+        # Gemini can temporarily return 503 / UNAVAILABLE.
+        # Retry a few times before reporting that the evaluation is unavailable.
+        response = None
+        last_error = None
+
+        for attempt in range(3):
+            try:
+                response = client.models.generate_content(
+                    model="gemini-3.6-flash",
+                    contents=prompt,
+                    config={
+                        "response_mime_type": "application/json"
+                    }
+                )
+                break
+            except Exception as api_error:
+                last_error = api_error
+                error_text = str(api_error)
+
+                if "503" not in error_text and "UNAVAILABLE" not in error_text.upper():
+                    raise
+
+                if attempt < 2:
+                    time.sleep(2 * (attempt + 1))
+
+        if response is None:
+            raise Exception(
+                f"Gemini service is temporarily unavailable: {last_error}"
+            )
 
         result_text = (
             response.text.strip()
@@ -2678,9 +2801,12 @@ Return exactly this JSON structure:
 
     except Exception as e:
 
-        # Keep the interview application running even if
-        # Gemini is temporarily unavailable.
+        # Do NOT save an unavailable AI evaluation as score 0.
+        # The interview page will keep the same question so the user
+        # can retry instead of getting a misleading zero score.
         return {
+            "evaluation_available": False,
+
             "technical_score": 0,
 
             "relevance_score": 0,
@@ -2689,20 +2815,18 @@ Return exactly this JSON structure:
 
             "overall_score": 0,
 
-            "strengths": [
-                "Your answer was submitted successfully."
-            ],
+            "strengths": [],
 
             "improvements": [
-                "AI evaluation could not be completed for this answer."
+                "AI evaluation is temporarily unavailable. Please try submitting the answer again."
             ],
 
             "feedback": (
-                f"Gemini evaluation error: {str(e)}"
+                f"Gemini evaluation unavailable: {str(e)}"
             ),
 
             "better_answer_tip": (
-                "Please try the interview again."
+                "Please try submitting the same answer again."
             ),
         }
 
@@ -3202,6 +3326,43 @@ def mock_interview(request):
             )
 
             # --------------------------------
+            # Do not save a failed Gemini evaluation as zero
+            # --------------------------------
+
+            if not evaluation.get(
+                "evaluation_available",
+                True
+            ):
+
+                progress = round(
+                    (
+                        question_index
+                        / len(questions)
+                    ) * 100
+                )
+
+                return render(
+                    request,
+                    "mock_interview.html",
+                    {
+                        "career": career,
+                        "level": interview_level,
+                        "question": question,
+                        "question_number": question_index + 1,
+                        "total_questions": len(questions),
+                        "progress": progress,
+                        "ai_generated": request.session.get(
+                            "interview_ai_generated",
+                            False
+                        ),
+                        "error": (
+                            "AI evaluation is temporarily unavailable. "
+                            "Please click Submit again in a few seconds."
+                        )
+                    }
+                )
+
+            # --------------------------------
             # Save interview result
             # --------------------------------
 
@@ -3647,268 +3808,8 @@ def interview_result(request):
 
 
 # =========================================================
-# AI JOB RECOMMENDATION
+# JOB RECOMMENDATION
 # =========================================================
-
-def recommend_jobs_with_gemini(
-    skills,
-    skill_levels=None,
-    career="",
-    career_interest="",
-    enjoyed_field="",
-    resume_analysis=None
-):
-    """
-    Generate personalized job-role recommendations using Gemini.
-
-    This returns job roles, not live vacancies. The application still
-    has a rule-based fallback so the page works when Gemini quota/API
-    is unavailable.
-    """
-
-    try:
-
-        if not settings.GEMINI_API_KEY:
-            return None
-
-        client = genai.Client(
-            api_key=settings.GEMINI_API_KEY
-        )
-
-        skill_levels = skill_levels or {}
-
-        resume_info = ""
-
-        if isinstance(resume_analysis, dict):
-
-            resume_info = f"""
-Resume Career Match:
-{resume_analysis.get('career_match', '')}
-
-Resume Career Match Score:
-{resume_analysis.get('career_match_score', 0)}
-
-Resume Strengths:
-{resume_analysis.get('strengths', [])}
-
-Resume Missing Skills:
-{resume_analysis.get('missing_skills', [])}
-"""
-
-        prompt = f"""
-You are an expert AI career coach helping an IT student identify
-suitable entry-level and junior job roles.
-
-Student Skills:
-{skills}
-
-Skill Levels:
-{skill_levels}
-
-Recommended Career:
-{career}
-
-Career Interest:
-{career_interest}
-
-Enjoyed Field:
-{enjoyed_field}
-
-{resume_info}
-
-Return ONLY valid JSON in exactly this format:
-
-{{
-    "jobs": [
-        {{
-            "title": "Job Role",
-            "company": "Suitable Industry or Company Type",
-            "location": "Chennai / Bangalore / Remote",
-            "type": "Full Time",
-            "description": "Short professional job description",
-            "match_score": 0,
-            "matched_skills": [
-                "Skill 1",
-                "Skill 2"
-            ],
-            "missing_skills": [
-                "Skill 1",
-                "Skill 2"
-            ],
-            "why_match": "Short explanation of why this role suits the candidate",
-            "next_step": "One practical skill or action to improve job readiness"
-        }}
-    ]
-}}
-
-Rules:
-- Return exactly 5 different IT job roles.
-- Prefer realistic entry-level or junior roles for a student/fresher.
-- Match roles to the candidate's actual skills and skill levels.
-- Consider recommended career, career interest and enjoyed field.
-- Consider resume information when available.
-- Never invent skills as if the candidate already has them.
-- matched_skills must contain only skills supplied by the candidate.
-- missing_skills should contain useful skills the candidate should learn.
-- match_score must be between 0 and 100.
-- Rank the jobs from highest match to lowest match.
-- These are job-role recommendations, NOT confirmed live vacancies.
-- Keep descriptions and explanations short and professional.
-"""
-
-        response = client.models.generate_content(
-            model="gemini-3.6-flash",
-            contents=prompt,
-            config={
-                "response_mime_type": "application/json"
-            }
-        )
-
-        result_text = (
-            response.text.strip()
-            if response.text
-            else ""
-        )
-
-        if not result_text:
-            raise Exception(
-                "Gemini returned an empty job recommendation response."
-            )
-
-        if result_text.startswith("```"):
-            result_text = (
-                result_text
-                .replace("```json", "")
-                .replace("```", "")
-                .strip()
-            )
-
-        result = json.loads(result_text)
-        jobs = result.get("jobs", [])
-
-        if not isinstance(jobs, list):
-            raise Exception(
-                "Gemini returned an invalid job format."
-            )
-
-        valid_jobs = []
-
-        for item in jobs:
-
-            if not isinstance(item, dict):
-                continue
-
-            title = str(
-                item.get("title", "")
-            ).strip()
-
-            if not title:
-                continue
-
-            try:
-                match_score = int(
-                    float(
-                        item.get(
-                            "match_score",
-                            0
-                        )
-                    )
-                )
-            except (TypeError, ValueError):
-                match_score = 0
-
-            match_score = max(
-                0,
-                min(100, match_score)
-            )
-
-            matched_skills = item.get(
-                "matched_skills",
-                []
-            )
-
-            missing_skills = item.get(
-                "missing_skills",
-                []
-            )
-
-            if not isinstance(matched_skills, list):
-                matched_skills = [matched_skills]
-
-            if not isinstance(missing_skills, list):
-                missing_skills = [missing_skills]
-
-            matched_skills = [
-                str(skill).strip()
-                for skill in matched_skills
-                if str(skill).strip()
-            ]
-
-            missing_skills = [
-                str(skill).strip()
-                for skill in missing_skills
-                if str(skill).strip()
-            ]
-
-            valid_jobs.append({
-                "title": title,
-                "name": title,
-                "company": str(
-                    item.get(
-                        "company",
-                        "Technology Company"
-                    )
-                ).strip(),
-                "location": str(
-                    item.get(
-                        "location",
-                        "Chennai / Remote"
-                    )
-                ).strip(),
-                "type": str(
-                    item.get(
-                        "type",
-                        "Full Time"
-                    )
-                ).strip(),
-                "description": str(
-                    item.get(
-                        "description",
-                        "Suitable role based on your profile."
-                    )
-                ).strip(),
-                "required_skills": missing_skills,
-                "matched_skills": matched_skills,
-                "missing_skills": missing_skills,
-                "match": match_score,
-                "why_match": str(
-                    item.get(
-                        "why_match",
-                        "Recommended based on your skills and career profile."
-                    )
-                ).strip(),
-                "next_step": str(
-                    item.get(
-                        "next_step",
-                        "Strengthen the missing skills and build a practical project."
-                    )
-                ).strip(),
-                "ai_generated": True,
-            })
-
-        if len(valid_jobs) < 1:
-            return None
-
-        valid_jobs.sort(
-            key=lambda x: x["match"],
-            reverse=True
-        )
-
-        return valid_jobs[:5]
-
-    except Exception:
-        return None
-
 
 @login_required
 def job_recommendation(request):
@@ -3939,85 +3840,54 @@ def job_recommendation(request):
     if assessment:
 
         assessment_skills = (
-            assessment.selected_skills or ""
+            assessment.selected_skills
+            or ""
         )
 
         for skill in assessment_skills.split(","):
+
             skill = skill.strip().lower()
+
             if skill:
                 user_skills.add(skill)
 
-    # --------------------------------
-    # Resume detected skills
-    # --------------------------------
-
+    # Resume skills
     if resume:
 
         resume_skills = (
-            resume.detected_skills or ""
+            resume.detected_skills
+            or ""
         )
 
         for skill in resume_skills.split(","):
+
             skill = skill.strip().lower()
+
             if skill:
                 user_skills.add(skill)
 
     # --------------------------------
-    # Student profile information
+    # Static job recommendations
     # --------------------------------
-
-    career = ""
-    career_interest = ""
-    enjoyed_field = ""
-    skill_levels = {}
-
-    if assessment:
-
-        career = (
-            assessment.recommended_career or ""
-        ).strip()
-
-        career_interest = (
-            assessment.career_interest or ""
-        ).strip()
-
-        enjoyed_field = (
-            assessment.enjoyed_field or ""
-        ).strip()
-
-        skill_levels = (
-            assessment.skill_levels
-            if assessment.skill_levels
-            else {}
-        )
-
-    # --------------------------------
-    # Resume AI analysis
-    # --------------------------------
-
-    resume_analysis = {}
-
-    if resume:
-        stored_analysis = getattr(
-            resume,
-            "ai_analysis",
-            {}
-        )
-
-        if isinstance(stored_analysis, dict):
-            resume_analysis = stored_analysis
-
-    # =========================================================
-    # RULE-BASED FALLBACK JOB DATA
-    # =========================================================
 
     jobs = [
+
         {
-            "title": "Junior Java Developer",
-            "company": "Software Development Company",
-            "location": "Chennai",
-            "type": "Full Time",
-            "description": "Develop and maintain Java-based applications.",
+            "title":
+                "Junior Java Developer",
+
+            "company":
+                "Software Development Company",
+
+            "location":
+                "Chennai",
+
+            "type":
+                "Full Time",
+
+            "description":
+                "Develop and maintain Java-based applications.",
+
             "required_skills": [
                 "java",
                 "sql",
@@ -4026,12 +3896,23 @@ def job_recommendation(request):
                 "git",
             ],
         },
+
         {
-            "title": "Full Stack Developer",
-            "company": "Technology Company",
-            "location": "Bangalore",
-            "type": "Full Time",
-            "description": "Work on frontend and backend web applications.",
+            "title":
+                "Full Stack Developer",
+
+            "company":
+                "Technology Company",
+
+            "location":
+                "Bangalore",
+
+            "type":
+                "Full Time",
+
+            "description":
+                "Work on frontend and backend web applications.",
+
             "required_skills": [
                 "html",
                 "css",
@@ -4042,12 +3923,23 @@ def job_recommendation(request):
                 "git",
             ],
         },
+
         {
-            "title": "Data Analyst",
-            "company": "Analytics Company",
-            "location": "Chennai",
-            "type": "Full Time",
-            "description": "Analyze business data and create analytical reports.",
+            "title":
+                "Data Analyst",
+
+            "company":
+                "Analytics Company",
+
+            "location":
+                "Chennai",
+
+            "type":
+                "Full Time",
+
+            "description":
+                "Analyze business data and create analytical reports.",
+
             "required_skills": [
                 "python",
                 "sql",
@@ -4057,12 +3949,23 @@ def job_recommendation(request):
                 "statistics",
             ],
         },
+
         {
-            "title": "Business Analyst",
-            "company": "Consulting Company",
-            "location": "Chennai",
-            "type": "Full Time",
-            "description": "Analyze business requirements and support decision making.",
+            "title":
+                "Business Analyst",
+
+            "company":
+                "Consulting Company",
+
+            "location":
+                "Chennai",
+
+            "type":
+                "Full Time",
+
+            "description":
+                "Analyze business requirements and support decision making.",
+
             "required_skills": [
                 "business analysis",
                 "excel",
@@ -4072,12 +3975,23 @@ def job_recommendation(request):
                 "data analysis",
             ],
         },
+
         {
-            "title": "Cyber Security Analyst",
-            "company": "Cyber Security Company",
-            "location": "Bangalore",
-            "type": "Full Time",
-            "description": "Monitor systems and identify potential security threats.",
+            "title":
+                "Cyber Security Analyst",
+
+            "company":
+                "Cyber Security Company",
+
+            "location":
+                "Bangalore",
+
+            "type":
+                "Full Time",
+
+            "description":
+                "Monitor systems and identify potential security threats.",
+
             "required_skills": [
                 "cyber security",
                 "networking",
@@ -4086,12 +4000,23 @@ def job_recommendation(request):
                 "security",
             ],
         },
+
         {
-            "title": "AI/ML Engineer",
-            "company": "AI Technology Company",
-            "location": "Bangalore",
-            "type": "Full Time",
-            "description": "Develop machine learning and AI-based solutions.",
+            "title":
+                "AI/ML Engineer",
+
+            "company":
+                "AI Technology Company",
+
+            "location":
+                "Bangalore",
+
+            "type":
+                "Full Time",
+
+            "description":
+                "Develop machine learning and AI-based solutions.",
+
             "required_skills": [
                 "python",
                 "machine learning",
@@ -4100,12 +4025,23 @@ def job_recommendation(request):
                 "sql",
             ],
         },
+
         {
-            "title": "Python Developer",
-            "company": "Technology Company",
-            "location": "Remote",
-            "type": "Full Time",
-            "description": "Develop Python and Django-based web applications.",
+            "title":
+                "Python Developer",
+
+            "company":
+                "Technology Company",
+
+            "location":
+                "Remote",
+
+            "type":
+                "Full Time",
+
+            "description":
+                "Develop Python and Django-based web applications.",
+
             "required_skills": [
                 "python",
                 "django",
@@ -4116,96 +4052,94 @@ def job_recommendation(request):
         },
     ]
 
-    # =========================================================
-    # AI RECOMMENDATION FIRST
-    # =========================================================
+    recommendations = []
 
-    recommendations = recommend_jobs_with_gemini(
-        skills=sorted(user_skills),
-        skill_levels=skill_levels,
-        career=career,
-        career_interest=career_interest,
-        enjoyed_field=enjoyed_field,
-        resume_analysis=resume_analysis,
-    )
+    career_interest = ""
 
-    ai_generated = bool(recommendations)
+    if assessment:
 
-    # =========================================================
-    # FALLBACK RECOMMENDATION
-    # =========================================================
+        career_interest = (
+            assessment.career_interest
+            or ""
+        ).lower()
 
-    if not recommendations:
+    for job in jobs:
 
-        recommendations = []
+        required = job[
+            "required_skills"
+        ]
 
-        career_interest_lower = career_interest.lower()
-        career_lower = career.lower()
+        matched_skills = []
 
-        for job in jobs:
+        missing_skills = []
 
-            required = job["required_skills"]
+        for skill in required:
 
-            matched_skills = []
-            missing_skills = []
+            if skill.lower() in user_skills:
 
-            for skill in required:
-
-                if skill.lower() in user_skills:
-                    matched_skills.append(skill)
-                else:
-                    missing_skills.append(skill)
-
-            if required:
-                match = round(
-                    len(matched_skills)
-                    / len(required)
-                    * 100
+                matched_skills.append(
+                    skill
                 )
+
             else:
-                match = 0
 
-            # Career interest bonus
-            if (
-                career_interest_lower
-                and (
-                    career_interest_lower in job["title"].lower()
-                    or job["title"].lower() in career_interest_lower
+                missing_skills.append(
+                    skill
                 )
-            ):
-                match += 10
 
-            # Recommended career bonus
-            if (
-                career_lower
-                and (
-                    career_lower in job["title"].lower()
-                    or job["title"].lower() in career_lower
-                )
-            ):
-                match += 10
+        if required:
 
-            match = min(match, 100)
-
-            job_copy = job.copy()
-
-            job_copy["matched_skills"] = matched_skills
-            job_copy["missing_skills"] = missing_skills
-            job_copy["match"] = match
-            job_copy["why_match"] = (
-                "Matched based on your assessed and resume skills."
+            match = round(
+                len(matched_skills)
+                / len(required)
+                * 100
             )
-            job_copy["next_step"] = (
-                "Improve the missing skills and build a practical project."
+
+        else:
+
+            match = 0
+
+        # Career interest bonus
+        if (
+            career_interest
+            and (
+                career_interest
+                in job["title"].lower()
+                or job["title"].lower()
+                in career_interest
             )
-            job_copy["ai_generated"] = False
+        ):
 
-            recommendations.append(job_copy)
+            match += 10
 
-        recommendations.sort(
-            key=lambda x: x["match"],
-            reverse=True
+        match = min(
+            match,
+            100
         )
+
+        job_copy = job.copy()
+
+        job_copy[
+            "matched_skills"
+        ] = matched_skills
+
+        job_copy[
+            "missing_skills"
+        ] = missing_skills
+
+        job_copy[
+            "match"
+        ] = match
+
+        recommendations.append(
+            job_copy
+        )
+
+    # Highest matches first
+    recommendations.sort(
+        key=lambda x: x["match"],
+        reverse=True
+    )
 
     top_jobs = recommendations[:3]
 
@@ -4213,13 +4147,20 @@ def job_recommendation(request):
         request,
         "job_recommendation.html",
         {
-            "recommendations": recommendations,
-            "top_jobs": top_jobs,
-            "user_skills": user_skills,
-            "assessment": assessment,
-            "resume": resume,
-            "ai_generated": ai_generated,
-            "career": career,
+            "recommendations":
+                recommendations,
+
+            "top_jobs":
+                top_jobs,
+
+            "user_skills":
+                user_skills,
+
+            "assessment":
+                assessment,
+
+            "resume":
+                resume,
         }
     )
 
@@ -4359,116 +4300,3 @@ def gemini_test(request):
             f"Gemini API Error: {str(e)}",
             status=500
         )
-
-
-@login_required(login_url='login')
-def admin_dashboard(request):
-
-    # Only superusers can access the Admin Dashboard
-    if not request.user.is_superuser:
-        return redirect('dashboard')
-
-    # =========================================================
-    # COUNTS
-    # =========================================================
-
-    total_users = User.objects.count()
-
-    total_assessments = UserSkillAssessment.objects.count()
-
-    total_recommendations = (
-        UserSkillAssessment.objects
-        .exclude(recommended_career='')
-        .exclude(recommended_career__isnull=True)
-        .count()
-    )
-
-    total_resumes = Resume.objects.count()
-
-    total_interviews = MockInterview.objects.count()
-
-    # =========================================================
-    # AVERAGE INTERVIEW SCORE
-    # =========================================================
-
-    interview_scores = list(
-        MockInterview.objects.values_list(
-            'score',
-            flat=True
-        )
-    )
-
-    if interview_scores:
-        average_score = round(
-            sum(interview_scores) / len(interview_scores)
-        )
-    else:
-        average_score = 0
-
-    # =========================================================
-    # RECENT USERS
-    # =========================================================
-
-    recent_users = User.objects.order_by(
-        '-date_joined'
-    )[:5]
-
-    # =========================================================
-    # RECENT ASSESSMENTS
-    # =========================================================
-
-    recent_assessments = (
-        UserSkillAssessment.objects
-        .select_related('user')
-        .order_by('-created_at')[:5]
-    )
-
-    # =========================================================
-    # RECENT INTERVIEWS
-    # =========================================================
-
-    recent_interviews = (
-        MockInterview.objects
-        .select_related('user')
-        .order_by('-created_at')[:5]
-    )
-
-    # =========================================================
-    # CONTEXT
-    # =========================================================
-
-    context = {
-
-        'total_users':
-            total_users,
-
-        'total_assessments':
-            total_assessments,
-
-        'total_recommendations':
-            total_recommendations,
-
-        'total_resumes':
-            total_resumes,
-
-        'total_interviews':
-            total_interviews,
-
-        'average_score':
-            average_score,
-
-        'recent_users':
-            recent_users,
-
-        'recent_assessments':
-            recent_assessments,
-
-        'recent_interviews':
-            recent_interviews,
-    }
-
-    return render(
-        request,
-        'admin-dashboard.html',
-        context
-    )

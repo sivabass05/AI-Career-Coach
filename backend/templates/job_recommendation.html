@@ -1,0 +1,800 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Job Recommendations | AI Career Coach</title>
+
+    <style>
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            background: #f4f8fc;
+            color: #172033;
+            padding-top: 75px;
+        }
+
+        /* ================= HEADER ================= */
+
+        .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+
+            height: 70px;
+
+            z-index: 99999;
+
+            background: linear-gradient(
+                135deg,
+                #1e3c72,
+                #2a5298
+            );
+
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            padding: 0 45px;
+
+            box-shadow:
+                0 4px 18px rgba(0,0,0,0.15);
+        }
+
+        .logo {
+            color: white;
+            text-decoration: none;
+
+            font-size: 22px;
+            font-weight: bold;
+        }
+
+        .nav {
+            display: flex;
+            align-items: center;
+            gap: 22px;
+        }
+
+        .nav a {
+            color: white;
+            text-decoration: none;
+
+            font-size: 15px;
+            font-weight: 600;
+        }
+
+        .nav a:hover {
+            opacity: 0.75;
+        }
+
+        /* ================= MAIN ================= */
+
+        .container {
+            width: 92%;
+            max-width: 1200px;
+
+            margin: 35px auto 60px;
+        }
+
+        /* ================= HERO ================= */
+
+        .hero {
+            background: linear-gradient(
+                135deg,
+                #102a56,
+                #087f8c
+            );
+
+            border-radius: 22px;
+
+            padding: 42px;
+
+            color: white;
+
+            box-shadow:
+                0 12px 30px rgba(20,60,100,0.18);
+
+            margin-bottom: 28px;
+        }
+
+        .hero h1 {
+            font-size: 34px;
+            margin-bottom: 12px;
+        }
+
+        .hero p {
+            font-size: 17px;
+            line-height: 1.7;
+
+            max-width: 800px;
+
+            opacity: 0.95;
+        }
+
+        /* ================= SUMMARY ================= */
+
+        .summary {
+            display: grid;
+
+            grid-template-columns:
+                repeat(3, 1fr);
+
+            gap: 18px;
+
+            margin-bottom: 30px;
+        }
+
+        .summary-card {
+            background: white;
+
+            border-radius: 17px;
+
+            padding: 25px;
+
+            box-shadow:
+                0 7px 22px rgba(30,60,90,0.08);
+        }
+
+        .summary-card h3 {
+            color: #667085;
+
+            font-size: 13px;
+
+            margin-bottom: 10px;
+
+            text-transform: uppercase;
+        }
+
+        .summary-card strong {
+            color: #1e3c72;
+
+            font-size: 25px;
+        }
+
+        /* ================= SECTION TITLE ================= */
+
+        .section-title {
+            color: #173b72;
+
+            font-size: 27px;
+
+            margin-bottom: 20px;
+        }
+
+        /* ================= JOB GRID ================= */
+
+        .jobs {
+            display: grid;
+
+            grid-template-columns:
+                repeat(2, 1fr);
+
+            gap: 22px;
+        }
+
+        /* ================= JOB CARD ================= */
+
+        .job-card {
+            background: white;
+
+            border-radius: 20px;
+
+            padding: 28px;
+
+            box-shadow:
+                0 7px 22px rgba(30,60,90,0.08);
+
+            border: 1px solid #e8edf3;
+
+            transition: 0.2s;
+        }
+
+        .job-card:hover {
+            transform: translateY(-4px);
+
+            box-shadow:
+                0 12px 28px rgba(30,60,90,0.13);
+        }
+
+        .job-top {
+            display: flex;
+
+            justify-content: space-between;
+
+            align-items: flex-start;
+
+            gap: 15px;
+
+            margin-bottom: 15px;
+        }
+
+        .job-title {
+            color: #173b72;
+
+            font-size: 21px;
+
+            margin-bottom: 7px;
+        }
+
+        .company {
+            color: #667085;
+
+            font-size: 14px;
+        }
+
+        /* ================= MATCH ================= */
+
+        .match {
+            min-width: 78px;
+
+            text-align: center;
+
+            padding: 10px 8px;
+
+            border-radius: 12px;
+
+            background: #e7f7f7;
+
+            color: #087f8c;
+
+            font-size: 18px;
+
+            font-weight: bold;
+        }
+
+        .match-label {
+            display: block;
+
+            font-size: 10px;
+
+            color: #5d7d83;
+
+            margin-top: 2px;
+        }
+
+        /* ================= META ================= */
+
+        .meta {
+            display: flex;
+
+            flex-wrap: wrap;
+
+            gap: 10px;
+
+            margin-bottom: 17px;
+        }
+
+        .meta span {
+            background: #f1f5f9;
+
+            color: #526174;
+
+            padding: 7px 11px;
+
+            border-radius: 8px;
+
+            font-size: 13px;
+
+            font-weight: 600;
+        }
+
+        .description {
+            color: #667085;
+
+            line-height: 1.6;
+
+            font-size: 14px;
+
+            margin-bottom: 20px;
+        }
+
+        /* ================= SKILLS ================= */
+
+        .skill-title {
+            color: #344054;
+
+            font-size: 14px;
+
+            font-weight: bold;
+
+            margin-bottom: 9px;
+        }
+
+        .skills {
+            display: flex;
+
+            flex-wrap: wrap;
+
+            gap: 8px;
+
+            margin-bottom: 17px;
+        }
+
+        .skill {
+            padding: 7px 11px;
+
+            border-radius: 18px;
+
+            font-size: 12px;
+
+            font-weight: 600;
+        }
+
+        .matched {
+            background: #e7f7ef;
+
+            color: #087443;
+        }
+
+        .missing {
+            background: #fff1f0;
+
+            color: #b42318;
+        }
+
+        /* ================= PROGRESS ================= */
+
+        .progress-title {
+            display: flex;
+
+            justify-content: space-between;
+
+            margin-bottom: 7px;
+
+            font-size: 12px;
+
+            color: #667085;
+        }
+
+        .progress {
+            height: 8px;
+
+            background: #e7edf3;
+
+            border-radius: 20px;
+
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+
+            background: linear-gradient(
+                90deg,
+                #1e3c72,
+                #087f8c
+            );
+
+            border-radius: 20px;
+        }
+
+        /* ================= EMPTY ================= */
+
+        .empty {
+            background: white;
+
+            border-radius: 20px;
+
+            padding: 50px;
+
+            text-align: center;
+
+            box-shadow:
+                0 7px 22px rgba(30,60,90,0.08);
+        }
+
+        .empty-icon {
+            font-size: 50px;
+
+            margin-bottom: 15px;
+        }
+
+        .empty h2 {
+            color: #173b72;
+
+            margin-bottom: 10px;
+        }
+
+        .empty p {
+            color: #667085;
+
+            margin-bottom: 22px;
+        }
+
+        .btn {
+            display: inline-block;
+
+            text-decoration: none;
+
+            padding: 12px 22px;
+
+            border-radius: 9px;
+
+            background: linear-gradient(
+                135deg,
+                #1e3c72,
+                #087f8c
+            );
+
+            color: white;
+
+            font-weight: bold;
+        }
+
+        /* ================= FOOTER ================= */
+
+        .footer {
+            text-align: center;
+
+            color: #7a8495;
+
+            padding: 35px 0 10px;
+
+            font-size: 14px;
+        }
+
+        /* ================= RESPONSIVE ================= */
+
+        @media (max-width: 850px) {
+
+            .header {
+                padding: 0 20px;
+            }
+
+            .nav {
+                gap: 10px;
+            }
+
+            .nav a {
+                font-size: 12px;
+            }
+
+            .summary {
+                grid-template-columns: 1fr;
+            }
+
+            .jobs {
+                grid-template-columns: 1fr;
+            }
+
+            .hero {
+                padding: 30px;
+            }
+
+            .hero h1 {
+                font-size: 28px;
+            }
+        }
+
+        @media (max-width: 550px) {
+
+            .logo {
+                font-size: 17px;
+            }
+
+            .nav a:not(:last-child) {
+                display: none;
+            }
+
+            .container {
+                width: 94%;
+            }
+
+            .job-top {
+                flex-direction: column;
+            }
+
+            .match {
+                align-self: flex-start;
+            }
+
+            .job-card {
+                padding: 22px;
+            }
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+<!-- ================= HEADER ================= -->
+
+<header class="header">
+
+    <a
+        href="{% url 'dashboard' %}"
+        class="logo"
+    >
+        🤖 AI Career Coach
+    </a>
+
+    <nav class="nav">
+
+        <a href="{% url 'dashboard' %}">
+            Dashboard
+        </a>
+
+        <a href="{% url 'profile' %}">
+            Profile
+        </a>
+
+        <a href="{% url 'learning_path' %}">
+            Learning Path
+        </a>
+
+        <a href="{% url 'logout' %}">
+            Logout
+        </a>
+
+    </nav>
+
+</header>
+
+
+<!-- ================= MAIN ================= -->
+
+<main class="container">
+
+
+    <!-- HERO -->
+
+    <section class="hero">
+
+        <h1>
+            💼 Job Recommendations
+        </h1>
+
+        <p>
+            Explore career opportunities that match
+            your skills, career interests and resume.
+            Improve your missing skills to increase
+            your job match score.
+        </p>
+
+    </section>
+
+
+    <!-- ================= SUMMARY ================= -->
+
+    <section class="summary">
+
+        <div class="summary-card">
+
+            <h3>
+                Recommended Jobs
+            </h3>
+
+            <strong>
+                {{ recommendations|length }}
+            </strong>
+
+        </div>
+
+
+        <div class="summary-card">
+
+            <h3>
+                Your Skills
+            </h3>
+
+            <strong>
+                {{ user_skills|length }}
+            </strong>
+
+        </div>
+
+
+        <div class="summary-card">
+
+            <h3>
+                Top Matches
+            </h3>
+
+            <strong>
+                {{ top_jobs|length }}
+            </strong>
+
+        </div>
+
+    </section>
+
+
+    <!-- ================= JOBS ================= -->
+
+    {% if recommendations %}
+
+        <h2 class="section-title">
+            🎯 Jobs Matching Your Profile
+        </h2>
+
+
+        <section class="jobs">
+
+            {% for job in recommendations %}
+
+                <article class="job-card">
+
+                    <!-- JOB TOP -->
+
+                    <div class="job-top">
+
+                        <div>
+
+                            <h2 class="job-title">
+                                {{ job.title }}
+                            </h2>
+
+                            <div class="company">
+                                🏢 {{ job.company }}
+                            </div>
+
+                        </div>
+
+
+                        <div class="match">
+
+                            {{ job.match }}%
+
+                            <span class="match-label">
+                                MATCH
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- META -->
+
+                    <div class="meta">
+
+                        <span>
+                            📍 {{ job.location }}
+                        </span>
+
+                        <span>
+                            💼 {{ job.type }}
+                        </span>
+
+                    </div>
+
+
+                    <!-- DESCRIPTION -->
+
+                    <p class="description">
+                        {{ job.description }}
+                    </p>
+
+
+                    <!-- MATCH PROGRESS -->
+
+                    <div class="progress-title">
+
+                        <span>
+                            Skill Match
+                        </span>
+
+                        <strong>
+                            {{ job.match }}%
+                        </strong>
+
+                    </div>
+
+                    <div class="progress">
+
+                        <div
+                            class="progress-bar"
+                            style="width: {{ job.match }}%;"
+                        ></div>
+
+                    </div>
+
+
+                    <br>
+
+
+                    <!-- MATCHED SKILLS -->
+
+                    {% if job.matched_skills %}
+
+                        <div class="skill-title">
+                            ✅ Matched Skills
+                        </div>
+
+                        <div class="skills">
+
+                            {% for skill in job.matched_skills %}
+
+                                <span class="skill matched">
+                                    {{ skill }}
+                                </span>
+
+                            {% endfor %}
+
+                        </div>
+
+                    {% endif %}
+
+
+                    <!-- MISSING SKILLS -->
+
+                    {% if job.missing_skills %}
+
+                        <div class="skill-title">
+                            📚 Skills to Improve
+                        </div>
+
+                        <div class="skills">
+
+                            {% for skill in job.missing_skills %}
+
+                                <span class="skill missing">
+                                    {{ skill }}
+                                </span>
+
+                            {% endfor %}
+
+                        </div>
+
+                    {% endif %}
+
+                </article>
+
+            {% endfor %}
+
+        </section>
+
+
+    {% else %}
+
+
+        <!-- EMPTY STATE -->
+
+        <section class="empty">
+
+            <div class="empty-icon">
+                🔍
+            </div>
+
+            <h2>
+                No Job Recommendations Yet
+            </h2>
+
+            <p>
+                Complete your Skill Assessment and
+                upload your resume to get personalized
+                job recommendations.
+            </p>
+
+            <a
+                href="{% url 'skill_assessment' %}"
+                class="btn"
+            >
+                🎯 Take Skill Assessment
+            </a>
+
+        </section>
+
+    {% endif %}
+
+
+    <div class="footer">
+
+        AI Career Coach • Personalized Job Matching
+
+    </div>
+
+</main>
+
+</body>
+</html>

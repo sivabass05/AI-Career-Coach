@@ -1,0 +1,963 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Register | AI Career Coach</title>
+
+    <style>
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            background: linear-gradient(
+                135deg,
+                #172554,
+                #1e3a8a,
+                #0f766e
+            );
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 25px;
+        }
+
+        .register-container {
+            width: 1100px;
+            max-width: 100%;
+            min-height: 650px;
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            display: flex;
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.25);
+        }
+
+        /* =========================================
+           LEFT SIDE
+        ========================================= */
+
+        .left-section {
+            width: 37%;
+            background: linear-gradient(
+                160deg,
+                #1e3a8a,
+                #264b91,
+                #1d4ed8
+            );
+            color: white;
+            padding: 55px 42px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .brand {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 65px;
+            text-align: center;
+        }
+
+        .brand span {
+            color: #14b8a6;
+        }
+
+        .rocket {
+            font-size: 62px;
+            margin-bottom: 20px;
+        }
+
+        .left-section h1 {
+            font-size: 36px;
+            line-height: 1.15;
+            margin-bottom: 20px;
+        }
+
+        .left-section h1 span {
+            color: #14b8a6;
+        }
+
+        .left-description {
+            font-size: 16px;
+            line-height: 1.7;
+            color: #e0e7ff;
+            margin-bottom: 30px;
+        }
+
+        .feature-list {
+            list-style: none;
+        }
+
+        .feature-list li {
+            font-size: 15px;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #f8fafc;
+        }
+
+        /* =========================================
+           RIGHT SIDE
+        ========================================= */
+
+        .right-section {
+            width: 63%;
+            padding: 35px 45px 25px;
+            overflow-y: auto;
+        }
+
+        .form-title {
+            font-size: 30px;
+            font-weight: 700;
+            color: #172554;
+            margin-bottom: 7px;
+        }
+
+        .form-subtitle {
+            color: #64748b;
+            font-size: 14px;
+            margin-bottom: 25px;
+        }
+
+        /* =========================================
+           MESSAGES
+        ========================================= */
+
+        .messages {
+            margin-bottom: 18px;
+        }
+
+        .message {
+            padding: 12px 15px;
+            border-radius: 8px;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        .message.error {
+            background: #fee2e2;
+            color: #991b1b;
+            border: 1px solid #fecaca;
+        }
+
+        .message.success {
+            background: #dcfce7;
+            color: #166534;
+            border: 1px solid #bbf7d0;
+        }
+
+        /* =========================================
+           FORM
+        ========================================= */
+
+        form {
+            width: 100%;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        label {
+            display: block;
+            font-size: 14px;
+            font-weight: 700;
+            color: #173b78;
+            margin-bottom: 7px;
+        }
+
+        .input-wrapper {
+            position: relative;
+        }
+
+        input,
+        select {
+            width: 100%;
+            height: 43px;
+            border: 1px solid #cbd5e1;
+            border-radius: 9px;
+            padding: 0 13px;
+            font-size: 14px;
+            color: #0f172a;
+            background: #f8fafc;
+            outline: none;
+            transition: 0.2s ease;
+        }
+
+        input:focus,
+        select:focus {
+            border-color: #2563eb;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(
+                37,
+                99,
+                235,
+                0.10
+            );
+        }
+
+        input::placeholder {
+            color: #94a3b8;
+        }
+
+        select {
+            cursor: pointer;
+        }
+
+        /* Password fields */
+
+        .password-input {
+            padding-right: 45px;
+        }
+
+        .toggle-password {
+            position: absolute;
+            right: 13px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            font-size: 17px;
+            color: #64748b;
+            user-select: none;
+        }
+
+        .password-hint {
+            font-size: 11px;
+            color: #64748b;
+            margin-top: 5px;
+        }
+
+        /* =========================================
+           BUTTON
+        ========================================= */
+
+        .register-btn {
+            width: 100%;
+            height: 50px;
+            margin-top: 10px;
+            border: none;
+            border-radius: 30px;
+            background: linear-gradient(
+                135deg,
+                #1e3a8a,
+                #2854a3
+            );
+            color: white;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.25s ease;
+        }
+
+        .register-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(
+                30,
+                58,
+                138,
+                0.3
+            );
+        }
+
+        .register-btn:active {
+            transform: translateY(0);
+        }
+
+        /* =========================================
+           LOGIN LINK
+        ========================================= */
+
+        .login-link {
+            text-align: center;
+            margin-top: 18px;
+            font-size: 14px;
+            color: #64748b;
+        }
+
+        .login-link a {
+            color: #0284c7;
+            text-decoration: none;
+            font-weight: 700;
+        }
+
+        .login-link a:hover {
+            text-decoration: underline;
+        }
+
+        /* =========================================
+           RESPONSIVE
+        ========================================= */
+
+        @media (max-width: 850px) {
+
+            body {
+                padding: 15px;
+                align-items: flex-start;
+            }
+
+            .register-container {
+                flex-direction: column;
+            }
+
+            .left-section,
+            .right-section {
+                width: 100%;
+            }
+
+            .left-section {
+                padding: 35px 30px;
+            }
+
+            .brand {
+                margin-bottom: 25px;
+            }
+
+            .rocket {
+                font-size: 45px;
+            }
+
+            .left-section h1 {
+                font-size: 30px;
+            }
+
+            .feature-list {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 5px 20px;
+            }
+
+            .feature-list li {
+                margin-bottom: 8px;
+            }
+
+            .right-section {
+                padding: 30px 25px;
+            }
+        }
+
+        @media (max-width: 550px) {
+
+            .form-row {
+                grid-template-columns: 1fr;
+                gap: 0;
+            }
+
+            .feature-list {
+                grid-template-columns: 1fr;
+            }
+
+            .left-section h1 {
+                font-size: 27px;
+            }
+
+            .form-title {
+                font-size: 25px;
+            }
+
+            .right-section {
+                padding: 25px 20px;
+            }
+        }
+
+    </style>
+</head>
+
+<body>
+
+<div class="register-container">
+
+    <!-- =========================================
+         LEFT SECTION
+    ========================================== -->
+
+    <div class="left-section">
+
+        <div class="brand">
+            🤖 AI Career <span>Coach</span>
+        </div>
+
+        <div class="rocket">
+            🚀
+        </div>
+
+        <h1>
+            Start Your
+            <span>Career Journey</span>
+        </h1>
+
+        <p class="left-description">
+            Create your profile and get personalized
+            AI-powered career guidance based on your
+            skills, education and career goals.
+        </p>
+
+        <ul class="feature-list">
+
+            <li>
+                🎯 Career Recommendation
+            </li>
+
+            <li>
+                📊 Skill Assessment
+            </li>
+
+            <li>
+                📄 Resume Analysis
+            </li>
+
+            <li>
+                📚 Personalized Learning Path
+            </li>
+
+            <li>
+                🎤 Mock Interview
+            </li>
+
+        </ul>
+
+    </div>
+
+
+    <!-- =========================================
+         RIGHT SECTION
+    ========================================== -->
+
+    <div class="right-section">
+
+        <h2 class="form-title">
+            Create Your Account
+        </h2>
+
+        <p class="form-subtitle">
+            Enter your details to start your personalized career journey.
+        </p>
+
+
+        <!-- =====================================
+             DJANGO MESSAGES
+        ====================================== -->
+
+        {% if messages %}
+
+        <div class="messages">
+
+            {% for message in messages %}
+
+                <div class="message {{ message.tags }}">
+                    {{ message }}
+                </div>
+
+            {% endfor %}
+
+        </div>
+
+        {% endif %}
+
+
+        <!-- =====================================
+             REGISTRATION FORM
+        ====================================== -->
+
+        <form method="POST">
+
+            {% csrf_token %}
+
+
+            <!-- Full Name -->
+
+            <div class="form-group">
+
+                <label for="full_name">
+                    👤 Full Name
+                </label>
+
+                <input
+                    type="text"
+                    id="full_name"
+                    name="full_name"
+                    placeholder="Enter your full name"
+                    value="{{ request.POST.full_name|default:'' }}"
+                    required
+                >
+
+            </div>
+
+
+            <!-- Username + Email -->
+
+            <div class="form-row">
+
+                <div class="form-group">
+
+                    <label for="username">
+                        🔑 Username
+                    </label>
+
+                    <input
+                        type="text"
+                        id="username"
+                        name="username"
+                        placeholder="Create username"
+                        value="{{ request.POST.username|default:'' }}"
+                        required
+                    >
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label for="email">
+                        📧 Email Address
+                    </label>
+
+                    <input
+                        type="email"
+                        id="email"
+                        name="email"
+                        placeholder="Enter your email"
+                        value="{{ request.POST.email|default:'' }}"
+                        required
+                    >
+
+                </div>
+
+            </div>
+
+
+            <!-- Phone + Education -->
+
+            <div class="form-row">
+
+                <div class="form-group">
+
+                    <label for="phone">
+                        📱 Phone Number
+                    </label>
+
+                    <input
+                        type="tel"
+                        id="phone"
+                        name="phone"
+                        placeholder="Enter phone number"
+                        value="{{ request.POST.phone|default:'' }}"
+                        maxlength="15"
+                    >
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label for="education">
+                        🎓 Education
+                    </label>
+
+                    <select
+                        id="education"
+                        name="education"
+                        required
+                    >
+
+                        <option value="">
+                            Select education
+                        </option>
+
+                        <option value="10th"
+                            {% if request.POST.education == "10th" %}selected{% endif %}>
+                            10th
+                        </option>
+
+                        <option value="12th"
+                            {% if request.POST.education == "12th" %}selected{% endif %}>
+                            12th
+                        </option>
+
+                        <option value="Diploma"
+                            {% if request.POST.education == "Diploma" %}selected{% endif %}>
+                            Diploma
+                        </option>
+
+                        <option value="BCA"
+                            {% if request.POST.education == "BCA" %}selected{% endif %}>
+                            BCA
+                        </option>
+
+                        <option value="B.Sc"
+                            {% if request.POST.education == "B.Sc" %}selected{% endif %}>
+                            B.Sc
+                        </option>
+
+                        <option value="B.Com"
+                            {% if request.POST.education == "B.Com" %}selected{% endif %}>
+                            B.Com
+                        </option>
+
+                        <option value="BBA"
+                            {% if request.POST.education == "BBA" %}selected{% endif %}>
+                            BBA
+                        </option>
+
+                        <option value="BE"
+                            {% if request.POST.education == "BE" %}selected{% endif %}>
+                            B.E
+                        </option>
+
+                        <option value="B.Tech"
+                            {% if request.POST.education == "B.Tech" %}selected{% endif %}>
+                            B.Tech
+                        </option>
+
+                        <option value="MBA"
+                            {% if request.POST.education == "MBA" %}selected{% endif %}>
+                            MBA
+                        </option>
+
+                        <option value="MCA"
+                            {% if request.POST.education == "MCA" %}selected{% endif %}>
+                            MCA
+                        </option>
+
+                        <option value="M.Sc"
+                            {% if request.POST.education == "M.Sc" %}selected{% endif %}>
+                            M.Sc
+                        </option>
+
+                        <option value="M.Com"
+                            {% if request.POST.education == "M.Com" %}selected{% endif %}>
+                            M.Com
+                        </option>
+
+                        <option value="Other"
+                            {% if request.POST.education == "Other" %}selected{% endif %}>
+                            Other
+                        </option>
+
+                    </select>
+
+                </div>
+
+            </div>
+
+
+            <!-- College -->
+
+            <div class="form-group">
+
+                <label for="college">
+                    🏫 College / University
+                </label>
+
+                <input
+                    type="text"
+                    id="college"
+                    name="college"
+                    placeholder="Enter your college or university"
+                    value="{{ request.POST.college|default:'' }}"
+                >
+
+            </div>
+
+
+            <!-- Graduation Year + Career Goal -->
+
+            <div class="form-row">
+
+                <div class="form-group">
+
+                    <label for="graduation_year">
+                        📅 Graduation Year
+                    </label>
+
+                    <select
+                        id="graduation_year"
+                        name="graduation_year"
+                    >
+
+                        <option value="">
+                            Select year
+                        </option>
+
+                        {% for year in "2024,2025,2026,2027,2028,2029,2030"|cut:"," %}
+
+                        {% endfor %}
+
+                        <option value="2024"
+                            {% if request.POST.graduation_year == "2024" %}selected{% endif %}>
+                            2024
+                        </option>
+
+                        <option value="2025"
+                            {% if request.POST.graduation_year == "2025" %}selected{% endif %}>
+                            2025
+                        </option>
+
+                        <option value="2026"
+                            {% if request.POST.graduation_year == "2026" %}selected{% endif %}>
+                            2026
+                        </option>
+
+                        <option value="2027"
+                            {% if request.POST.graduation_year == "2027" %}selected{% endif %}>
+                            2027
+                        </option>
+
+                        <option value="2028"
+                            {% if request.POST.graduation_year == "2028" %}selected{% endif %}>
+                            2028
+                        </option>
+
+                        <option value="2029"
+                            {% if request.POST.graduation_year == "2029" %}selected{% endif %}>
+                            2029
+                        </option>
+
+                        <option value="2030"
+                            {% if request.POST.graduation_year == "2030" %}selected{% endif %}>
+                            2030
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label for="career_goal">
+                        💼 Career Goal
+                    </label>
+
+                    <select
+                        id="career_goal"
+                        name="career_goal"
+                    >
+
+                        <option value="">
+                            Select career goal
+                        </option>
+
+                        <option value="Java Developer"
+                            {% if request.POST.career_goal == "Java Developer" %}selected{% endif %}>
+                            Java Developer
+                        </option>
+
+                        <option value="Python Developer"
+                            {% if request.POST.career_goal == "Python Developer" %}selected{% endif %}>
+                            Python Developer
+                        </option>
+
+                        <option value="Data Analyst"
+                            {% if request.POST.career_goal == "Data Analyst" %}selected{% endif %}>
+                            Data Analyst
+                        </option>
+
+                        <option value="Business Analyst"
+                            {% if request.POST.career_goal == "Business Analyst" %}selected{% endif %}>
+                            Business Analyst
+                        </option>
+
+                        <option value="AI/ML Engineer"
+                            {% if request.POST.career_goal == "AI/ML Engineer" %}selected{% endif %}>
+                            AI/ML Engineer
+                        </option>
+
+                        <option value="Full Stack Developer"
+                            {% if request.POST.career_goal == "Full Stack Developer" %}selected{% endif %}>
+                            Full Stack Developer
+                        </option>
+
+                        <option value="Cyber Security Analyst"
+                            {% if request.POST.career_goal == "Cyber Security Analyst" %}selected{% endif %}>
+                            Cyber Security Analyst
+                        </option>
+
+                        <option value="Other"
+                            {% if request.POST.career_goal == "Other" %}selected{% endif %}>
+                            Other
+                        </option>
+
+                    </select>
+
+                </div>
+
+            </div>
+
+
+            <!-- Password + Confirm Password -->
+
+            <div class="form-row">
+
+                <div class="form-group">
+
+                    <label for="password">
+                        🔐 Password
+                    </label>
+
+                    <div class="input-wrapper">
+
+                        <input
+                            type="password"
+                            id="password"
+                            name="password"
+                            class="password-input"
+                            placeholder="Create password"
+                            minlength="8"
+                            required
+                        >
+
+                        <span
+                            class="toggle-password"
+                            onclick="togglePassword('password', this)"
+                        >
+                            👁️
+                        </span>
+
+                    </div>
+
+                    <div class="password-hint">
+                        Use at least 8 characters.
+                    </div>
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label for="confirm_password">
+                        🔐 Confirm Password
+                    </label>
+
+                    <div class="input-wrapper">
+
+                        <input
+                            type="password"
+                            id="confirm_password"
+                            name="confirm_password"
+                            class="password-input"
+                            placeholder="Confirm password"
+                            minlength="8"
+                            required
+                        >
+
+                        <span
+                            class="toggle-password"
+                            onclick="togglePassword('confirm_password', this)"
+                        >
+                            👁️
+                        </span>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- Register Button -->
+
+            <button
+                type="submit"
+                class="register-btn"
+            >
+                🚀 Create My Account
+            </button>
+
+
+            <!-- Login -->
+
+            <div class="login-link">
+
+                Already have an account?
+
+                <a href="{% url 'login' %}">
+                    Login
+                </a>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+
+<script>
+
+    function togglePassword(
+        fieldId,
+        element
+    ) {
+
+        const field = document.getElementById(
+            fieldId
+        );
+
+        if (field.type === "password") {
+
+            field.type = "text";
+            element.textContent = "🙈";
+
+        } else {
+
+            field.type = "password";
+            element.textContent = "👁️";
+
+        }
+
+    }
+
+
+    // Password confirmation validation
+
+    const form = document.querySelector("form");
+
+    form.addEventListener(
+        "submit",
+        function(event) {
+
+            const password =
+                document.getElementById(
+                    "password"
+                ).value;
+
+            const confirmPassword =
+                document.getElementById(
+                    "confirm_password"
+                ).value;
+
+            if (
+                password !== confirmPassword
+            ) {
+
+                event.preventDefault();
+
+                alert(
+                    "Passwords do not match."
+                );
+
+            }
+
+        }
+    );
+
+</script>
+
+</body>
+</html>

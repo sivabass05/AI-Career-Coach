@@ -1,0 +1,865 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>AI Career Coach</title>
+
+    <style>
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background: #f4f7fb;
+            color: #222;
+        }
+
+
+        /* =========================
+           NAVBAR
+        ========================= */
+
+        .navbar {
+
+            height: 70px;
+
+            background: linear-gradient(
+                135deg,
+                #1e3c72,
+                #2a5298
+            );
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: space-between;
+
+            padding: 0 45px;
+
+            color: white;
+
+            position: fixed;
+
+            top: 0;
+
+            left: 0;
+
+            width: 100%;
+
+            z-index: 1000;
+        }
+
+
+        .logo {
+
+            font-size: 25px;
+
+            font-weight: bold;
+        }
+
+
+        .nav-links {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 30px;
+        }
+
+
+        .nav-links a {
+
+            color: white;
+
+            text-decoration: none;
+
+            font-size: 16px;
+
+            font-weight: bold;
+
+            transition: 0.3s;
+        }
+
+
+        .nav-links a:hover {
+
+            color: #00c9a7;
+        }
+
+
+        .login-btn {
+
+            background: #00c9a7;
+
+            padding: 10px 22px;
+
+            border-radius: 25px;
+        }
+
+
+        .login-btn:hover {
+
+            color: white !important;
+
+            background: #00a98f;
+        }
+
+
+        /* =========================
+           HERO
+        ========================= */
+
+        .hero {
+
+            min-height: 650px;
+
+            background: linear-gradient(
+                135deg,
+                #1e3c72,
+                #2a5298
+            );
+
+            color: white;
+
+            display: flex;
+
+            align-items: center;
+
+            padding: 110px 8% 70px;
+
+            gap: 60px;
+        }
+
+
+        .hero-content {
+
+            flex: 1;
+        }
+
+
+        .hero-content h1 {
+
+            font-size: 50px;
+
+            line-height: 1.15;
+
+            margin-bottom: 25px;
+        }
+
+
+        .hero-content h1 span {
+
+            color: #00c9a7;
+        }
+
+
+        .hero-content p {
+
+            font-size: 19px;
+
+            line-height: 1.7;
+
+            color: #f0f4ff;
+
+            max-width: 650px;
+
+            margin-bottom: 30px;
+        }
+
+
+        .hero-buttons {
+
+            display: flex;
+
+            gap: 18px;
+        }
+
+
+        .btn {
+
+            display: inline-block;
+
+            padding: 14px 28px;
+
+            border-radius: 28px;
+
+            text-decoration: none;
+
+            font-weight: bold;
+
+            font-size: 16px;
+
+            transition: 0.3s;
+        }
+
+
+        .primary-btn {
+
+            background: #00c9a7;
+
+            color: white;
+        }
+
+
+        .primary-btn:hover {
+
+            background: #00a98f;
+
+            transform: translateY(-2px);
+        }
+
+
+        .secondary-btn {
+
+            border: 2px solid white;
+
+            color: white;
+        }
+
+
+        .secondary-btn:hover {
+
+            background: white;
+
+            color: #1e3c72;
+        }
+
+
+        /* =========================
+           ROBOT
+        ========================= */
+
+        .hero-image {
+
+            flex: 0.7;
+
+            display: flex;
+
+            justify-content: center;
+
+            align-items: center;
+        }
+
+
+        .robot {
+
+            font-size: 180px;
+
+            filter: drop-shadow(
+                0 15px 20px
+                rgba(0,0,0,0.25)
+            );
+        }
+
+
+        /* =========================
+           FEATURES
+        ========================= */
+
+        .features {
+
+            padding: 80px 8%;
+
+            background: #f4f7fb;
+
+            text-align: center;
+        }
+
+
+        .section-title {
+
+            color: #1e3c72;
+
+            font-size: 34px;
+
+            margin-bottom: 12px;
+        }
+
+
+        .section-subtitle {
+
+            color: #666;
+
+            margin-bottom: 45px;
+
+            font-size: 17px;
+        }
+
+
+        .feature-grid {
+
+            display: grid;
+
+            grid-template-columns:
+                repeat(4, 1fr);
+
+            gap: 25px;
+        }
+
+
+        .feature-card {
+
+            background: white;
+
+            padding: 30px 22px;
+
+            border-radius: 15px;
+
+            box-shadow:
+                0 5px 15px
+                rgba(0,0,0,0.08);
+
+            transition: 0.3s;
+        }
+
+
+        .feature-card:hover {
+
+            transform: translateY(-7px);
+
+            box-shadow:
+                0 10px 25px
+                rgba(0,0,0,0.12);
+        }
+
+
+        .feature-icon {
+
+            font-size: 45px;
+
+            margin-bottom: 15px;
+        }
+
+
+        .feature-card h3 {
+
+            color: #1e3c72;
+
+            margin-bottom: 12px;
+
+            font-size: 19px;
+        }
+
+
+        .feature-card p {
+
+            color: #666;
+
+            line-height: 1.6;
+
+            font-size: 14px;
+        }
+
+
+        /* =========================
+           ABOUT
+        ========================= */
+
+        .about {
+
+            padding: 80px 10%;
+
+            background: white;
+
+            text-align: center;
+        }
+
+
+        .about h2 {
+
+            color: #1e3c72;
+
+            font-size: 34px;
+
+            margin-bottom: 20px;
+        }
+
+
+        .about p {
+
+            max-width: 800px;
+
+            margin: auto;
+
+            color: #666;
+
+            font-size: 17px;
+
+            line-height: 1.8;
+        }
+
+
+        /* =========================
+           CTA
+        ========================= */
+
+        .cta {
+
+            padding: 70px 20px;
+
+            background: linear-gradient(
+                135deg,
+                #1e3c72,
+                #2a5298
+            );
+
+            color: white;
+
+            text-align: center;
+        }
+
+
+        .cta h2 {
+
+            font-size: 34px;
+
+            margin-bottom: 15px;
+        }
+
+
+        .cta p {
+
+            margin-bottom: 25px;
+
+            font-size: 17px;
+        }
+
+
+        /* =========================
+           FOOTER
+        ========================= */
+
+        footer {
+
+            background: #172f5d;
+
+            color: white;
+
+            text-align: center;
+
+            padding: 20px;
+        }
+
+
+        footer p {
+
+            font-size: 14px;
+
+            opacity: 0.9;
+        }
+
+
+        /* =========================
+           RESPONSIVE
+        ========================= */
+
+        @media(max-width: 900px) {
+
+            .hero {
+
+                flex-direction: column;
+
+                text-align: center;
+
+                padding-top: 130px;
+            }
+
+
+            .hero-content p {
+
+                margin-left: auto;
+
+                margin-right: auto;
+            }
+
+
+            .hero-buttons {
+
+                justify-content: center;
+            }
+
+
+            .feature-grid {
+
+                grid-template-columns:
+                    repeat(2, 1fr);
+            }
+
+        }
+
+
+        @media(max-width: 600px) {
+
+            .navbar {
+
+                padding: 0 15px;
+            }
+
+
+            .nav-links {
+
+                gap: 10px;
+            }
+
+
+            .nav-links a {
+
+                font-size: 13px;
+            }
+
+
+            .hero-content h1 {
+
+                font-size: 36px;
+            }
+
+
+            .robot {
+
+                font-size: 120px;
+            }
+
+
+            .feature-grid {
+
+                grid-template-columns: 1fr;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<!-- =========================
+     NAVBAR
+========================= -->
+
+<nav class="navbar">
+
+
+    <div class="logo">
+
+        🤖 AI Career Coach
+
+    </div>
+
+
+    <div class="nav-links">
+
+        <a href="#home">
+            Home
+        </a>
+
+        <a href="#features">
+            Features
+        </a>
+
+        <a href="#about">
+            About
+        </a>
+
+        <a href="{% url 'login' %}"
+           class="login-btn">
+
+            Login
+
+        </a>
+
+    </div>
+
+
+</nav>
+
+
+
+<!-- =========================
+     HERO
+========================= -->
+
+<section class="hero"
+         id="home">
+
+
+    <div class="hero-content">
+
+
+        <h1>
+
+            AI Powered
+            <span>Career Coach</span>
+            & Skill Development System
+
+        </h1>
+
+
+        <p>
+
+            Empowering students with Artificial
+            Intelligence to identify skills, analyze
+            resumes, discover suitable career paths,
+            follow personalized learning roadmaps,
+            and prepare for interviews.
+
+        </p>
+
+
+        <div class="hero-buttons">
+
+
+            <a href="{% url 'login' %}"
+               class="btn primary-btn">
+
+                🚀 Get Started
+
+            </a>
+
+
+            <a href="#features"
+               class="btn secondary-btn">
+
+                Learn More
+
+            </a>
+
+
+        </div>
+
+
+    </div>
+
+
+
+    <div class="hero-image">
+
+        <div class="robot">
+
+            🤖
+
+        </div>
+
+    </div>
+
+
+</section>
+
+
+
+<!-- =========================
+     FEATURES
+========================= -->
+
+<section class="features"
+         id="features">
+
+
+    <h2 class="section-title">
+
+        🚀 What Our System Offers
+
+    </h2>
+
+
+    <p class="section-subtitle">
+
+        Everything you need to build your career.
+
+    </p>
+
+
+
+    <div class="feature-grid">
+
+
+        <div class="feature-card">
+
+            <div class="feature-icon">
+                📄
+            </div>
+
+            <h3>
+                Resume Analyzer
+            </h3>
+
+            <p>
+
+                Analyze your resume and identify
+                important skills with ATS scoring.
+
+            </p>
+
+        </div>
+
+
+
+        <div class="feature-card">
+
+            <div class="feature-icon">
+                🎯
+            </div>
+
+            <h3>
+                Career Recommendation
+            </h3>
+
+            <p>
+
+                Discover suitable career paths
+                based on your skills and interests.
+
+            </p>
+
+        </div>
+
+
+
+        <div class="feature-card">
+
+            <div class="feature-icon">
+                📚
+            </div>
+
+            <h3>
+                Personalized Learning
+            </h3>
+
+            <p>
+
+                Follow a structured learning roadmap
+                to improve your skills.
+
+            </p>
+
+        </div>
+
+
+
+        <div class="feature-card">
+
+            <div class="feature-icon">
+                🎤
+            </div>
+
+            <h3>
+                Mock Interview
+            </h3>
+
+            <p>
+
+                Practice technical and HR interview
+                questions and receive feedback.
+
+            </p>
+
+        </div>
+
+
+    </div>
+
+
+</section>
+
+
+
+<!-- =========================
+     ABOUT
+========================= -->
+
+<section class="about"
+         id="about">
+
+
+    <h2>
+        💡 About AI Career Coach
+    </h2>
+
+
+    <p>
+
+        AI Career Coach is an AI-powered career
+        guidance and skill development system designed
+        to help students understand their strengths,
+        identify skill gaps, analyze resumes,
+        receive career recommendations, follow
+        personalized learning paths, and improve
+        their interview skills.
+
+    </p>
+
+
+</section>
+
+
+
+<!-- =========================
+     CALL TO ACTION
+========================= -->
+
+<section class="cta">
+
+
+    <h2>
+
+        Ready to Build Your Career?
+
+    </h2>
+
+
+    <p>
+
+        Start your personalized career journey today.
+
+    </p>
+
+
+    <a href="{% url 'login' %}"
+       class="btn primary-btn">
+
+        🚀 Get Started
+
+    </a>
+
+
+</section>
+
+
+
+<!-- =========================
+     FOOTER
+========================= -->
+
+<footer>
+
+    <p>
+
+        © 2026 AI Career Coach.
+        All Rights Reserved.
+
+    </p>
+
+</footer>
+
+
+</body>
+
+</html>

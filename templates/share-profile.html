@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -563,6 +563,22 @@
 
         }
 
+.dashboard-btn {
+    text-decoration: none;
+    color: white;
+    padding: 10px 20px;
+    border: 1px solid rgba(255,255,255,0.45);
+    border-radius: 9px;
+    font-size: 13px;
+    font-weight: 600;
+    transition: 0.3s;
+}
+
+.dashboard-btn:hover {
+    background: white;
+    color: #123c69;
+}
+
     </style>
 
 </head>
@@ -580,7 +596,7 @@
         <div class="logo">
 
             <div class="logo-icon">
-                🤖
+                ðŸ¤–
             </div>
 
             AI Career Coach
@@ -598,7 +614,8 @@
             </span>
 
 
-            <a
+            <a href="{% url 'dashboard' %}" class="dashboard-btn">← Dashboard</a>
+        <a
                 href="{% url 'logout' %}"
                 class="logout"
             >
@@ -623,7 +640,7 @@
 
 
                 <h1 class="title">
-                    🔗 Share Your Career Profile
+                    ðŸ”— Share Your Career Profile
                 </h1>
 
 
@@ -644,7 +661,7 @@
 
                 <div class="status">
 
-                    ✓ Your Career Profile Sharing is Enabled
+                    âœ“ Your Career Profile Sharing is Enabled
 
                 </div>
 
@@ -656,7 +673,7 @@
 
                 <div class="section-title">
 
-                    🔗 Your Career Profile Link
+                    ðŸ”— Your Career Profile Link
 
                 </div>
 
@@ -677,7 +694,7 @@
                         class="copy-btn"
                         onclick="copyShareLink()"
                     >
-                        📋 Copy Link
+                        ðŸ“‹ Copy Link
                     </button>
 
                 </div>
@@ -691,7 +708,7 @@
                 <div class="qr-section">
 
                     <h3>
-                        📱 Scan to View My Career Profile
+                        ðŸ“± Scan to View My Career Profile
                     </h3>
 
 
@@ -712,7 +729,7 @@
                         class="download-btn"
                         onclick="downloadQRCode()"
                     >
-                        ⬇ Download QR Code
+                        â¬‡ Download QR Code
                     </button>
 
                 </div>
@@ -726,29 +743,29 @@
                 <div class="info-box">
 
                     <h3>
-                        💡 How to Share
+                        ðŸ’¡ How to Share
                     </h3>
 
 
                     <ul class="info-list">
 
                         <li>
-                            📱 Send the link through WhatsApp
+                            ðŸ“± Send the link through WhatsApp
                             or Email.
                         </li>
 
                         <li>
-                            💼 Add the link to your Resume
+                            ðŸ’¼ Add the link to your Resume
                             or LinkedIn profile.
                         </li>
 
                         <li>
-                            📄 Download the QR Code and add
+                            ðŸ“„ Download the QR Code and add
                             it to your Resume.
                         </li>
 
                         <li>
-                            🎤 Interviewers can open your
+                            ðŸŽ¤ Interviewers can open your
                             career profile without login.
                         </li>
 
@@ -766,7 +783,7 @@
                     href="{% url 'dashboard' %}"
                     class="back-btn"
                 >
-                    ← Back to Dashboard
+                    â† Back to Dashboard
                 </a>
 
 
@@ -816,7 +833,7 @@
                     button.innerHTML;
 
                 button.innerHTML =
-                    "✓ Link Copied!";
+                    "âœ“ Link Copied!";
 
                 setTimeout(function() {
 
@@ -924,3 +941,4 @@
 </body>
 
 </html>
+

@@ -1,0 +1,1042 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Dashboard | AI Career Coach</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Segoe UI", Arial, sans-serif;
+        }
+
+        body {
+            background: #f4f8fc;
+            color: #172b4d;
+            font-size: 16px;
+        }
+
+        /* ================= HEADER ================= */
+
+        .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 72px;
+            z-index: 9999;
+
+            background: linear-gradient(
+                135deg,
+                #123c69,
+                #087f8c
+            );
+
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            padding: 0 3.5%;
+
+            color: white;
+
+            box-shadow: 0 4px 18px rgba(0,0,0,0.15);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+
+            font-size: 25px;
+            font-weight: 700;
+        }
+
+        .logo-icon {
+            width: 42px;
+            height: 42px;
+
+            border-radius: 12px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            background: rgba(255,255,255,0.16);
+
+            font-size: 23px;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .welcome {
+            font-size: 16px;
+            font-weight: 500;
+        }
+
+        .logout {
+            text-decoration: none;
+            color: white;
+
+            padding: 10px 20px;
+
+            border: 1px solid rgba(255,255,255,0.45);
+
+            border-radius: 10px;
+
+            font-size: 15px;
+            font-weight: 600;
+
+            transition: 0.3s;
+        }
+
+        .logout:hover {
+            background: white;
+            color: #123c69;
+        }
+
+        /* ================= PAGE ================= */
+
+        .page {
+            padding: 105px 4% 60px;
+        }
+
+        .content {
+            max-width: 1250px;
+            margin: auto;
+        }
+
+        /* ================= HERO ================= */
+
+        .hero {
+            background:
+                radial-gradient(
+                    circle at 90% 20%,
+                    rgba(255,255,255,0.16),
+                    transparent 30%
+                ),
+                linear-gradient(
+                    135deg,
+                    #123c69,
+                    #087f8c
+                );
+
+            color: white;
+
+            border-radius: 24px;
+
+            padding: 42px 45px;
+
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            box-shadow: 0 15px 40px rgba(18,60,105,0.18);
+
+            margin-bottom: 28px;
+        }
+
+        .hero-content {
+            max-width: 760px;
+        }
+
+        .hero-label {
+            display: inline-block;
+
+            padding: 8px 15px;
+
+            background: rgba(255,255,255,0.14);
+
+            border: 1px solid rgba(255,255,255,0.25);
+
+            border-radius: 25px;
+
+            font-size: 14px;
+            font-weight: 600;
+
+            margin-bottom: 15px;
+        }
+
+        .hero h1 {
+            font-size: 38px;
+            line-height: 1.2;
+            margin-bottom: 12px;
+        }
+
+        .hero p {
+            font-size: 17px;
+            line-height: 1.7;
+            opacity: 0.93;
+        }
+
+        .ai-icon {
+            width: 120px;
+            height: 120px;
+
+            flex-shrink: 0;
+
+            border-radius: 50%;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            font-size: 55px;
+
+            background: rgba(255,255,255,0.12);
+
+            border: 1px solid rgba(255,255,255,0.28);
+        }
+
+        /* ================= STATS ================= */
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 22px;
+
+            margin-bottom: 28px;
+        }
+
+        .stat-card {
+            background: white;
+
+            border: 1px solid #e1ebf3;
+
+            border-radius: 20px;
+
+            padding: 27px;
+
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            box-shadow: 0 8px 28px rgba(23,43,77,0.07);
+        }
+
+        .stat-label {
+            color: #64748b;
+            font-size: 15px;
+            margin-bottom: 7px;
+        }
+
+        .stat-value {
+            color: #087f8c;
+            font-size: 32px;
+            font-weight: 800;
+        }
+
+        .stat-description {
+            color: #94a3b8;
+            font-size: 13px;
+            margin-top: 6px;
+        }
+
+        .stat-icon {
+            width: 54px;
+            height: 54px;
+
+            border-radius: 15px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            background: #e8f7f8;
+
+            font-size: 27px;
+        }
+
+        /* ================= CAREER ================= */
+
+        .career-card {
+            background: white;
+
+            border: 1px solid #e1ebf3;
+
+            border-radius: 22px;
+
+            padding: 30px;
+
+            margin-bottom: 38px;
+
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            box-shadow: 0 8px 30px rgba(23,43,77,0.07);
+        }
+
+        .career-left {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+        }
+
+        .career-icon {
+            width: 60px;
+            height: 60px;
+
+            border-radius: 16px;
+
+            background: #e8f7f8;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            font-size: 30px;
+        }
+
+        .career-label {
+            color: #64748b;
+            font-size: 15px;
+            margin-bottom: 5px;
+        }
+
+        .career-name {
+            color: #123c69;
+            font-size: 28px;
+            font-weight: 800;
+        }
+
+        .career-match {
+            text-align: center;
+
+            background: #e8f7f8;
+
+            padding: 14px 25px;
+
+            border-radius: 16px;
+        }
+
+        .career-match-number {
+            color: #087f8c;
+            font-size: 28px;
+            font-weight: 800;
+        }
+
+        .career-match-label {
+            color: #64748b;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        /* ================= SECTION ================= */
+
+        .section-title {
+            color: #123c69;
+            font-size: 28px;
+            font-weight: 800;
+
+            margin-bottom: 6px;
+        }
+
+        .section-subtitle {
+            color: #64748b;
+            margin-bottom: 22px;
+        }
+
+        /* ================= TOOLS ================= */
+
+        .tools-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 22px;
+
+            margin-bottom: 25px;
+        }
+
+        .tool-card {
+            background: white;
+
+            border: 1px solid #e1ebf3;
+
+            border-radius: 20px;
+
+            padding: 28px;
+
+            box-shadow: 0 8px 28px rgba(23,43,77,0.07);
+
+            transition: 0.25s;
+        }
+
+        .tool-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(23,43,77,0.12);
+        }
+
+        .tool-icon {
+            width: 55px;
+            height: 55px;
+
+            background: #e8f7f8;
+
+            border-radius: 15px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            font-size: 27px;
+
+            margin-bottom: 18px;
+        }
+
+        .tool-card h3 {
+            color: #123c69;
+            font-size: 20px;
+            margin-bottom: 9px;
+        }
+
+        .tool-card p {
+            color: #64748b;
+
+            font-size: 14px;
+            line-height: 1.6;
+
+            min-height: 48px;
+
+            margin-bottom: 18px;
+        }
+
+        .btn {
+            display: inline-block;
+
+            text-decoration: none;
+
+            padding: 11px 18px;
+
+            border-radius: 10px;
+
+            font-size: 14px;
+            font-weight: 700;
+
+            transition: 0.25s;
+        }
+
+        .btn-primary {
+            background: linear-gradient(
+                135deg,
+                #123c69,
+                #087f8c
+            );
+
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: #e8f7f8;
+            color: #087f8c;
+        }
+
+        .btn-secondary:hover {
+            background: #d7f0f2;
+        }
+
+        /* ================= QUICK LINKS ================= */
+
+        .quick-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 18px;
+
+            margin-top: 22px;
+        }
+
+        .quick-link {
+            background: white;
+
+            border: 1px solid #e1ebf3;
+
+            border-radius: 16px;
+
+            padding: 18px 20px;
+
+            text-decoration: none;
+
+            color: #123c69;
+
+            font-weight: 700;
+
+            box-shadow: 0 5px 20px rgba(23,43,77,0.05);
+
+            transition: 0.2s;
+        }
+
+        .quick-link:hover {
+            transform: translateY(-2px);
+        }
+
+        /* ================= MOBILE ================= */
+
+        @media (max-width: 900px) {
+
+            .stats-grid,
+            .tools-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .hero {
+                padding: 32px;
+            }
+
+            .ai-icon {
+                width: 90px;
+                height: 90px;
+                font-size: 42px;
+            }
+        }
+
+        @media (max-width: 650px) {
+
+            .header {
+                height: 64px;
+                padding: 0 18px;
+            }
+
+            .logo {
+                font-size: 19px;
+            }
+
+            .logo-icon {
+                width: 36px;
+                height: 36px;
+                font-size: 19px;
+            }
+
+            .welcome {
+                display: none;
+            }
+
+            .page {
+                padding: 88px 15px 40px;
+            }
+
+            .hero {
+                padding: 28px 23px;
+                border-radius: 20px;
+            }
+
+            .hero h1 {
+                font-size: 28px;
+            }
+
+            .hero p {
+                font-size: 14px;
+            }
+
+            .ai-icon {
+                display: none;
+            }
+
+            .stats-grid,
+            .tools-grid,
+            .quick-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .career-card {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 20px;
+            }
+
+            .career-name {
+                font-size: 24px;
+            }
+
+            .career-match {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<!-- ================= HEADER ================= -->
+
+<header class="header">
+
+    <div class="logo">
+
+        <div class="logo-icon">
+            🤖
+        </div>
+
+        AI Career Coach
+
+    </div>
+
+    <div class="header-right">
+
+        <span class="welcome">
+            Welcome, {{ request.user.username }}
+        </span>
+
+        <a
+            href="{% url 'logout' %}"
+            class="logout"
+        >
+            Logout
+        </a>
+
+    </div>
+
+</header>
+
+
+<!-- ================= MAIN ================= -->
+
+<main class="page">
+
+<div class="content">
+
+
+    <!-- ================= HERO ================= -->
+
+    <section class="hero">
+
+        <div class="hero-content">
+
+            <span class="hero-label">
+                🚀 Your Personalized Career Dashboard
+            </span>
+
+            <h1>
+                Build Your Future With AI
+            </h1>
+
+            <p>
+                Discover the right career, develop the skills you need,
+                prepare your resume and practice interviews with your
+                AI-powered career coach.
+            </p>
+
+        </div>
+
+        <div class="ai-icon">
+            🤖
+        </div>
+
+    </section>
+
+
+    {% if assessment %}
+
+    <!-- ================= STATS ================= -->
+
+    <section class="stats-grid">
+
+        <!-- Skill Score -->
+
+        <div class="stat-card">
+
+            <div>
+
+                <div class="stat-label">
+                    Skill Assessment
+                </div>
+
+                <div class="stat-value">
+                    {{ assessment.skill_score|default:0 }}%
+                </div>
+
+                <div class="stat-description">
+                    Your current skill assessment score
+                </div>
+
+            </div>
+
+            <div class="stat-icon">
+                🎯
+            </div>
+
+        </div>
+
+
+        <!-- Career Match -->
+
+        <div class="stat-card">
+
+            <div>
+
+                <div class="stat-label">
+                    Career Match
+                </div>
+
+                <div class="stat-value">
+                    {{ assessment.skill_score|default:0 }}%
+                </div>
+
+                <div class="stat-description">
+                    Your career compatibility score
+                </div>
+
+            </div>
+
+            <div class="stat-icon">
+                🚀
+            </div>
+
+        </div>
+
+
+        <!-- Interview -->
+
+        <div class="stat-card">
+
+            <div>
+
+                <div class="stat-label">
+                    Interview Score
+                </div>
+
+                <div class="stat-value">
+                    {{ interview_score|default:0 }}%
+                </div>
+
+                <div class="stat-description">
+                    Average mock interview performance
+                </div>
+
+            </div>
+
+            <div class="stat-icon">
+                🎤
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- ================= RECOMMENDED CAREER ================= -->
+
+    <section class="career-card">
+
+        <div class="career-left">
+
+            <div class="career-icon">
+                ⭐
+            </div>
+
+            <div>
+
+                <div class="career-label">
+                    Your Recommended Career
+                </div>
+
+                <div class="career-name">
+                    {{ assessment.recommended_career|default:"Not Assessed" }}
+                </div>
+
+                <div class="career-label">
+                    Based on your skills and career assessment results.
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="career-match">
+
+            <div class="career-match-number">
+                {{ assessment.skill_score|default:0 }}%
+            </div>
+
+            <div class="career-match-label">
+                CAREER MATCH
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- ================= TOOLS ================= -->
+
+    <h2 class="section-title">
+        Explore Your Career Tools
+    </h2>
+
+    <p class="section-subtitle">
+        Build your skills and become job-ready step by step
+    </p>
+
+
+    <section class="tools-grid">
+
+
+        <!-- Skill Assessment -->
+
+        <div class="tool-card">
+
+            <div class="tool-icon">
+                🎯
+            </div>
+
+            <h3>
+                Skill Assessment
+            </h3>
+
+            <p>
+                Evaluate your current skills, interests and
+                career preferences.
+            </p>
+
+            <a
+                href="{% url 'skill_assessment' %}"
+                class="btn btn-primary"
+            >
+                Take Assessment →
+            </a>
+
+        </div>
+
+
+        <!-- Career Recommendation -->
+
+        <div class="tool-card">
+
+            <div class="tool-icon">
+                🚀
+            </div>
+
+            <h3>
+                Career Recommendation
+            </h3>
+
+            <p>
+                Discover the career path that best matches
+                your skills and interests.
+            </p>
+
+            <a
+                href="{% url 'career_recommendation' %}"
+                class="btn btn-primary"
+            >
+                View Recommendation →
+            </a>
+
+        </div>
+
+
+        <!-- Learning Path -->
+
+        <div class="tool-card">
+
+            <div class="tool-icon">
+                🗺️
+            </div>
+
+            <h3>
+                Learning Path
+            </h3>
+
+            <p>
+                Follow a personalized roadmap to build
+                the skills required for your career.
+            </p>
+
+            <a
+                href="{% url 'learning_path' %}"
+                class="btn btn-primary"
+            >
+                View Learning Path →
+            </a>
+
+        </div>
+
+
+        <!-- Resume -->
+
+        <div class="tool-card">
+
+            <div class="tool-icon">
+                📄
+            </div>
+
+            <h3>
+                Resume Analyzer
+            </h3>
+
+            <p>
+                Analyze your resume and improve your ATS
+                score for better job opportunities.
+            </p>
+
+            <a
+                href="{% url 'resume' %}"
+                class="btn btn-primary"
+            >
+                Analyze Resume →
+            </a>
+
+        </div>
+
+
+        <!-- Mock Interview -->
+
+        <div class="tool-card">
+
+            <div class="tool-icon">
+                🎤
+            </div>
+
+            <h3>
+                AI Mock Interview
+            </h3>
+
+            <p>
+                Practice career-specific interview questions
+                and improve your interview performance.
+            </p>
+
+            <!-- IMPORTANT CAREER FIX -->
+
+            <a
+    href="{% url 'mock_interview' %}?career={{ assessment.recommended_career|urlencode }}"
+    class="btn btn-primary"
+>
+    Start Interview →
+</a>
+
+        </div>
+
+
+        <!-- Jobs -->
+
+        <div class="tool-card">
+
+            <div class="tool-icon">
+                💼
+            </div>
+
+            <h3>
+                Job Recommendation
+            </h3>
+
+            <p>
+                Explore job roles related to your recommended
+                career and skills.
+            </p>
+
+            <a
+                href="{% url 'job_recommendation' %}"
+                class="btn btn-primary"
+            >
+                Explore Jobs →
+            </a>
+
+        </div>
+
+    </section>
+
+
+    <!-- ================= QUICK LINKS ================= -->
+
+    <h2 class="section-title">
+        Quick Access
+    </h2>
+
+    <p class="section-subtitle">
+        Manage your career profile and continue your journey
+    </p>
+
+
+    <section class="quick-grid">
+
+        <a
+            href="{% url 'profile' %}"
+            class="quick-link"
+        >
+            👤 My Profile →
+        </a>
+
+        <a
+            href="{% url 'career_recommendation' %}"
+            class="quick-link"
+        >
+            ⭐ My Career Recommendation →
+        </a>
+
+        <a
+            href="{% url 'learning_path' %}"
+            class="quick-link"
+        >
+            📚 Continue Learning →
+        </a>
+
+        <a href="{% url 'share_career_profile' %}" class="quick-link">
+    🔗 Share with Interviewer →
+</a>
+
+    </section>
+
+
+    {% else %}
+
+
+    <!-- ================= NO ASSESSMENT ================= -->
+
+    <section class="career-card">
+
+        <div class="career-left">
+
+            <div class="career-icon">
+                🧠
+            </div>
+
+            <div>
+
+                <div class="career-label">
+                    Welcome to AI Career Coach
+                </div>
+
+                <div class="career-name">
+                    Complete Your Skill Assessment
+                </div>
+
+                <div class="career-label">
+                    Take the assessment to receive your
+                    personalized career recommendation.
+                </div>
+
+            </div>
+
+        </div>
+
+        <a
+            href="{% url 'skill_assessment' %}"
+            class="btn btn-primary"
+        >
+            Start Assessment →
+        </a>
+
+    </section>
+
+
+    {% endif %}
+
+
+</div>
+
+</main>
+
+</body>
+</html>
